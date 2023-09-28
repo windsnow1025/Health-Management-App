@@ -35,7 +35,7 @@ public class welcome_Activity extends AppCompatActivity {
                 userID = userLocalDao.getUser();
                 Intent intent = new Intent();
                 if (userID==null) {
-                    intent.setClass(welcome_Activity.this, Login_1.class);
+                    intent.setClass(welcome_Activity.this, Login.class);
                 } else {
                     intent.setClass(welcome_Activity.this, MainActivity.class);
                 }

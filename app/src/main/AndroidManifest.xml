@@ -24,7 +24,7 @@
             android:name=".LoginForgetActivity"
             android:exported="false" />
         <activity
-            android:name=".Login_1"
+            android:name=".Login"
             android:exported="false" />
         <activity
             android:name=".welcome_Activity"

@@ -19,7 +19,6 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.project.JDBC.UserDao;
-import com.project.Pojo.UserInfo;
 import com.project.Sqlite.UserLocalDao;
 import com.project.utils.ViewUtil;
 
@@ -151,7 +150,7 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
                          **/
                         if (userDao.insertUser(username, password, sex, birth).equals(username)) {
                             Toast.makeText(this, "恭喜您注册成功，清前往登录！", Toast.LENGTH_SHORT).show();
-                            intent = new Intent(this, Login_1.class);
+                            intent = new Intent(this, Login.class);
                             intent.putExtra("username", username);
                             startActivity(intent);
                         } else Toast.makeText(this, "网络请求超时，请稍后重试", Toast.LENGTH_SHORT).show();
@@ -167,7 +166,7 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
                     try {
                         if (userDao.updateUserInformation(username, hashMap)) {
                             Toast.makeText(this, "密码已修改成功，请重新登录！", Toast.LENGTH_SHORT).show();
-                            intent = new Intent(this, Login_1.class);
+                            intent = new Intent(this, Login.class);
                             intent.putExtra("username", username);
                             startActivity(intent);
                         } else Toast.makeText(this, "网络请求超时，请稍后重试", Toast.LENGTH_SHORT).show();

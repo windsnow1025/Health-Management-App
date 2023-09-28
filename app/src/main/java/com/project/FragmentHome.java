@@ -18,12 +18,9 @@ import androidx.fragment.app.FragmentTransaction;
 import com.project.JDBC.AlertDao;
 import com.project.JDBC.UserDao;
 import com.project.Pojo.Alert;
-import com.project.Pojo.UserInfo;
 import com.project.Sqlite.UserLocalDao;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
 public class FragmentHome extends Fragment {
@@ -111,7 +108,7 @@ public class FragmentHome extends Fragment {
         tv_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), Login_1.class);
+                Intent intent = new Intent(getActivity(), Login.class);
                 startActivity(intent);
             }
         });
@@ -151,7 +148,7 @@ public class FragmentHome extends Fragment {
                 builder.setNegativeButton("取消", null);
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(getActivity(), Login_1.class);
+                        Intent intent = new Intent(getActivity(), Login.class);
                         userLocalDao.userLoginOut(username);
                         startActivity(intent);
                     }

@@ -10,9 +10,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.text.InputFilter;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -175,7 +172,7 @@ public class personalCenter extends Fragment implements DatePickerDialog.OnDateS
                     builder.setNegativeButton("取消", null);
                     builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(getActivity(), Login_1.class);
+                            Intent intent = new Intent(getActivity(), Login.class);
                             userLocalDao.userLoginOut(userID);
                             startActivity(intent);
                         }
