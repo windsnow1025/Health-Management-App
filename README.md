@@ -1,4 +1,7 @@
-# Health-Management-App
-A Health Management Android Application
+# Health Management App
 
-This project is designed by the most handsome & most smart people --- Yilu Yang!!!
+A Health Management Android Application build by JAVA with Gradle.
+
+## Requirements
+
+Android 9.0 (API level 28) or higher

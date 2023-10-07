@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    namespace 'com.project'
+    namespace 'com.windsnow1025.health_management_app'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.project"
-        minSdk 24
+        applicationId "com.windsnow1025.health_management_app"
+        minSdk 28
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -26,23 +26,19 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    buildFeatures {
-        viewBinding true
-    }
 }
 
 dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.navigation:navigation-fragment:2.5.3'
-    implementation 'androidx.navigation:navigation-ui:2.5.3'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
-//    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.32'
+
+    implementation 'androidx.navigation:navigation-fragment:2.5.3'
+    implementation 'androidx.navigation:navigation-ui:2.5.3'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
     implementation 'com.rmtheis:tess-two:9.1.0'
 }
