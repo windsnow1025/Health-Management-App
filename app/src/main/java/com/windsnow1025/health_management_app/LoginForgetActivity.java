@@ -18,8 +18,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.windsnow1025.health_management_app.JDBC.UserDao;
-import com.windsnow1025.health_management_app.Sqlite.UserLocalDao;
+import com.windsnow1025.health_management_app.jdbc.UserDao;
+import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 import com.windsnow1025.health_management_app.utils.ViewUtil;
 
 import java.text.ParseException;

@@ -20,8 +20,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.windsnow1025.health_management_app.JDBC.UserDao;
-import com.windsnow1025.health_management_app.Sqlite.UserLocalDao;
+import com.windsnow1025.health_management_app.jdbc.UserDao;
+import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 import com.windsnow1025.health_management_app.utils.MainApplication;
 import com.windsnow1025.health_management_app.utils.ViewUtil;
 
