@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
-public class Fragment_common extends Fragment {
+public class CommonFragment extends Fragment {
 
     private final int tag;
     private Button back;
@@ -22,7 +22,7 @@ public class Fragment_common extends Fragment {
 
 
 
-    public Fragment_common(int i) {
+    public CommonFragment(int i) {
        this.tag=i;
     }
 

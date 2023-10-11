@@ -19,7 +19,7 @@ import com.windsnow1025.health_management_app.Sqlite.UserLocalDao;
 
 import java.util.Calendar;
 
-public class EnterRecord extends Fragment {
+public class EnterRecordFragment extends Fragment {
 
     String organ;
 
@@ -40,7 +40,7 @@ public class EnterRecord extends Fragment {
     EditText editTextConclusion;
     EditText editTextSuggestion;
 
-    public EnterRecord(String organ) {
+    public EnterRecordFragment(String organ) {
         this.organ = organ;
     }
 
@@ -137,7 +137,7 @@ public class EnterRecord extends Fragment {
 
                 // Jump to organ page
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new Organ(organ));
+                transaction.replace(R.id.fragment_container, new OrganFragment(organ));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }

@@ -1,9 +1,7 @@
 package com.windsnow1025.health_management_app;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +13,6 @@ import android.widget.TableLayout;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.windsnow1025.health_management_app.JDBC.AlertDao;
@@ -28,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-public class FragmentAlert extends Fragment {
+public class AlertFragment extends Fragment {
     private static List<Info> infoList = new ArrayList<>();
     private static List<Integer> numList = new ArrayList<>();
     private InfoAdapter adapter;
@@ -114,16 +111,16 @@ public class FragmentAlert extends Fragment {
 
                 if (is_drug) {
                     if (report) {
-                        transaction.replace(R.id.fragment_container, new FragmentDetails(is_drug, num, adapter, infoList, numList.get(position), report, true));
+                        transaction.replace(R.id.fragment_container, new DetailsFragment(is_drug, num, adapter, infoList, numList.get(position), report, true));
                     } else {
-                        transaction.replace(R.id.fragment_container, new FragmentDetails(is_drug, num, adapter, infoList, numList.get(position), report, true));
+                        transaction.replace(R.id.fragment_container, new DetailsFragment(is_drug, num, adapter, infoList, numList.get(position), report, true));
 
                     }
                 } else {
                     if (report) {
-                        transaction.replace(R.id.fragment_container, new FragmentDetails_Record(is_drug, num, adapter, infoList, numList.get(position), report, true));
+                        transaction.replace(R.id.fragment_container, new DetailsRecordFragment(is_drug, num, adapter, infoList, numList.get(position), report, true));
                     } else {
-                        transaction.replace(R.id.fragment_container, new FragmentDetails_Record(is_drug, num, adapter, infoList, numList.get(position), report, true));
+                        transaction.replace(R.id.fragment_container, new DetailsRecordFragment(is_drug, num, adapter, infoList, numList.get(position), report, true));
 
                     }
 
@@ -149,7 +146,7 @@ public class FragmentAlert extends Fragment {
                             throw new RuntimeException(e);
                         }
                         userLocalDao.deleteAlert(userID, numList.get(position));
-                        Fragment fragment = new FragmentAlert();
+                        Fragment fragment = new AlertFragment();
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                         transaction.replace(R.id.fragment_container, fragment);
                         transaction.addToBackStack(null);
@@ -165,7 +162,7 @@ public class FragmentAlert extends Fragment {
             @Override
             public void onClick(View view) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new FragmentAlert_set(adapter, listView));
+                transaction.replace(R.id.fragment_container, new SetAlertFragment(adapter, listView));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }

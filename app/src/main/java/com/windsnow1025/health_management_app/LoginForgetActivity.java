@@ -61,7 +61,7 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
         flag = intent.getBooleanExtra("flag", false);
         /*注册*/
         if (flag) {
-            setContentView(R.layout.activity_login_forget);
+            setContentView(R.layout.activity_signup);
             et_birth = (EditText) findViewById(R.id.et_birth);
             et_birth.setOnClickListener(new View.OnClickListener() {//设置监听器，打开日期控件
                 @Override
@@ -73,7 +73,7 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
             });
 
         } else /*忘记密码*/ {
-            setContentView(R.layout.activity_login_forget_1);
+            setContentView(R.layout.activity_login_forget);
         }
         et_usename = (EditText) findViewById(R.id.et_username);
         et_password = (EditText) findViewById(R.id.et_password);
@@ -150,7 +150,7 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
                          **/
                         if (userDao.insertUser(username, password, sex, birth).equals(username)) {
                             Toast.makeText(this, "恭喜您注册成功，清前往登录！", Toast.LENGTH_SHORT).show();
-                            intent = new Intent(this, Login.class);
+                            intent = new Intent(this, LoginActivity.class);
                             intent.putExtra("username", username);
                             startActivity(intent);
                         } else Toast.makeText(this, "网络请求超时，请稍后重试", Toast.LENGTH_SHORT).show();
@@ -166,7 +166,7 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
                     try {
                         if (userDao.updateUserInformation(username, hashMap)) {
                             Toast.makeText(this, "密码已修改成功，请重新登录！", Toast.LENGTH_SHORT).show();
-                            intent = new Intent(this, Login.class);
+                            intent = new Intent(this, LoginActivity.class);
                             intent.putExtra("username", username);
                             startActivity(intent);
                         } else Toast.makeText(this, "网络请求超时，请稍后重试", Toast.LENGTH_SHORT).show();

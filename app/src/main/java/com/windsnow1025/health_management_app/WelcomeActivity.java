@@ -12,7 +12,7 @@ import com.windsnow1025.health_management_app.utils.ChangeColor;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class welcome_Activity extends AppCompatActivity {
+public class WelcomeActivity extends AppCompatActivity {
 
     private UserLocalDao userLocalDao;
     private String userID = null;
@@ -35,12 +35,12 @@ public class welcome_Activity extends AppCompatActivity {
                 userID = userLocalDao.getUser();
                 Intent intent = new Intent();
                 if (userID==null) {
-                    intent.setClass(welcome_Activity.this, Login.class);
+                    intent.setClass(WelcomeActivity.this, LoginActivity.class);
                 } else {
-                    intent.setClass(welcome_Activity.this, MainActivity.class);
+                    intent.setClass(WelcomeActivity.this, MainActivity.class);
                 }
                 startActivity(intent);
-                welcome_Activity.this.finish();
+                WelcomeActivity.this.finish();
             }
         }, 1000);
 

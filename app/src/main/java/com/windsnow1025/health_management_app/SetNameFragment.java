@@ -19,7 +19,7 @@ import com.windsnow1025.health_management_app.Sqlite.UserLocalDao;
 import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
-public class st_nameFragment extends Fragment {
+public class SetNameFragment extends Fragment {
 
     private Button bt_back;
     private Button bt_set;
@@ -28,7 +28,7 @@ public class st_nameFragment extends Fragment {
     private UserDao userDao;
     private UserLocalDao userLocalDao;
     private String username;
-    public st_nameFragment() {
+    public SetNameFragment() {
         // Required empty public constructor
     }
 

@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
 
-public class st_passFragment extends Fragment {
+public class SetPasswordFragment extends Fragment {
 
     private Button bt_back;
     private Button bt_set;
@@ -36,7 +36,7 @@ public class st_passFragment extends Fragment {
     private UserLocalDao userLocalDao;
     private String username;
 
-    public st_passFragment() {
+    public SetPasswordFragment() {
         // Required empty public constructor
     }
 

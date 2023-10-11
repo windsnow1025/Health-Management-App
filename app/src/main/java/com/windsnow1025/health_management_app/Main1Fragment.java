@@ -9,7 +9,7 @@ import android.widget.Button;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-public class FragmentMain_1 extends Fragment {
+public class Main1Fragment extends Fragment {
 
     View view;
 
@@ -19,7 +19,7 @@ public class FragmentMain_1 extends Fragment {
 
         // Button Page
         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-        transaction.replace(R.id.frameLayoutButtonPage, new ButtonPage());
+        transaction.replace(R.id.frameLayoutButtonPage, new ButtonPageFragment());
         transaction.addToBackStack(null);
         transaction.commit();
 
@@ -30,7 +30,7 @@ public class FragmentMain_1 extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new FragmentMain_2());
+                transaction.replace(R.id.fragment_container, new Main2Fragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -40,7 +40,7 @@ public class FragmentMain_1 extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new FragmentMain());
+                transaction.replace(R.id.fragment_container, new MainFragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -54,7 +54,7 @@ public class FragmentMain_1 extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new Organ("brain"));
+                transaction.replace(R.id.fragment_container, new OrganFragment("brain"));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -64,7 +64,7 @@ public class FragmentMain_1 extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new Organ("respiratory"));
+                transaction.replace(R.id.fragment_container, new OrganFragment("respiratory"));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -74,7 +74,7 @@ public class FragmentMain_1 extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new Organ("renal"));
+                transaction.replace(R.id.fragment_container, new OrganFragment("renal"));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }

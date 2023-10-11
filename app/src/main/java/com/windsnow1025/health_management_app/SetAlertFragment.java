@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 
-public class FragmentAlert_set extends Fragment {
+public class SetAlertFragment extends Fragment {
 
     private View view;
     private TableAdapter tableAdapter1;
@@ -39,7 +39,7 @@ public class FragmentAlert_set extends Fragment {
     private String userID;
     InfoAdapter adapter;
     ListView listView;
-    public FragmentAlert_set(InfoAdapter madapter,ListView mlistView) {
+    public SetAlertFragment(InfoAdapter madapter, ListView mlistView) {
         this.adapter=madapter;
         this.listView=mlistView;
     }
@@ -92,7 +92,7 @@ public class FragmentAlert_set extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                         int i= Integer.parseInt(data.get(pos)[3]);
-                        transaction.replace(R.id.fragment_container, new FragmentDetails(true,i,true,adapter));
+                        transaction.replace(R.id.fragment_container, new DetailsFragment(true,i,true,adapter));
                         transaction.addToBackStack(null);
                         transaction.commit();
                     }
@@ -101,7 +101,7 @@ public class FragmentAlert_set extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                         int i= Integer.parseInt(data.get(pos)[3]);
-                        transaction.replace(R.id.fragment_container, new FragmentDetails_Record(false,i,true,adapter));
+                        transaction.replace(R.id.fragment_container, new DetailsRecordFragment(false,i,true,adapter));
                         transaction.addToBackStack(null);
                         transaction.commit();
                     }
@@ -127,7 +127,7 @@ public class FragmentAlert_set extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                         int i= Integer.parseInt(data1.get(pos)[3]);
-                        transaction.replace(R.id.fragment_container, new FragmentDetails(true,i,false,adapter));
+                        transaction.replace(R.id.fragment_container, new DetailsFragment(true,i,false,adapter));
                         transaction.addToBackStack(null);
                         transaction.commit();
                     }
@@ -136,7 +136,7 @@ public class FragmentAlert_set extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                         int i= Integer.parseInt(data1.get(pos)[3]);
-                        transaction.replace(R.id.fragment_container, new FragmentDetails_Record(false,i,false,adapter));
+                        transaction.replace(R.id.fragment_container, new DetailsRecordFragment(false,i,false,adapter));
                         transaction.addToBackStack(null);
                         transaction.commit();
                     }

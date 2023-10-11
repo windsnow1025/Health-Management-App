@@ -23,7 +23,7 @@ import com.windsnow1025.health_management_app.Sqlite.UserLocalDao;
 import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
 
-public class FragmentHome extends Fragment {
+public class HomeFragment extends Fragment {
     private ImageButton imageButton;
     private ImageButton imageButton1;
     private ImageButton imageButton2;
@@ -45,7 +45,7 @@ public class FragmentHome extends Fragment {
     private String userID;
     private ArrayList<Alert> alertArrayList;
 
-    public FragmentHome() {
+    public HomeFragment() {
 
     }
 
@@ -108,7 +108,7 @@ public class FragmentHome extends Fragment {
         tv_user.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), Login.class);
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
                 startActivity(intent);
             }
         });
@@ -119,7 +119,7 @@ public class FragmentHome extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new personalCenter());
+                transaction.replace(R.id.fragment_container, new PersonalCenterFragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -148,7 +148,7 @@ public class FragmentHome extends Fragment {
                 builder.setNegativeButton("取消", null);
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(getActivity(), Login.class);
+                        Intent intent = new Intent(getActivity(), LoginActivity.class);
                         userLocalDao.userLoginOut(username);
                         startActivity(intent);
                     }
@@ -164,7 +164,7 @@ public class FragmentHome extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction3 = getParentFragmentManager().beginTransaction();
-                transaction3.replace(R.id.fragment_container, new settingFragment());
+                transaction3.replace(R.id.fragment_container, new SettingFragment());
                 transaction3.addToBackStack(null);
                 transaction3.commit();
             }
@@ -176,7 +176,7 @@ public class FragmentHome extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction3 = getParentFragmentManager().beginTransaction();
-                transaction3.replace(R.id.fragment_container, new diseaseFragment());
+                transaction3.replace(R.id.fragment_container, new DiseaseFragment());
                 transaction3.addToBackStack(null);
                 transaction3.commit();
             }
@@ -188,7 +188,7 @@ public class FragmentHome extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction3 = getParentFragmentManager().beginTransaction();
-                transaction3.replace(R.id.fragment_container, new Fragment_common(4));
+                transaction3.replace(R.id.fragment_container, new CommonFragment(4));
                 transaction3.addToBackStack(null);
                 transaction3.commit();
             }

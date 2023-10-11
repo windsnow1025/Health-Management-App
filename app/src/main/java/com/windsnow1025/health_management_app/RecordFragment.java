@@ -12,23 +12,21 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.windsnow1025.health_management_app.JDBC.ReportDao;
-import com.windsnow1025.health_management_app.JDBC.UserDao;
-import com.windsnow1025.health_management_app.Pojo.Report;
-import com.windsnow1025.health_management_app.Pojo.UserInfo;
+import com.windsnow1025.health_management_app.JDBC.HistoryDao;
+import com.windsnow1025.health_management_app.Pojo.History;
 import com.windsnow1025.health_management_app.Sqlite.UserLocalDao;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-// 体检报告显示
-public class FragmentReport extends Fragment {
+// 就诊记录显示
+public class RecordFragment extends Fragment {
 
     View view;
     String organ;
 
-    public FragmentReport(String organ) {
+    public RecordFragment(String organ) {
         this.organ = organ;
     }
 
@@ -39,45 +37,47 @@ public class FragmentReport extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_report, container, false);
+        view = inflater.inflate(R.layout.fragment_record, container, false);
 
-        // Get report list from database
+        // Get history list from database
         try {
             // Get username
             UserLocalDao userLocalDao = new UserLocalDao(getContext());
             userLocalDao.open();
             String username = userLocalDao.getUser();
 
-            // Get report list
-            ReportDao reportDao = new ReportDao();
-            ArrayList<Report> reports;
+            // Get history list
+            HistoryDao historyDao = new HistoryDao();
+            ArrayList<History> histories;
             try {
-                reports = reportDao.getReportList(username);
-                Log.i("test", "从服务器获取体检报告");
-            } catch (TimeoutException e) {
-                Log.i("test", "超时，从本地获取体检报告");
-                reports = userLocalDao.getReportList(username);
+                histories=historyDao.getHistoryList(username);
+                Log.i("test","从服务器获取就诊记录");
+            }
+            catch (TimeoutException e)
+            {
+                Log.i("test","超时，从本地获取就诊记录");
+                histories = userLocalDao.getHistoryList(username);
             }
 
-            // Set report list to recycler view
+            // Set history list to recycler view
             List<String[]> data = new ArrayList<>();
-            data.add(new String[]{"时间", "医院", "类型"});
-            for (Report report : reports) {
-                data.add(new String[]{report.getReport_date(), report.getReport_place(), report.getReport_type()});
+            data.add(new String[]{"时间", "医院", "部位"});
+            for (History history : histories) {
+                data.add(new String[]{history.getHistory_date(), history.getHistory_place(), history.getHistory_organ()});
             }
 
             RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            ArrayList<Report> finalReports = reports;
+            ArrayList<History> finalHistories = histories;
             recyclerView.setAdapter(new TableAdapterEnter(data, new TableAdapterEnter.OnItemClickListener() {
                 // Edit Button
                 @Override
                 public void onClick(int position) {
-                    // Get report id
-                    Integer report_id = finalReports.get(position - 1).getReport_No();
+                    // Get record id
+                    Integer record_id = finalHistories.get(position - 1).getHistory_No();
 
                     FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container, new EditReport(report_id));
+                    transaction.replace(R.id.fragment_container, new EditRecordFragment(record_id));
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }
@@ -85,21 +85,23 @@ public class FragmentReport extends Fragment {
                 // Delete Button
                 @Override
                 public void onClick(int position) {
-                    // Get report id
-                    Integer report_id = finalReports.get(position - 1).getReport_No();
+                    // Get record id
+                    Integer record_id = finalHistories.get(position - 1).getHistory_No();
 
-                    // Delete report
+                    // Delete record
                     try {
-                        reportDao.deleteReport(username, report_id);
-                        Log.i("test", "从服务器删除体检报告");
-                    } catch (Exception e) {
-                        Log.i("test", "从本地删除体检报告");
-                        userLocalDao.deleteReport(username, report_id);
+                        historyDao.deleteHistory(username, record_id);
+                        Log.i("test","从服务器删除就诊记录");
+                    }
+                    catch (TimeoutException e)
+                    {
+                        Log.i("test","超时，从本地删除就诊记录");
+                        userLocalDao.deleteHistory(username, record_id);
                     }
 
                     // Reload fragment
                     FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container, new Organ(organ));
+                    transaction.replace(R.id.fragment_container, new OrganFragment(organ));
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }
@@ -109,12 +111,12 @@ public class FragmentReport extends Fragment {
             e.printStackTrace();
         }
 
-        Button buttonEnterReport = view.findViewById(R.id.buttonEnterReport);
-        buttonEnterReport.setOnClickListener(new View.OnClickListener() {
+        Button buttonEnterRecord = view.findViewById(R.id.buttonEnterRecord);
+        buttonEnterRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new EnterReport(organ));
+                transaction.replace(R.id.fragment_container, new EnterRecordFragment(organ));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -122,4 +124,5 @@ public class FragmentReport extends Fragment {
 
         return view;
     }
+
 }

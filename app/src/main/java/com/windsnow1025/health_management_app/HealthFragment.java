@@ -1,6 +1,5 @@
 package com.windsnow1025.health_management_app;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,16 +12,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import com.windsnow1025.health_management_app.ParentAdapter;
-
-public class FragmentHealth extends Fragment implements ExpandableListView.OnGroupExpandListener, ParentAdapter.OnChildTreeViewClickListener, View.OnClickListener {
+public class HealthFragment extends Fragment implements ExpandableListView.OnGroupExpandListener, ParentAdapter.OnChildTreeViewClickListener, View.OnClickListener {
 
     private ExpandableListView eList;
     private ArrayList<ParentEntity> parents;

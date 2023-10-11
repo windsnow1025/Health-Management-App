@@ -2,6 +2,7 @@ package com.windsnow1025.health_management_app;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,12 +12,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.provider.AlarmClock;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -25,7 +25,6 @@ import android.widget.Toast;
 import com.windsnow1025.health_management_app.JDBC.AlertDao;
 import com.windsnow1025.health_management_app.JDBC.HistoryDao;
 import com.windsnow1025.health_management_app.JDBC.ReportDao;
-import com.windsnow1025.health_management_app.JDBC.UserDao;
 import com.windsnow1025.health_management_app.Pojo.Alert;
 import com.windsnow1025.health_management_app.Pojo.History;
 import com.windsnow1025.health_management_app.Pojo.Report;
@@ -33,38 +32,29 @@ import com.windsnow1025.health_management_app.Sqlite.UserLocalDao;
 import com.windsnow1025.health_management_app.utils.Info;
 import com.windsnow1025.health_management_app.utils.InfoAdapter;
 
-import java.lang.reflect.Array;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+public class DetailsRecordFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
+    private int i;
+    private  List<Info> infoList;
+    private Button rStartAlarm;
+    private Button bt_rcancel;
 
-public class FragmentDetails extends Fragment {
-
-    private final ArrayList<Integer> Time = new ArrayList<Integer>();
-    private List<Info> infoList;
-    private CheckBox Monday;
-    private CheckBox Tuesday;
-    private CheckBox Wednesday;
-    private CheckBox Thursday;
-    private CheckBox Friday;
-    private CheckBox Saturday;
-    private CheckBox Sunday;
-
-    private Button StartAlarm;
-    private Button bt_cancel;
-
-    private EditText et_title;
-    private TextView et_time;
-    private TextView tv_time;
-    private TextView tv_hospital;
-    private TextView tv_part;
-    private TextView tv_advice;
-    private int H, M,i;
+    private EditText ret_title;
+    private TextView ret_time;
+    private TextView rtv_time;
+    private TextView rtv_date;
+    private TextView rtv_hospital;
+    private TextView rtv_part;
+    private EditText rtv_advice;
     InfoAdapter adapter;
-    private boolean flag = false;
+    private boolean flag;
     private ArrayList<Report> reportArrayList;
     private ArrayList<History> historyArrayList;
     private ArrayList<Alert> alertArrayList;
@@ -81,21 +71,21 @@ public class FragmentDetails extends Fragment {
     private boolean ismedicine;
     private TimePickerDialog timePickerDialog;
     private Calendar calendar;
-
+    private int H, M;
 
     /*用于新建*/
-    public FragmentDetails(boolean ismedicine,int n, boolean isreport, InfoAdapter infoAdapter) {
-        this.num = n;//num为捆绑的编号
-        this.adapter = infoAdapter;
+    public DetailsRecordFragment(boolean ismedicine, int n, boolean isreport, InfoAdapter infoAdapter) {
+        this.num = n;
         this.ismedicine=ismedicine;
+        this.adapter = infoAdapter;
         this.isreport = isreport;//是否为报告
     }
 
     /*用于修改*/
-    public FragmentDetails(boolean ismedicine,int n,InfoAdapter infoAdapter, List<Info> Infolist, int I,boolean isreport, boolean Flag) {
+    public DetailsRecordFragment(boolean ismedicine, int n, InfoAdapter infoAdapter, List<Info> Infolist, int I, boolean isreport, boolean Flag) {
         this.adapter = infoAdapter;
-        this.ismedicine=ismedicine;
         this.num = n;//num为捆绑的编号
+        this.ismedicine=ismedicine;
         this.isreport = isreport;//是否为报告
         this.flag = Flag;//是否为修改
         this.infoList = Infolist;
@@ -103,88 +93,55 @@ public class FragmentDetails extends Fragment {
     }
 
     private void init(View view) {
-        Monday = view.findViewById(R.id.Monday);
-        Tuesday = view.findViewById(R.id.Tuesday);
-        Wednesday = view.findViewById(R.id.Wednesday);
-        Thursday = view.findViewById(R.id.Thursday);
-        Friday = view.findViewById(R.id.Friday);
-        Saturday = view.findViewById(R.id.Saturday);
-        Sunday = view.findViewById(R.id.Sunday);
-        StartAlarm = view.findViewById(R.id.StartAlarm);
+        rStartAlarm = view.findViewById(R.id.rStartAlarm);
         if (flag) {
-            StartAlarm.setText("修改");
+            rStartAlarm.setText("修改");
         }
-        tv_time = view.findViewById(R.id.tv_time);
-        tv_part = view.findViewById(R.id.tv_part);
-        tv_hospital = view.findViewById(R.id.tv_hospital);
-        tv_advice = view.findViewById(R.id.tv_advice);
-        et_title = view.findViewById(R.id.et_title);
-        et_time = view.findViewById(R.id.et_time);
-        bt_cancel = view.findViewById(R.id.bt_cancel);
-
+        rtv_time = view.findViewById(R.id.rtv_time);
+        rtv_part = view.findViewById(R.id.rtv_part);
+        rtv_date = view.findViewById(R.id.rtv_date);
+        rtv_advice = view.findViewById(R.id.rtv_advice);
+        ret_title = view.findViewById(R.id.ret_title);
+        ret_time = view.findViewById(R.id.ret_time);
+        bt_rcancel=view.findViewById(R.id.bt_cancel);
+        rtv_hospital=view.findViewById(R.id.rtv_hospital);
         if (isreport) report = UserLocalDao.gerReport(reportArrayList, num);
-        else{
-            history = UserLocalDao.getHistory(historyArrayList, num);}
+        else history = UserLocalDao.getHistory(historyArrayList, num);
         num_alerk=userLocalDao.getAlertList(userID).size();
-    }
+   }
 
-    /*数据导入*/
+    /*获取数据*/
     @SuppressLint("SetTextI18n")
-    private  void infoSet(boolean flag) {
+    private void infoSet(boolean flag) {
         if(isreport){
-            tv_time.setText(report.getReport_date()+"");
-            tv_part.setText(report.getReport_type()+"");
-            tv_advice.setText(report.getReport_content()+"");
-            tv_hospital.setText(report.getReport_place()+"");
+            rtv_time.setText(report.getReport_date()+"");
+            rtv_part.setText(report.getReport_type()+"");
+            rtv_advice.setText(report.getReport_content()+"");
+            rtv_hospital.setText(report.getReport_place()+"");
         }else {
-            tv_time.setText(history.getHistory_date()+"");
-            tv_part.setText(history.getHistory_organ()+"");
-            tv_advice.setText(history.getSuggestion()+"");
-            tv_hospital.setText(history.getHistory_place()+"");
+            rtv_time.setText(history.getHistory_date()+"");
+            rtv_part.setText(history.getHistory_organ()+"");
+            rtv_advice.setText(history.getSuggestion()+"");
+            rtv_hospital.setText(history.getHistory_place()+"");
         }
-
         /*表修改状态，非新增时*/
         if (flag) {
             Alert alert1=userLocalDao.getAlert(alertArrayList,i);
-            et_title.setText(alert1.getContent());
-            et_time.setText(alert1.getDate());
+            ret_title.setText(alert1.getContent());
+            ret_time.setText(alert1.getDate());
             String[] times=alert1.getDate().split(":");
             H= Integer.parseInt(times[0]);
             M=Integer.parseInt(times[1]);
-            String[] newArray = alert1.getCycle().split("\\s");
-            for (String str : newArray) {
-                switch (str) {
-                    case "周日":
-                        Sunday.setChecked(true);
-                        break;
-                    case "周一":
-                        Monday.setChecked(true);
-                        break;
-                    case "周二":
-                        Tuesday.setChecked(true);
-                        break;
-                    case "周三":
-                        Wednesday.setChecked(true);
-                        break;
-                    case "周四":
-                        Thursday.setChecked(true);
-                        break;
-                    case "周五":
-                        Friday.setChecked(true);
-                        break;
-                    case "周六":
-                        Saturday.setChecked(true);
-                        break;
+            rtv_date.setText(alert1.getCycle());
                 }
             }
-        }
-    }
+
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_details__record, container, false);
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
         userID = userLocalDao.getUser();
@@ -205,7 +162,16 @@ public class FragmentDetails extends Fragment {
         }
         init(view);
         infoSet(flag);
-        et_time.setOnClickListener(new View.OnClickListener() {
+
+        rtv_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar = Calendar.getInstance();
+                DatePickerDialog dialog = new DatePickerDialog(getContext(), (DatePickerDialog.OnDateSetListener) DetailsRecordFragment.this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+                dialog.show();
+            }
+        });
+        ret_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -215,33 +181,28 @@ public class FragmentDetails extends Fragment {
                         H = hourOfDay;
                         M = minute;
                         String str = hourOfDay + ":" + minute;
-                        et_time.setText(str);
+                        ret_time.setText(str);
                     }
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
                 timePickerDialog.show();
             }
         });
-        /*创建闹钟*/
-        StartAlarm.setOnClickListener(new View.OnClickListener() {
+        rStartAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setAlarmTime();
-                if (!et_title.getText().toString().equals("") && !Time.isEmpty() && !et_time.getText().toString().equals("")) {
-                    Info info = new Info(ismedicine,et_title.getText().toString(), getDate(Time), et_time.getText().toString(), true, num,num_alerk);
-                   alert=new Alert(num_alerk,String.valueOf(ismedicine),userID,et_time.getText().toString(),getDate(Time),et_title.getText().toString(),String.valueOf(isreport),num,"false");
-                    System.out.println("编号"+num_alerk);
-
+                if (!ret_title.getText().toString().equals("") && !rtv_date.getText().toString().equals("") && !ret_time.getText().toString().equals("")) {
+                    Info info = new Info(ismedicine,ret_title.getText().toString(), rtv_date.getText().toString(), ret_time.getText().toString(), true, num,num_alerk);
+                    alert=new Alert(num_alerk,String.valueOf(ismedicine),userID,ret_time.getText().toString(),rtv_date.getText().toString(),ret_title.getText().toString(),String.valueOf(isreport),num,"false");
 //                   是否为修改
                     if (flag) {
-                        alert=new Alert(i,String.valueOf(ismedicine),userID,et_time.getText().toString(),getDate(Time),et_title.getText().toString(),String.valueOf(isreport),num,"false");
-                        System.out.println("编号"+i);
+                        alert=new Alert(i,String.valueOf(ismedicine),userID,ret_time.getText().toString(),rtv_date.getText().toString(),ret_title.getText().toString(),String.valueOf(isreport),num,"false");
                         userLocalDao.updateAlert(userID,alert);
                         try {
                             alertDao.updateAlert(userID,alert);
                         } catch (TimeoutException e) {
                             throw new RuntimeException(e);
                         }
-
+//
                     }else {
                         userLocalDao.insertAlert(userID, alert);
                         try {
@@ -254,12 +215,12 @@ public class FragmentDetails extends Fragment {
                     if (!flag) {
                         Toast.makeText(getContext(), "提醒添加成功", Toast.LENGTH_SHORT).show();
                     } else Toast.makeText(getContext(), "提醒修改成功", Toast.LENGTH_SHORT).show();
-                    setAlarm(H, M);
+                    setAlarm(H,M);
                     requireActivity().getSupportFragmentManager().popBackStack();
-                } else Toast.makeText(getContext(), "信息不完整", Toast.LENGTH_SHORT).show();
+                }else Toast.makeText(getContext(), "信息不完整", Toast.LENGTH_SHORT).show();
             }
         });
-        bt_cancel.setOnClickListener(new View.OnClickListener() {
+        bt_rcancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -268,7 +229,7 @@ public class FragmentDetails extends Fragment {
                 builder.setNegativeButton("继续编辑", null);
                 builder.setPositiveButton("确定返回", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Fragment fragment = new FragmentAlert();
+                        Fragment fragment = new AlertFragment();
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                         transaction.replace(R.id.fragment_container, fragment);
                         transaction.addToBackStack(null);
@@ -283,72 +244,22 @@ public class FragmentDetails extends Fragment {
         return view;
     }
 
-    static String getDate(ArrayList<Integer> Time) {
 
-        StringBuilder str = new StringBuilder();
-        for (Integer i : Time) {
-            switch (i) {
-                case 1:
-                    str.append("周天 ");
-                    break;
-                case 2:
-                    str.append("周一 ");
-                    break;
-                case 3:
-                    str.append("周二 ");
-                    break;
-                case 4:
-                    str.append("周三 ");
-                    break;
-                case 5:
-                    str.append("周四 ");
-                    break;
-                case 6:
-                    str.append("周五 ");
-                    break;
-                case 7:
-                    str.append("周六 ");
-                    break;
-            }
-        }
-
-        return str.toString();
-    }
-
-
-
-    private void setAlarmTime() {
-         Time.clear();
-         if (Monday.isChecked())
-             Time.add(Calendar.MONDAY);
-         if (Tuesday.isChecked())
-             Time.add(Calendar.TUESDAY);
-         if (Wednesday.isChecked())
-             Time.add(Calendar.WEDNESDAY);
-         if (Thursday.isChecked())
-             Time.add(Calendar.THURSDAY);
-         if (Friday.isChecked())
-             Time.add(Calendar.FRIDAY);
-         if (Saturday.isChecked())
-             Time.add(Calendar.SATURDAY);
-         if (Sunday.isChecked())
-             Time.add(Calendar.SUNDAY);
-     }
     private void setAlarm(int hour, int minute) {
         Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
         intent.putExtra(AlarmClock.EXTRA_HOUR, hour);
         intent.putExtra(AlarmClock.EXTRA_MINUTES, minute);
-        intent.putExtra(AlarmClock.EXTRA_MESSAGE, et_title.getText().toString());
+        intent.putExtra(AlarmClock.EXTRA_MESSAGE, ret_title.getText().toString());
         intent.putExtra(AlarmClock.EXTRA_VIBRATE, true);
         intent.putExtra(AlarmClock.EXTRA_SKIP_UI, true);
         ArrayList<Integer> days = new ArrayList<>();
-        if (Sunday.isChecked()) days.add(Calendar.SUNDAY);
-        if (Monday.isChecked()) days.add(Calendar.MONDAY);
-        if (Tuesday.isChecked()) days.add(Calendar.TUESDAY);
-        if (Wednesday.isChecked()) days.add(Calendar.WEDNESDAY);
-        if (Thursday.isChecked()) days.add(Calendar.THURSDAY);
-        if (Friday.isChecked())  days.add(Calendar.FRIDAY);
-        if (Saturday.isChecked())  days.add(Calendar.SATURDAY);
+       days.add(Calendar.SUNDAY);
+       days.add(Calendar.MONDAY);
+       days.add(Calendar.TUESDAY);
+       days.add(Calendar.WEDNESDAY);
+       days.add(Calendar.THURSDAY);
+       days.add(Calendar.FRIDAY);
+       days.add(Calendar.SATURDAY);
         intent.putExtra(AlarmClock.EXTRA_DAYS, days);
         try {
             startActivity(intent);
@@ -357,4 +268,27 @@ public class FragmentDetails extends Fragment {
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+        Date date = new Date();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dateString = year + "-" + (month + 1) + "-" + dayOfMonth;
+        System.out.println(dateString);
+        Date date2 = null;
+        try {
+            date2 = sdf.parse(dateString);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        if (date.getTime() < date2.getTime()) {
+            month += 1;
+            rtv_date.setText(year + "-" + month + "-" + dayOfMonth);
+        } else {
+            Toast.makeText(getContext(), "提醒日期不能早于当前日期", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
 }

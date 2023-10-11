@@ -1,5 +1,8 @@
 package com.windsnow1025.health_management_app;
 
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 import android.app.DatePickerDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -21,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.googlecode.tesseract.android.TessBaseAPI;
 import com.windsnow1025.health_management_app.JDBC.ReportDao;
 import com.windsnow1025.health_management_app.Pojo.Report;
 import com.windsnow1025.health_management_app.Sqlite.UserLocalDao;
@@ -33,16 +37,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.TimeoutException;
 
-import com.googlecode.tesseract.android.TessBaseAPI;
+// 体检报告修改
+public class EditReportFragment extends Fragment {
 
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
-// 体检报告录入
-public class EnterReport extends Fragment {
+    Integer reportId;
 
     String organ;
 
@@ -60,8 +62,8 @@ public class EnterReport extends Fragment {
 
     Bitmap bitmap;
 
-    public EnterReport(String organ) {
-        this.organ = organ;
+    public EditReportFragment(Integer reportId) {
+        this.reportId = reportId;
     }
 
     @Override
@@ -78,11 +80,35 @@ public class EnterReport extends Fragment {
             ActivityCompat.requestPermissions(getActivity(), new String[]{READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE}, 1);
         }
 
-        // Get username
+        // Get views
+        editTextDate = view.findViewById(R.id.editTextDate);
+        editTextHospital = view.findViewById(R.id.editTextHospital);
+        editTextType = view.findViewById(R.id.editTextType);
+        editTextOCRTxt = view.findViewById(R.id.editTextOCRTxt);
+
         try {
-            UserLocalDao userLocalDao = new UserLocalDao(this.getActivity().getApplicationContext());
+            // Get username
+            UserLocalDao userLocalDao = new UserLocalDao(getContext());
             userLocalDao.open();
             username = userLocalDao.getUser();
+
+            // Get record
+            ReportDao reportDao = new ReportDao();
+            ArrayList<Report> reportList = reportDao.getReportList(username);
+            Report report = reportList.get(reportId - 1);
+
+            // Get data
+            date = report.getReport_date();
+            hospital = report.getReport_place();
+            type = report.getReport_type();
+            OCRTxt = report.getReport_content();
+
+            // Set data to views
+            editTextDate.setText(date);
+            editTextHospital.setText(hospital);
+            editTextType.setText(type);
+            editTextOCRTxt.setText(OCRTxt);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,12 +116,6 @@ public class EnterReport extends Fragment {
         // Set an OnClickListener on the button to launch the gallery
         Button buttonUpload = view.findViewById(R.id.buttonUpload);
         buttonUpload.setOnClickListener(v -> galleryLauncher.launch("image/*"));
-
-        // Get views
-        editTextDate = view.findViewById(R.id.editTextDate);
-        editTextHospital = view.findViewById(R.id.editTextHospital);
-        editTextType = view.findViewById(R.id.editTextType);
-        editTextOCRTxt = view.findViewById(R.id.editTextOCRTxt);
 
         // Set to open date picker when click on date EditText
         editTextDate.setOnClickListener(new View.OnClickListener() {
@@ -154,6 +174,7 @@ public class EnterReport extends Fragment {
                 report.setReport_picture(bitmapString);
                 report.setReport_content(OCRTxt);
                 report.setIs_deleted("false");
+                report.setReport_No(reportId);
                 if (date.equals("")) {
                     //判定日期是否填写 未填写则设置为null
                     report.setReport_date(null);
@@ -161,7 +182,7 @@ public class EnterReport extends Fragment {
                     report.setReport_date(date);
                 }
                 try {
-                    insertStatus = reportDao.insertReport(username, report);
+                    insertStatus = reportDao.updateReport(username, report);
                 } catch (TimeoutException e) {
                     Log.i("Test", "网络有问题");
                 }
@@ -170,7 +191,7 @@ public class EnterReport extends Fragment {
 
                 // Jump to organ page
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new Organ(organ));
+                transaction.replace(R.id.fragment_container, new OrganFragment(organ));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -235,8 +256,7 @@ public class EnterReport extends Fragment {
                         output.close();
                         input.close();
                     } catch (IOException e) {
-                        Log.e("test", "下载失败");
-                        return;
+                        e.printStackTrace();
                     }
                 }
 

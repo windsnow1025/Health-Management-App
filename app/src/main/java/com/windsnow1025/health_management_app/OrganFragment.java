@@ -17,12 +17,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Organ extends Fragment {
+public class OrganFragment extends Fragment {
 
     View view;
     String organ;
 
-    public Organ(String organ) {
+    public OrganFragment(String organ) {
         this.organ = organ;
     }
 
@@ -35,7 +35,7 @@ public class Organ extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new FragmentMain());
+                transaction.replace(R.id.fragment_container, new MainFragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -53,8 +53,8 @@ public class Organ extends Fragment {
         // ViewPager2
         ViewPager2 viewPager = view.findViewById(R.id.view_pager);
         List<Fragment> fragments = new ArrayList<>(Arrays.asList(
-                new FragmentReport(organ),
-                new FragmentRecord(organ)
+                new ReportFragment(organ),
+                new RecordFragment(organ)
         ));
 
         ImageButton nextButton = view.findViewById(R.id.next_button);

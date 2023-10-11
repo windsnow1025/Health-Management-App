@@ -1,8 +1,6 @@
 package com.windsnow1025.health_management_app;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,15 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-public class settingFragment extends Fragment {
+public class SettingFragment extends Fragment {
     private static Button bt_back;
     private Button bt_darkcolor;
     private Button bt_lightcolor;
@@ -30,7 +23,7 @@ public class settingFragment extends Fragment {
     private LinearLayout LL;
 
 
-    public settingFragment() {
+    public SettingFragment() {
         // Required empty public constructor
     }
 
@@ -75,15 +68,15 @@ public class settingFragment extends Fragment {
             } else if (id == R.id.bt_back) {
                 getParentFragmentManager().popBackStack();
             } else if (id == R.id.tv_notice) {
-                transaction.replace(R.id.fragment_container, new Fragment_common(1));
+                transaction.replace(R.id.fragment_container, new CommonFragment(1));
                 transaction.addToBackStack(null);
                 transaction.commit();
             } else if (id == R.id.tv_update) {
-                transaction.replace(R.id.fragment_container, new Fragment_common(2));
+                transaction.replace(R.id.fragment_container, new CommonFragment(2));
                 transaction.addToBackStack(null);
                 transaction.commit();
             } else if (id == R.id.tv_about) {
-                transaction.replace(R.id.fragment_container, new Fragment_common(3));
+                transaction.replace(R.id.fragment_container, new CommonFragment(3));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }

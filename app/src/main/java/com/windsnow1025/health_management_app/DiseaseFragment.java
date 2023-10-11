@@ -2,7 +2,6 @@ package com.windsnow1025.health_management_app;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +12,7 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-public class diseaseFragment extends Fragment {
+public class DiseaseFragment extends Fragment {
 
     private Button bt_back;
     private TextView bt_tnb;
@@ -26,7 +22,7 @@ public class diseaseFragment extends Fragment {
     private EditText et_search;
 
     private Intent intent;
-    public diseaseFragment() {
+    public DiseaseFragment() {
     }
 
     @SuppressLint("MissingInflatedId")

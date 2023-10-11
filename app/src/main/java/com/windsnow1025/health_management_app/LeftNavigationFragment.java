@@ -5,12 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-public class LeftNavigation extends Fragment {
+public class LeftNavigationFragment extends Fragment {
 
     private View view;
 
@@ -34,7 +33,7 @@ public class LeftNavigation extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new Organ("brain"));
+                transaction.replace(R.id.fragment_container, new OrganFragment("brain"));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -44,7 +43,7 @@ public class LeftNavigation extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new Organ("respiratory"));
+                transaction.replace(R.id.fragment_container, new OrganFragment("respiratory"));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -54,7 +53,7 @@ public class LeftNavigation extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new Organ("renal"));
+                transaction.replace(R.id.fragment_container, new OrganFragment("renal"));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -64,7 +63,7 @@ public class LeftNavigation extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new Organ("liver"));
+                transaction.replace(R.id.fragment_container, new OrganFragment("liver"));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -74,7 +73,7 @@ public class LeftNavigation extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new Organ("digestive"));
+                transaction.replace(R.id.fragment_container, new OrganFragment("digestive"));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -84,7 +83,7 @@ public class LeftNavigation extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new Organ("musculoskeletal"));
+                transaction.replace(R.id.fragment_container, new OrganFragment("musculoskeletal"));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -94,7 +93,7 @@ public class LeftNavigation extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new Organ("cardiovascular"));
+                transaction.replace(R.id.fragment_container, new OrganFragment("cardiovascular"));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -104,7 +103,7 @@ public class LeftNavigation extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new FragmentMain_1());
+                transaction.replace(R.id.fragment_container, new Main1Fragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -114,7 +113,7 @@ public class LeftNavigation extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new FragmentMain_2());
+                transaction.replace(R.id.fragment_container, new Main2Fragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -124,7 +123,7 @@ public class LeftNavigation extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new FragmentMain_3());
+                transaction.replace(R.id.fragment_container, new Main3Fragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
             }

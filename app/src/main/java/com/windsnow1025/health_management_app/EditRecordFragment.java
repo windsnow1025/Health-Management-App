@@ -17,12 +17,11 @@ import com.windsnow1025.health_management_app.JDBC.HistoryDao;
 import com.windsnow1025.health_management_app.Pojo.History;
 import com.windsnow1025.health_management_app.Sqlite.UserLocalDao;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 // 病历记录修改
-public class EditRecord extends Fragment {
+public class EditRecordFragment extends Fragment {
 
     Integer recordId;
 
@@ -45,7 +44,7 @@ public class EditRecord extends Fragment {
     EditText editTextConclusion;
     EditText editTextSuggestion;
 
-    public EditRecord(Integer recordId) {
+    public EditRecordFragment(Integer recordId) {
         this.recordId = recordId;
     }
 
@@ -164,7 +163,7 @@ public class EditRecord extends Fragment {
 
                 // Jump to organ page
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new Organ(organ));
+                transaction.replace(R.id.fragment_container, new OrganFragment(organ));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }

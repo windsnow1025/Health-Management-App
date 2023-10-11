@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
 
-public class personalCenter extends Fragment implements DatePickerDialog.OnDateSetListener {
+public class PersonalCenterFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
 
     private Button bt_back;
     private Button bt_username;
@@ -55,7 +55,7 @@ public class personalCenter extends Fragment implements DatePickerDialog.OnDateS
     private UserInfo userInfo;
 
 
-    public personalCenter() {
+    public PersonalCenterFragment() {
         // Required empty public constructor
     }
 
@@ -96,7 +96,7 @@ public class personalCenter extends Fragment implements DatePickerDialog.OnDateS
             @Override
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance();
-                DatePickerDialog dialog = new DatePickerDialog(getContext(), personalCenter.this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+                DatePickerDialog dialog = new DatePickerDialog(getContext(), PersonalCenterFragment.this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
                 dialog.show();
             }
         });
@@ -146,17 +146,17 @@ public class personalCenter extends Fragment implements DatePickerDialog.OnDateS
             int id = v.getId();
             if (id == R.id.bt_username) {
                 transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new st_nameFragment());
+                transaction.replace(R.id.fragment_container, new SetNameFragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
             } else if (id == R.id.bt_password) {
                 transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new st_passFragment());
+                transaction.replace(R.id.fragment_container, new SetPasswordFragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
             } else if (id == R.id.bt_email) {
                 transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new st_emailFragment());
+                transaction.replace(R.id.fragment_container, new SetEmailFragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
             } else if (id == R.id.bt_back) {
@@ -168,7 +168,7 @@ public class personalCenter extends Fragment implements DatePickerDialog.OnDateS
                 builder.setNegativeButton("取消", null);
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(getActivity(), Login.class);
+                        Intent intent = new Intent(getActivity(), LoginActivity.class);
                         userLocalDao.userLoginOut(userID);
                         startActivity(intent);
                     }

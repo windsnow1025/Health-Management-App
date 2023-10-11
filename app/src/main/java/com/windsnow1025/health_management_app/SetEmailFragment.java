@@ -22,7 +22,7 @@ import com.windsnow1025.health_management_app.Sqlite.UserLocalDao;
 import java.util.HashMap;
 import java.util.concurrent.TimeoutException;
 
-public class st_emailFragment extends Fragment {
+public class SetEmailFragment extends Fragment {
 
 
 
@@ -35,7 +35,7 @@ public class st_emailFragment extends Fragment {
     private UserDao userDao;
     private UserLocalDao userLocalDao;
     private String username;
-    public st_emailFragment() {
+    public SetEmailFragment() {
         // Required empty public constructor
     }
 

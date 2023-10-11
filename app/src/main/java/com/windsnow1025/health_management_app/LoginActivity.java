@@ -28,7 +28,7 @@ import com.windsnow1025.health_management_app.utils.ViewUtil;
 import java.util.concurrent.TimeoutException;
 
 
-public class Login extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
 
     private EditText et_phone;
     private EditText et_password;
@@ -234,11 +234,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Vi
                 return;
             }
             if (str.length() == 11 && maxlength == 11) {
-                ViewUtil.hideMethod(Login.this, v);
+                ViewUtil.hideMethod(LoginActivity.this, v);
                 nextview.requestFocus();
             }
             if (str.length() == 6 && maxlength == 6) {
-                ViewUtil.hideMethod(Login.this, v);
+                ViewUtil.hideMethod(LoginActivity.this, v);
                 nextview.requestFocus();
             }
         }

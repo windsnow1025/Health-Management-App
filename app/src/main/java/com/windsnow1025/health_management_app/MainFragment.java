@@ -18,9 +18,9 @@ import com.windsnow1025.health_management_app.Sqlite.UserLocalDao;
 // Logcat Filter:
 // package:com.windsnow1025.health_management_app -tag:chromium -tag:OpenGLRenderer -tag:EGL_emulation
 
-public class FragmentMain extends Fragment {
+public class MainFragment extends Fragment {
     View view;
-    private LeftNavigation leftNavigation;
+    private LeftNavigationFragment leftNavigation;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,14 +61,14 @@ public class FragmentMain extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new FragmentMain_1());
+                transaction.replace(R.id.fragment_container, new Main1Fragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
         });
 
         // Left Navigation
-        leftNavigation = new LeftNavigation();
+        leftNavigation = new LeftNavigationFragment();
         FragmentTransaction transactionLeft = getParentFragmentManager().beginTransaction();
         transactionLeft.add(R.id.layoutLeftNavigation, leftNavigation);
         transactionLeft.commit();
@@ -88,7 +88,7 @@ public class FragmentMain extends Fragment {
 
         // Button Page
         FragmentTransaction transactionButton = getParentFragmentManager().beginTransaction();
-        transactionButton.replace(R.id.frameLayoutButtonPage, new ButtonPage());
+        transactionButton.replace(R.id.frameLayoutButtonPage, new ButtonPageFragment());
         transactionButton.addToBackStack(null);
         transactionButton.commit();
 
