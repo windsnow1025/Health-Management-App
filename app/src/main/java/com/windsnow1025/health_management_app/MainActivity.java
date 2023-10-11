@@ -9,6 +9,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.windsnow1025.health_management_app.fragment.AlertFragment;
+import com.windsnow1025.health_management_app.fragment.HealthFragment;
+import com.windsnow1025.health_management_app.fragment.HomeFragment;
+import com.windsnow1025.health_management_app.fragment.MainFragment;
+import com.windsnow1025.health_management_app.R;
+
 public class MainActivity extends AppCompatActivity {
 
     public interface OnFragmentInteractionListener{
