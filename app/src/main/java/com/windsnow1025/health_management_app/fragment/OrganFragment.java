@@ -4,10 +4,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -15,9 +14,6 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.windsnow1025.health_management_app.PagerAdapter;
 import com.windsnow1025.health_management_app.R;
-import com.windsnow1025.health_management_app.fragment.MainFragment;
-import com.windsnow1025.health_management_app.fragment.RecordFragment;
-import com.windsnow1025.health_management_app.fragment.ReportFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,14 +43,34 @@ public class OrganFragment extends Fragment {
             }
         });
 
-        // WebView
-        WebView webView = view.findViewById(R.id.webView);
-        webView.setLayerType(WebView.LAYER_TYPE_HARDWARE, null);
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-
-        String url = "https://webview.windsnow1025.com/index.html?organ=" + organ;
-        webView.loadUrl(url);
+        // Organ Image View
+        ImageView imageOrgan = view.findViewById(R.id.organ_imageView);
+        // Set source
+        switch (organ) {
+            case "brain":
+                imageOrgan.setImageResource(R.drawable.brain);
+                break;
+            case "respiratory":
+                imageOrgan.setImageResource(R.drawable.respiratory);
+                break;
+            case "urinary":
+                imageOrgan.setImageResource(R.drawable.urinary);
+                break;
+            case "liver":
+                imageOrgan.setImageResource(R.drawable.liver);
+                break;
+            case "digestive":
+                imageOrgan.setImageResource(R.drawable.digestive);
+                break;
+            case "cardiovascular":
+                imageOrgan.setImageResource(R.drawable.cardiovascular);
+                break;
+            case "musculoskeletal":
+                imageOrgan.setImageResource(R.drawable.musculoskeletal);
+                break;
+            default:
+                break;
+        }
 
         // ViewPager2
         ViewPager2 viewPager = view.findViewById(R.id.view_pager);
