@@ -66,7 +66,7 @@ public class ReportFragment extends Fragment {
                 data.add(new String[]{report.getReport_date(), report.getReport_place(), report.getReport_type()});
             }
 
-            RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+            RecyclerView recyclerView = view.findViewById(R.id.report_recycler_view);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             ArrayList<Report> finalReports = reports;
             recyclerView.setAdapter(new TableEnterAdapter(data, new TableEnterAdapter.OnItemClickListener() {
