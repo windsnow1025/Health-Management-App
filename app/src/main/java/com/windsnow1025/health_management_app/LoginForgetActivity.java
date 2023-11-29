@@ -18,6 +18,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.windsnow1025.health_management_app.api.ExistApi;
+import com.windsnow1025.health_management_app.api.SignupApi;
 import com.windsnow1025.health_management_app.jdbc.UserDao;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 import com.windsnow1025.health_management_app.utils.ViewUtil;
@@ -44,7 +46,9 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
     private String sex;
     private Boolean flag = false;
     private UserDao userDao;
+    private SignupApi signupApi;
     private UserLocalDao userLocalDao;
+    private ExistApi existApi;
 
     public LoginForgetActivity() {
 
@@ -53,7 +57,8 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userDao = new UserDao();
+        signupApi = new SignupApi();
+        existApi = new ExistApi();
         userLocalDao = new UserLocalDao(getApplicationContext());
         userLocalDao.open();
         intent = getIntent();
@@ -96,23 +101,19 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
     public void onClick(View v) {
         username = et_usename.getText().toString();
         if (v.getId() == R.id.btn_getcode && !username.equals("") && flag) {
-            try {
-                /**
-                 * 判断账号是否已存在
-                 **/
-                if (!userDao.checkUserUnique(username)) {
-                    mVerifyCode = String.format("%06d", (int) (Math.random() * 1000000 % 1000000));
-                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginForgetActivity.this);
-                    builder.setTitle("请记住验证码");
-                    builder.setMessage("手机号" + et_usename.getText().toString() + "，本次验证码是" + mVerifyCode + "，请输入验证码");
-                    builder.setPositiveButton("好的", null);
-                    AlertDialog alert = builder.create();
-                    alert.show();
-                } else {
-                    Toast.makeText(this, "该手机号已注册", Toast.LENGTH_SHORT).show();
-                }
-            } catch (TimeoutException e) {
-                throw new RuntimeException(e);
+            /**
+             * 判断账号是否已存在
+             **/
+            if (!existApi.checkUserUnique(username).equals("User exist")) {
+                mVerifyCode = String.format("%06d", (int) (Math.random() * 1000000 % 1000000));
+                AlertDialog.Builder builder = new AlertDialog.Builder(LoginForgetActivity.this);
+                builder.setTitle("请记住验证码");
+                builder.setMessage("手机号" + et_usename.getText().toString() + "，本次验证码是" + mVerifyCode + "，请输入验证码");
+                builder.setPositiveButton("好的", null);
+                AlertDialog alert = builder.create();
+                alert.show();
+            } else {
+                Toast.makeText(this, "该手机号已注册", Toast.LENGTH_SHORT).show();
             }
         } else if (v.getId() == R.id.btn_getcode && !username.equals("") && !flag) {
             mVerifyCode = String.format("%06d", (int) (Math.random() * 1000000 % 1000000));
@@ -144,19 +145,15 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
                         Toast.makeText(this, "请选择性别", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    try {
-                        /**
-                         * 插入账号
-                         **/
-                        if (userDao.insertUser(username, password, sex, birth).equals(username)) {
-                            Toast.makeText(this, "恭喜您注册成功，清前往登录！", Toast.LENGTH_SHORT).show();
-                            intent = new Intent(this, LoginActivity.class);
-                            intent.putExtra("username", username);
-                            startActivity(intent);
-                        } else Toast.makeText(this, "网络请求超时，请稍后重试", Toast.LENGTH_SHORT).show();
-                    } catch (TimeoutException e) {
-                        throw new RuntimeException(e);
-                    }
+                    /**
+                     * 插入账号
+                     **/
+                    if (signupApi.insertUser(username, password, sex, birth).equals("Signup successful")) {
+                        Toast.makeText(this, "恭喜您注册成功，清前往登录！", Toast.LENGTH_SHORT).show();
+                        intent = new Intent(this, LoginActivity.class);
+                        intent.putExtra("username", username);
+                        startActivity(intent);
+                    } else Toast.makeText(this, "网络请求超时，请稍后重试", Toast.LENGTH_SHORT).show();
                 } else {
                     /**
                      * 修改密码

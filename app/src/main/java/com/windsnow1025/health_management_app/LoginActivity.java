@@ -20,12 +20,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.windsnow1025.health_management_app.jdbc.UserDao;
+import com.windsnow1025.health_management_app.api.SigninApi;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 import com.windsnow1025.health_management_app.utils.MainApplication;
 import com.windsnow1025.health_management_app.utils.ViewUtil;
-
-import java.util.concurrent.TimeoutException;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, View.OnFocusChangeListener {
@@ -45,14 +43,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private SharedPreferences mShared;
     private MainApplication mainApplication;
     private Boolean flag_eye = false;
-    private UserDao userDao;
     private UserLocalDao userLocalDao;
-
+    private SigninApi signinApi;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userDao = new UserDao();
+        signinApi = new SigninApi();
         userLocalDao = new UserLocalDao(getApplicationContext());
         userLocalDao.open();
         setContentView(R.layout.activity_login);
@@ -130,8 +127,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             flag = true;
             boolean is= false;
             try {
-                is = username.equals(userDao.checkUserPassword(username, password));
-            } catch (RuntimeException | TimeoutException e) {
+                is = username.equals(signinApi.checkUserPassword(username, password));
+            } catch (RuntimeException e) {
             }
             if (is) {
                 if (bRemember) {
@@ -139,22 +136,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     editor.putString("phone", et_phone.getText().toString());
                     editor.putString("password", et_password.getText().toString());
                     editor.apply();
-                    try {
-                        userLocalDao.addOrUpdateUser(userDao.getUserInformation(username));
-                    } catch (TimeoutException e) {
-                        throw new RuntimeException(e);
-                    }
+                    SigninApi signinApi = new SigninApi();
+                    userLocalDao.addOrUpdateUser(signinApi.getUserInformation(username,password));
                     startActivity(intent);
                 } else {
                     SharedPreferences.Editor editor = mShared.edit();
                     editor.putString("phone", "");
                     editor.putString("password", "");
                     editor.apply();
-                    try {
-                        userLocalDao.addOrUpdateUser(userDao.getUserInformation(username));
-                    } catch (TimeoutException e) {
-                        throw new RuntimeException(e);
-                    }
+                    SigninApi signinApi = new SigninApi();
+                    userLocalDao.addOrUpdateUser(signinApi.getUserInformation(username,password));
                     startActivity(intent);
                 }
             } else Toast.makeText(this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
