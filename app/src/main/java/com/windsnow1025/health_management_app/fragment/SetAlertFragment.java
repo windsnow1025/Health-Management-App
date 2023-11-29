@@ -81,7 +81,7 @@ public class SetAlertFragment extends Fragment {
 
 
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = view.findViewById(R.id.record_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         tableAdapter1=new TableAdapter(data,new TableAdapter.OnItemClickListener() {
             @Override

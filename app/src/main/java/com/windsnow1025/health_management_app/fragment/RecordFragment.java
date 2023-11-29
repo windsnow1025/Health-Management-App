@@ -68,7 +68,7 @@ public class RecordFragment extends Fragment {
                 data.add(new String[]{history.getHistory_date(), history.getHistory_place(), history.getHistory_organ()});
             }
 
-            RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+            RecyclerView recyclerView = view.findViewById(R.id.record_recycler_view);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             ArrayList<History> finalHistories = histories;
             recyclerView.setAdapter(new TableEnterAdapter(data, new TableEnterAdapter.OnItemClickListener() {
