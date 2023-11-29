@@ -16,7 +16,7 @@ import java.net.URL;
 
 public class SignupApi extends AsyncTask<String, Void, String> {
 
-    private static final String API_URL_SIGNIN = "https://www.windsnow1025.com/learn/api/android/user/signup";
+    private static final String API_URL_SIGNUP = "https://www.windsnow1025.com/learn/api/android/user/signup";
 
     @Override
     protected String doInBackground(String... params) {
@@ -34,7 +34,7 @@ public class SignupApi extends AsyncTask<String, Void, String> {
         HttpURLConnection urlConnection = null;
 
         try {
-            URL url = new URL(API_URL_SIGNIN);
+            URL url = new URL(API_URL_SIGNUP);
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -97,7 +97,7 @@ public class SignupApi extends AsyncTask<String, Void, String> {
         if (result != null) {
             Log.d("API Response", "Raw Response: " + result);
         } else {
-            Log.e("API Response", "获取手机号时发生异常或为空");
+            Log.e("API Response", "发生异常或为空");
         }
     }
 }

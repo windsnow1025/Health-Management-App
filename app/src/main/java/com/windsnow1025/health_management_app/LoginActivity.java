@@ -44,12 +44,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private MainApplication mainApplication;
     private Boolean flag_eye = false;
     private UserLocalDao userLocalDao;
-    private SigninApi signinApi;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        signinApi = new SigninApi();
         userLocalDao = new UserLocalDao(getApplicationContext());
         userLocalDao.open();
         setContentView(R.layout.activity_login);
@@ -127,6 +125,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             flag = true;
             boolean is= false;
             try {
+                SigninApi signinApi = new SigninApi();
                 is = username.equals(signinApi.checkUserPassword(username, password));
             } catch (RuntimeException e) {
             }

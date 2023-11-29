@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import com.windsnow1025.health_management_app.api.ExistApi;
 import com.windsnow1025.health_management_app.api.SignupApi;
-import com.windsnow1025.health_management_app.jdbc.UserDao;
+import com.windsnow1025.health_management_app.api.UpdatePasswordApi;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 import com.windsnow1025.health_management_app.utils.ViewUtil;
 
@@ -28,8 +28,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.concurrent.TimeoutException;
 
 
 public class LoginForgetActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, View.OnClickListener, View.OnFocusChangeListener {
@@ -45,10 +43,8 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
     private String birth;
     private String sex;
     private Boolean flag = false;
-    private UserDao userDao;
-    private SignupApi signupApi;
     private UserLocalDao userLocalDao;
-    private ExistApi existApi;
+
 
     public LoginForgetActivity() {
 
@@ -57,8 +53,6 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        signupApi = new SignupApi();
-        existApi = new ExistApi();
         userLocalDao = new UserLocalDao(getApplicationContext());
         userLocalDao.open();
         intent = getIntent();
@@ -104,6 +98,7 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
             /**
              * 判断账号是否已存在
              **/
+            ExistApi existApi = new ExistApi();
             if (!existApi.checkUserUnique(username).equals("User exist")) {
                 mVerifyCode = String.format("%06d", (int) (Math.random() * 1000000 % 1000000));
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginForgetActivity.this);
@@ -148,6 +143,7 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
                     /**
                      * 插入账号
                      **/
+                    SignupApi signupApi = new SignupApi();
                     if (signupApi.insertUser(username, password, sex, birth).equals("Signup successful")) {
                         Toast.makeText(this, "恭喜您注册成功，清前往登录！", Toast.LENGTH_SHORT).show();
                         intent = new Intent(this, LoginActivity.class);
@@ -158,18 +154,13 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
                     /**
                      * 修改密码
                      **/
-                    HashMap<String, String> hashMap = new HashMap<>();
-                    hashMap.put("password", password);
-                    try {
-                        if (userDao.updateUserInformation(username, hashMap)) {
-                            Toast.makeText(this, "密码已修改成功，请重新登录！", Toast.LENGTH_SHORT).show();
-                            intent = new Intent(this, LoginActivity.class);
-                            intent.putExtra("username", username);
-                            startActivity(intent);
-                        } else Toast.makeText(this, "网络请求超时，请稍后重试", Toast.LENGTH_SHORT).show();
-                    } catch (TimeoutException e) {
-                        throw new RuntimeException(e);
-                    }
+                    UpdatePasswordApi updatePasswordApi = new UpdatePasswordApi();
+                    if (updatePasswordApi.updatePassword(username, password).equals("Password updated")) {
+                        Toast.makeText(this, "密码已修改成功，请重新登录！", Toast.LENGTH_SHORT).show();
+                        intent = new Intent(this, LoginActivity.class);
+                        intent.putExtra("username", username);
+                        startActivity(intent);
+                    } else Toast.makeText(this, "网络请求超时，请稍后重试", Toast.LENGTH_SHORT).show();
                 }
             }
 
