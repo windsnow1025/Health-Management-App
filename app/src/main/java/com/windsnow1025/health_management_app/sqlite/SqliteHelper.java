@@ -5,83 +5,79 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class SqliteHelper extends SQLiteOpenHelper {
-    // 数据库名称
-    public static final String DATABASE = "Android.db";
-    // 数据库版本号
-    public static final int VERSION = 6;
-    // 创建DB对象时的构造函数
-
-    private Context context;
+    private static final String DATABASE = "Android.db";
+    private static final int VERSION = 6;
 
     public SqliteHelper(Context context) {
         super(context, DATABASE, null, VERSION);
-
-        this.context=context;
     }
 
-    // 创建用户表User
-    public static final String CREATE_USER = "create table user ("
-            + "phone_number text primary key,"
-            + "username text,"
-            + "email text,"
-            + "birthday text,"
-            + "sex text,"
-            + "is_login text,"
-            + "is_multipled text,"
-            + "is_deleted text)";
-    public static final String CREATE_HISTORY = "create table history ("
-            + "ID integer primary key,"
-            + "phone_number text,"
-            + "history_No integer,"
-            + "history_date text,"
-            + "history_place text,"
-            + "history_doctor text,"
-            + "history_organ text,"
-            + "symptom blob,"
-            + "conclusion blob,"
-            + "suggestion blob,"
-            + "is_deleted text)";
-    public static final String CREATE_REPORT = "create table report ("
-            + "ID integer primary key,"
-            + "phone_number text,"
-            + "report_No integer,"
-            + "report_content blob,"
-            + "report_picture blob,"
-            + "report_type text,"
-            + "report_date text,"
-            + "report_place text,"
-            + "is_deleted text)";
-    public static final String CREATE_ALERT = "create table alert ("
-            + "ID integer primary key,"
-            + "phone_number text,"
-            + "alert_No text,"
-            + "type_No integer,"
-            + "type text,"
-            + "content blob,"
-            + "title text,"
-            + "date text,"
-            + "cycle text,"
-            + "is_medicine text,"
-            + "is_deleted text)";
+    private static final String CREATE_USER = """
+                CREATE TABLE user (
+                    phone_number TEXT PRIMARY KEY,
+                    name TEXT,
+                    email TEXT,
+                    birthday TEXT,
+                    sex TEXT
+                )
+            """;
 
+    private static final String CREATE_RECORD = """
+                CREATE TABLE history (
+                    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                    phone_number TEXT,
+                    record_date TEXT,
+                    hospital TEXT,
+                    doctor TEXT,
+                    organ TEXT,
+                    symptom TEXT,
+                    conclusion TEXT,
+                    suggestion TEXT,
+                    FOREIGN KEY (phone_number) REFERENCES user(phone_number)
+                )
+            """;
 
+    private static final String CREATE_REPORT = """
+                CREATE TABLE report (
+                    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                    phone_number TEXT,
+                    report_date TEXT,
+                    hospital TEXT,
+                    report_type TEXT,
+                    picture BLOB,
+                    detail TEXT,
+                    FOREIGN KEY (phone_number) REFERENCES user(phone_number)
+                )
+            """;
 
-    // 创建数据库
+    private static final String CREATE_ALERT = """
+                CREATE TABLE alert (
+                    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                    phone_number TEXT,
+                    alert_type TEXT,
+                    advice TEXT,
+                    title TEXT,
+                    alert_date TEXT,
+                    alert_cycle TEXT,
+                    is_medicine TEXT,
+                    FOREIGN KEY (phone_number) REFERENCES user(phone_number)
+                )
+            """;
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_USER);
         db.execSQL(CREATE_REPORT);
-        db.execSQL(CREATE_HISTORY);
+        db.execSQL(CREATE_RECORD);
         db.execSQL(CREATE_ALERT);
     }
 
-    // 升级数据库
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table if exists user");
-        db.execSQL("drop table if exists report");
-        db.execSQL("drop table if exists history");
-        db.execSQL("drop table if exists alert");
+        db.execSQL("DROP TABLE IF EXISTS user");
+        db.execSQL("DROP TABLE IF EXISTS report");
+        db.execSQL("DROP TABLE IF EXISTS history");
+        db.execSQL("DROP TABLE IF EXISTS alert");
         onCreate(db);
     }
 }
