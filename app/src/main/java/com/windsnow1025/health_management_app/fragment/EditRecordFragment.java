@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.windsnow1025.health_management_app.R;
-import com.windsnow1025.health_management_app.jdbc.HistoryDao;
 import com.windsnow1025.health_management_app.pojo.Record;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
@@ -39,11 +38,12 @@ public class EditRecordFragment extends Fragment {
 
     EditText editTextDate;
     EditText editTextHospital;
-    EditText editTextType;
+    EditText editTextDoctor;
     EditText editTextOrgan;
     EditText editTextSymptom;
     EditText editTextConclusion;
     EditText editTextSuggestion;
+    UserLocalDao userLocalDao;
 
     public EditRecordFragment(Integer recordId) {
         this.recordId = recordId;
@@ -61,7 +61,7 @@ public class EditRecordFragment extends Fragment {
         // Get views
         editTextDate = view.findViewById(R.id.editTextDate);
         editTextHospital = view.findViewById(R.id.editTextHospital);
-        editTextType = view.findViewById(R.id.editTextType);
+        editTextDoctor = view.findViewById(R.id.editTextDoctor);
         editTextOrgan = view.findViewById(R.id.editTextOrgan);
         editTextSymptom = view.findViewById(R.id.editTextSymptom);
         editTextConclusion = view.findViewById(R.id.editTextConclusion);
@@ -69,20 +69,19 @@ public class EditRecordFragment extends Fragment {
 
         try {
             // Get username
-            UserLocalDao userLocalDao = new UserLocalDao(getContext());
+            userLocalDao = new UserLocalDao(getContext());
             userLocalDao.open();
             username = userLocalDao.getPhoneNumber();
 
             // Get record
-            HistoryDao historyDao = new HistoryDao();
-            ArrayList<Record> historyList = historyDao.getHistoryList(username);
+            ArrayList<Record> historyList = userLocalDao.getRecordList(username);
             Record history = historyList.get(recordId - 1);
 
             // Get data
-            date = history.getHistory_date();
-            hospital = history.getHistory_place();
-            doctor = history.getHistory_doctor();
-            organ = history.getHistory_organ();
+            date = history.getRecord_date();
+            hospital = history.getHospital();
+            doctor = history.getDoctor();
+            organ = history.getOrgan();
             symptom = history.getSymptom();
             conclusion = history.getConclusion();
             suggestion = history.getSuggestion();
@@ -90,7 +89,7 @@ public class EditRecordFragment extends Fragment {
             // Set data to views
             editTextDate.setText(date);
             editTextHospital.setText(hospital);
-            editTextType.setText(doctor);
+            editTextDoctor.setText(doctor);
             editTextOrgan.setText(organ);
             editTextSymptom.setText(symptom);
             editTextConclusion.setText(conclusion);
@@ -134,7 +133,7 @@ public class EditRecordFragment extends Fragment {
                 // Get data
                 date = editTextDate.getText().toString();
                 hospital = editTextHospital.getText().toString();
-                doctor = editTextType.getText().toString();
+                doctor = editTextDoctor.getText().toString();
                 organ = editTextOrgan.getText().toString();
                 symptom = editTextSymptom.getText().toString();
                 conclusion = editTextConclusion.getText().toString();
@@ -143,19 +142,17 @@ public class EditRecordFragment extends Fragment {
                 // Insert data into database
                 Boolean insertStatus = false;
                 Log.i("主线程", "数据库测试开始");
-                HistoryDao historyDao = new HistoryDao();
                 Record history = new Record();
-                history.setHistory_date(date);
-                history.setHistory_place(hospital);
-                history.setHistory_doctor(doctor);
-                history.setHistory_organ(organ);
+                history.setRecord_date(date);
+                history.setHospital(hospital);
+                history.setDoctor(doctor);
+                history.setOrgan(organ);
                 history.setSymptom(symptom);
                 history.setConclusion(conclusion);
                 history.setSuggestion(suggestion);
-                history.setHistory_No(recordId);
-                history.setIs_deleted("false");
+                history.setID(recordId);
                 try {
-                    insertStatus = historyDao.updateHistory(username, history);
+                    insertStatus = userLocalDao.updateRecord(username, history);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

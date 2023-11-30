@@ -1,7 +1,5 @@
 package com.windsnow1025.health_management_app.pojo;
 
-import android.graphics.Bitmap;
-
 import java.io.Serializable;
 
 public class Report implements Serializable {
@@ -10,7 +8,7 @@ public class Report implements Serializable {
     private String report_date;
     private String hospital;
     private String report_type;
-    private Bitmap picture;
+    private byte[] picture;
     private String detail;
 
     public int getID() {
@@ -53,7 +51,7 @@ public class Report implements Serializable {
         this.report_type = report_type;
     }
 
-    public Bitmap getPicture() {
+    public byte[] getPicture() {
         return picture;
     }
 

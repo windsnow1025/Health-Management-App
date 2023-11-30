@@ -7,10 +7,6 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.provider.AlarmClock;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,15 +18,14 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.windsnow1025.health_management_app.R;
-import com.windsnow1025.health_management_app.jdbc.AlertDao;
-import com.windsnow1025.health_management_app.jdbc.HistoryDao;
-import com.windsnow1025.health_management_app.jdbc.ReportDao;
 import com.windsnow1025.health_management_app.pojo.Alert;
 import com.windsnow1025.health_management_app.pojo.Record;
 import com.windsnow1025.health_management_app.pojo.Report;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
-import com.windsnow1025.health_management_app.utils.Info;
 import com.windsnow1025.health_management_app.utils.AlertAdapter;
 
 import java.text.ParseException;
@@ -39,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 public class DetailsRecordFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
     private int i;
@@ -60,16 +54,13 @@ public class DetailsRecordFragment extends Fragment implements DatePickerDialog.
     private ArrayList<Record> historyArrayList;
     private ArrayList<Alert> alertArrayList;
     private UserLocalDao userLocalDao;
-    private ReportDao reportDao;
-    private HistoryDao historyDao;
-    private AlertDao alertDao;
-    private Record history;
+    private Record record;
     private Report report;
     private Alert alert;
     private String userID;
-    private int num,num_alerk;
+    private int num, num_alerk;
     private boolean isreport;
-    private boolean ismedicine;
+    private boolean isMedicine;
     private TimePickerDialog timePickerDialog;
     private Calendar calendar;
     private int H, M;
@@ -77,7 +68,7 @@ public class DetailsRecordFragment extends Fragment implements DatePickerDialog.
     /*用于新建*/
     public DetailsRecordFragment(boolean isMedicine, int n, boolean isReport, AlertAdapter infoAdapter) {
         this.num = n;
-        this.ismedicine=isMedicine;
+        this.isMedicine = isMedicine;
         this.adapter = infoAdapter;
         this.isreport = isReport;//是否为报告
     }
@@ -86,7 +77,7 @@ public class DetailsRecordFragment extends Fragment implements DatePickerDialog.
     public DetailsRecordFragment(boolean isMedicine, int n, AlertAdapter infoAdapter, List<Alert> AlertList, int I, boolean isReport, boolean flag) {
         this.adapter = infoAdapter;
         this.num = n;//num为捆绑的编号
-        this.ismedicine=isMedicine;
+        this.isMedicine = isMedicine;
         this.isreport = isReport;//是否为报告
         this.flag = flag;//是否为修改
         this.alertList = AlertList;
@@ -104,39 +95,38 @@ public class DetailsRecordFragment extends Fragment implements DatePickerDialog.
         rtv_advice = view.findViewById(R.id.rtv_advice);
         ret_title = view.findViewById(R.id.ret_title);
         ret_time = view.findViewById(R.id.ret_time);
-        bt_rcancel=view.findViewById(R.id.bt_cancel);
-        rtv_hospital=view.findViewById(R.id.rtv_hospital);
+        bt_rcancel = view.findViewById(R.id.bt_cancel);
+        rtv_hospital = view.findViewById(R.id.rtv_hospital);
         if (isreport) report = UserLocalDao.gerReport(reportArrayList, num);
-        else history = UserLocalDao.getHistory(historyArrayList, num);
-        num_alerk=userLocalDao.getAlertList(userID).size();
-   }
+        else record = UserLocalDao.getHistory(historyArrayList, num);
+        num_alerk = userLocalDao.getAlertList(userID).size();
+    }
 
     /*获取数据*/
     @SuppressLint("SetTextI18n")
     private void infoSet(boolean flag) {
-        if(isreport){
-            rtv_time.setText(report.getReport_date()+"");
-            rtv_part.setText(report.getReport_type()+"");
-            rtv_advice.setText(report.getReport_content()+"");
-            rtv_hospital.setText(report.getReport_place()+"");
-        }else {
-            rtv_time.setText(history.getHistory_date()+"");
-            rtv_part.setText(history.getHistory_organ()+"");
-            rtv_advice.setText(history.getSuggestion()+"");
-            rtv_hospital.setText(history.getHistory_place()+"");
+        if (isreport) {
+            rtv_time.setText(report.getReport_date() + "");
+            rtv_part.setText(report.getReport_type() + "");
+            rtv_advice.setText(report.getDetail() + "");
+            rtv_hospital.setText(report.getHospital() + "");
+        } else {
+            rtv_time.setText(record.getRecord_date() + "");
+            rtv_part.setText(record.getOrgan() + "");
+            rtv_advice.setText(record.getSuggestion() + "");
+            rtv_hospital.setText(record.getHospital() + "");
         }
         /*表修改状态，非新增时*/
         if (flag) {
-            Alert alert1=userLocalDao.getAlert(alertArrayList,i);
-            ret_title.setText(alert1.getContent());
-            ret_time.setText(alert1.getDate());
-            String[] times=alert1.getDate().split(":");
-            H= Integer.parseInt(times[0]);
-            M=Integer.parseInt(times[1]);
-            rtv_date.setText(alert1.getCycle());
-                }
-            }
-
+            Alert alert1 = userLocalDao.getAlert(alertArrayList, i);
+            ret_title.setText(alert1.getTitle());
+            ret_time.setText(alert1.getAlert_date());
+            String[] times = alert1.getAlert_date().split(":");
+            H = Integer.parseInt(times[0]);
+            M = Integer.parseInt(times[1]);
+            rtv_date.setText(alert1.getAlert_cycle());
+        }
+    }
 
 
     @Override
@@ -146,99 +136,65 @@ public class DetailsRecordFragment extends Fragment implements DatePickerDialog.
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
         userID = userLocalDao.getPhoneNumber();
-        alertArrayList=userLocalDao.getAlertList(userID);
-        reportDao = new ReportDao();
-        historyDao = new HistoryDao();
-        alertDao=new AlertDao();
+        alertArrayList = userLocalDao.getAlertList(userID);
         calendar = Calendar.getInstance();
-        try {
-            reportArrayList = reportDao.getReportList(userID);
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            historyArrayList = historyDao.getHistoryList(userID);
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
-        }
+        reportArrayList = userLocalDao.getReportList(userID);
+        historyArrayList = userLocalDao.getRecordList(userID);
         init(view);
         infoSet(flag);
 
-        rtv_date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-                DatePickerDialog dialog = new DatePickerDialog(getContext(), (DatePickerDialog.OnDateSetListener) DetailsRecordFragment.this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
-                dialog.show();
-            }
+        rtv_date.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            DatePickerDialog dialog = new DatePickerDialog(getContext(), DetailsRecordFragment.this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+            dialog.show();
         });
-        ret_time.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        ret_time.setOnClickListener(v -> {
 
-                timePickerDialog = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        H = hourOfDay;
-                        M = minute;
-                        String str = hourOfDay + ":" + minute;
-                        ret_time.setText(str);
-                    }
-                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
-                timePickerDialog.show();
-            }
+            timePickerDialog = new TimePickerDialog(getContext(), new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view1, int hourOfDay, int minute) {
+                    H = hourOfDay;
+                    M = minute;
+                    String str = hourOfDay + ":" + minute;
+                    ret_time.setText(str);
+                }
+            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
+            timePickerDialog.show();
         });
-        rStartAlarm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!ret_title.getText().toString().equals("") && !rtv_date.getText().toString().equals("") && !ret_time.getText().toString().equals("")) {
-                    Info info = new Info(ismedicine,ret_title.getText().toString(), rtv_date.getText().toString(), ret_time.getText().toString(), true, num,num_alerk);
-                    alert=new Alert(num_alerk,String.valueOf(ismedicine),userID,ret_time.getText().toString(),rtv_date.getText().toString(),ret_title.getText().toString(),String.valueOf(isreport),num,"false");
-//                   是否为修改
-                    if (flag) {
-                        alert=new Alert(i,String.valueOf(ismedicine),userID,ret_time.getText().toString(),rtv_date.getText().toString(),ret_title.getText().toString(),String.valueOf(isreport),num,"false");
-                        userLocalDao.updateAlert(userID,alert);
-                        try {
-                            alertDao.updateAlert(userID,alert);
-                        } catch (TimeoutException e) {
-                            throw new RuntimeException(e);
-                        }
-//
-                    }else {
-                        userLocalDao.insertAlert(userID, alert);
-                        try {
-                            alertDao.insertAlert(userID,alert);
-                        } catch (TimeoutException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    adapter.add(info);
-                    if (!flag) {
-                        Toast.makeText(getContext(), "提醒添加成功", Toast.LENGTH_SHORT).show();
-                    } else Toast.makeText(getContext(), "提醒修改成功", Toast.LENGTH_SHORT).show();
-                    setAlarm(H,M);
-                    requireActivity().getSupportFragmentManager().popBackStack();
-                }else Toast.makeText(getContext(), "信息不完整", Toast.LENGTH_SHORT).show();
-            }
+        rStartAlarm.setOnClickListener(v -> {
+            if (!ret_title.getText().toString().equals("") && !rtv_date.getText().toString().equals("") && !ret_time.getText().toString().equals("")) {
+                Alert alert = new Alert(num_alerk, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
+                DetailsRecordFragment.this.alert = new Alert(num_alerk, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
+                // 是否为修改
+                if (flag) {
+                    DetailsRecordFragment.this.alert = new Alert(i, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
+                    userLocalDao.updateAlert(userID, DetailsRecordFragment.this.alert);
+                } else {
+                    userLocalDao.insertAlert(userID, DetailsRecordFragment.this.alert);
+                }
+                adapter.add(alert);
+                if (!flag) {
+                    Toast.makeText(getContext(), "提醒添加成功", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(getContext(), "提醒修改成功", Toast.LENGTH_SHORT).show();
+                setAlarm(H, M);
+                requireActivity().getSupportFragmentManager().popBackStack();
+            } else Toast.makeText(getContext(), "信息不完整", Toast.LENGTH_SHORT).show();
         });
-        bt_rcancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("取消修改？");
-                builder.setMessage("取消编辑将返回原界面，本次修改将不被保存！");
-                builder.setNegativeButton("继续编辑", null);
-                builder.setPositiveButton("确定返回", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Fragment fragment = new AlertFragment();
-                        FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                        transaction.replace(R.id.fragment_container, fragment);
-                        transaction.addToBackStack(null);
-                        transaction.commit();
-                    }
-                });
-                builder.show();
-            }
+        bt_rcancel.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("取消修改？");
+            builder.setMessage("取消编辑将返回原界面，本次修改将不被保存！");
+            builder.setNegativeButton("继续编辑", null);
+            builder.setPositiveButton("确定返回", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    Fragment fragment = new AlertFragment();
+                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment_container, fragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+            });
+            builder.show();
         });
 
 
@@ -254,13 +210,13 @@ public class DetailsRecordFragment extends Fragment implements DatePickerDialog.
         intent.putExtra(AlarmClock.EXTRA_VIBRATE, true);
         intent.putExtra(AlarmClock.EXTRA_SKIP_UI, true);
         ArrayList<Integer> days = new ArrayList<>();
-       days.add(Calendar.SUNDAY);
-       days.add(Calendar.MONDAY);
-       days.add(Calendar.TUESDAY);
-       days.add(Calendar.WEDNESDAY);
-       days.add(Calendar.THURSDAY);
-       days.add(Calendar.FRIDAY);
-       days.add(Calendar.SATURDAY);
+        days.add(Calendar.SUNDAY);
+        days.add(Calendar.MONDAY);
+        days.add(Calendar.TUESDAY);
+        days.add(Calendar.WEDNESDAY);
+        days.add(Calendar.THURSDAY);
+        days.add(Calendar.FRIDAY);
+        days.add(Calendar.SATURDAY);
         intent.putExtra(AlarmClock.EXTRA_DAYS, days);
         try {
             startActivity(intent);

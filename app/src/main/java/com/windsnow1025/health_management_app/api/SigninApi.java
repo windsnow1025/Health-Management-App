@@ -105,7 +105,6 @@ public class SigninApi extends AsyncTask<String, Void, String> {
 
                 userInfo.setPhone_number(jsonResponse.getString("phoneNumber"));
                 userInfo.setUsername(jsonResponse.getString("username"));
-                userInfo.setEmail(null);
                 userInfo.setSex(jsonResponse.getString("sex"));
                 userInfo.setBirthday(jsonResponse.getString("birthday"));
 

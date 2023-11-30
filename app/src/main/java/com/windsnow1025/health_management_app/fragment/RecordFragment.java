@@ -14,13 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.windsnow1025.health_management_app.R;
 import com.windsnow1025.health_management_app.TableEnterAdapter;
-import com.windsnow1025.health_management_app.jdbc.HistoryDao;
 import com.windsnow1025.health_management_app.pojo.Record;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 // 就诊记录显示
 public class RecordFragment extends Fragment {
@@ -49,64 +47,46 @@ public class RecordFragment extends Fragment {
             String username = userLocalDao.getPhoneNumber();
 
             // Get history list
-            HistoryDao historyDao = new HistoryDao();
             ArrayList<Record> histories;
-            try {
-                histories=historyDao.getHistoryList(username);
-                Log.i("test","从服务器获取就诊记录");
-            }
-            catch (TimeoutException e)
-            {
-                Log.i("test","超时，从本地获取就诊记录");
-                histories = userLocalDao.getRecordList(username);
-            }
+            histories=userLocalDao.getRecordList(username);
+            Log.i("test","从服务器获取就诊记录");
 
             // Set history list to recycler view
             List<String[]> data = new ArrayList<>();
             data.add(new String[]{"时间", "医院", "部位"});
             for (Record history : histories) {
-                data.add(new String[]{history.getHistory_date(), history.getHistory_place(), history.getHistory_organ()});
+                data.add(new String[]{history.getRecord_date(), history.getHospital(), history.getOrgan()});
             }
 
             RecyclerView recyclerView = view.findViewById(R.id.record_recycler_view);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             ArrayList<Record> finalHistories = histories;
+            // Delete Button
             recyclerView.setAdapter(new TableEnterAdapter(data, new TableEnterAdapter.OnItemClickListener() {
                 // Edit Button
                 @Override
                 public void onClick(int position) {
                     // Get record id
-                    Integer record_id = finalHistories.get(position - 1).getHistory_No();
+                    Integer record_id = finalHistories.get(position - 1).getID();
 
                     FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                     transaction.replace(R.id.fragment_container, new EditRecordFragment(record_id));
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }
-            }, new TableEnterAdapter.OnItemClickListener() {
-                // Delete Button
-                @Override
-                public void onClick(int position) {
-                    // Get record id
-                    Integer record_id = finalHistories.get(position - 1).getHistory_No();
+            }, position -> {
+                // Get record id
+                Integer record_id = finalHistories.get(position - 1).getID();
 
-                    // Delete record
-                    try {
-                        historyDao.deleteHistory(username, record_id);
-                        Log.i("test","从服务器删除就诊记录");
-                    }
-                    catch (TimeoutException e)
-                    {
-                        Log.i("test","超时，从本地删除就诊记录");
-                        userLocalDao.deleteRecord(username, record_id);
-                    }
+                // Delete record
+                userLocalDao.deleteRecord(username, record_id);
+                Log.i("test","从服务器删除就诊记录");
 
-                    // Reload fragment
-                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container, new OrganFragment(organ));
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                }
+                // Reload fragment
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, new OrganFragment(organ));
+                transaction.addToBackStack(null);
+                transaction.commit();
             }));
 
         } catch (Exception e) {

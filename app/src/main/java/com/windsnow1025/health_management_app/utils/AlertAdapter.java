@@ -55,8 +55,8 @@ public class AlertAdapter extends ArrayAdapter<Alert> {
         TextView tv_date=view.findViewById(R.id.tv_date);
         // 设置要显示内容
         tv_title.setText(alert.getTitle());
-        tv_time.setText(alert.getTime());
-        tv_date.setText(alert.getDate());
+//        tv_time.setText(alert.getTime());
+//        tv_date.setText(alert.getDate());
 
         return view;
     }

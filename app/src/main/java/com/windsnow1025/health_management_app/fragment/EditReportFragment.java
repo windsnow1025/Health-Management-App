@@ -26,7 +26,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
 import com.windsnow1025.health_management_app.R;
-import com.windsnow1025.health_management_app.jdbc.ReportDao;
 import com.windsnow1025.health_management_app.pojo.Report;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
@@ -62,6 +61,7 @@ public class EditReportFragment extends Fragment {
     EditText editTextOCRTxt;
 
     Bitmap bitmap;
+    UserLocalDao userLocalDao;
 
     public EditReportFragment(Integer reportId) {
         this.reportId = reportId;
@@ -89,20 +89,19 @@ public class EditReportFragment extends Fragment {
 
         try {
             // Get username
-            UserLocalDao userLocalDao = new UserLocalDao(getContext());
+            userLocalDao = new UserLocalDao(getContext());
             userLocalDao.open();
             username = userLocalDao.getPhoneNumber();
 
             // Get record
-            ReportDao reportDao = new ReportDao();
-            ArrayList<Report> reportList = reportDao.getReportList(username);
+            ArrayList<Report> reportList = userLocalDao.getReportList(username);
             Report report = reportList.get(reportId - 1);
 
             // Get data
             date = report.getReport_date();
-            hospital = report.getReport_place();
+            hospital = report.getHospital();
             type = report.getReport_type();
-            OCRTxt = report.getReport_content();
+            OCRTxt = report.getDetail();
 
             // Set data to views
             editTextDate.setText(date);
@@ -129,14 +128,11 @@ public class EditReportFragment extends Fragment {
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
 
                 // Create DatePickerDialog
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        // Set date
-                        String date = year + "-" + (month + 1) + "-" + dayOfMonth;
-                        // Set date to EditText
-                        editTextDate.setText(date);
-                    }
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), (view1, year1, month1, dayOfMonth) -> {
+                    // Set date
+                    String date = year1 + "-" + (month1 + 1) + "-" + dayOfMonth;
+                    // Set date to EditText
+                    editTextDate.setText(date);
                 }, year, month, day);
 
                 // Show DatePickerDialog
@@ -146,56 +142,47 @@ public class EditReportFragment extends Fragment {
 
         // Confirm button
         Button buttonConfirm = view.findViewById(R.id.buttonConfirm);
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get data
-                date = editTextDate.getText().toString();
-                hospital = editTextHospital.getText().toString();
-                type = editTextType.getText().toString();
-                OCRTxt = editTextOCRTxt.getText().toString();
+        buttonConfirm.setOnClickListener(v -> {
+            // Get data
+            date = editTextDate.getText().toString();
+            hospital = editTextHospital.getText().toString();
+            type = editTextType.getText().toString();
+            OCRTxt = editTextOCRTxt.getText().toString();
 
-                // Turn bitmap into string
-                String bitmapString = null;
-                if (bitmap != null) {
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                    byte[] byteArray = stream.toByteArray();
-                    bitmapString = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                }
-
-                // Upload to database
-                Boolean insertStatus = false;
-                Log.i("主线程", "数据库测试开始");
-                ReportDao reportDao = new ReportDao();
-                Report report = new Report();
-                report.setPhone_number(username);
-                report.setReport_type(type);
-                report.setReport_place(hospital);
-                report.setReport_picture(bitmapString);
-                report.setReport_content(OCRTxt);
-                report.setIs_deleted("false");
-                report.setReport_No(reportId);
-                if (date.equals("")) {
-                    //判定日期是否填写 未填写则设置为null
-                    report.setReport_date(null);
-                } else {
-                    report.setReport_date(date);
-                }
-                try {
-                    insertStatus = reportDao.updateReport(username, report);
-                } catch (TimeoutException e) {
-                    Log.i("Test", "网络有问题");
-                }
-                Log.i("主线程", "报告插入情况" + insertStatus);
-                Log.i("主线程", "数据库测试结束");
-
-                // Jump to organ page
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new OrganFragment(organ));
-                transaction.addToBackStack(null);
-                transaction.commit();
+            // Turn bitmap into string
+            String bitmapString = null;
+            if (bitmap != null) {
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                bitmapString = Base64.encodeToString(byteArray, Base64.DEFAULT);
             }
+
+            // Upload to database
+            Boolean insertStatus = false;
+            Log.i("主线程", "数据库测试开始");
+            Report report = new Report();
+            report.setPhone_number(username);
+            report.setReport_type(type);
+            report.setHospital(hospital);
+            report.setPicture(bitmapString.getBytes());
+            report.setDetail(OCRTxt);
+            report.setID(reportId);
+            if (date.equals("")) {
+                //判定日期是否填写 未填写则设置为null
+                report.setReport_date(null);
+            } else {
+                report.setReport_date(date);
+            }
+            insertStatus = userLocalDao.updateReport(username, report);
+            Log.i("主线程", "报告插入情况" + insertStatus);
+            Log.i("主线程", "数据库测试结束");
+
+            // Jump to organ page
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, new OrganFragment(organ));
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
         return view;
     }

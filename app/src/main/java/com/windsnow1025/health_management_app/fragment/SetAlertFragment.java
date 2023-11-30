@@ -16,8 +16,6 @@ import android.widget.ListView;
 
 import com.windsnow1025.health_management_app.R;
 import com.windsnow1025.health_management_app.TableAdapter;
-import com.windsnow1025.health_management_app.jdbc.HistoryDao;
-import com.windsnow1025.health_management_app.jdbc.ReportDao;
 import com.windsnow1025.health_management_app.pojo.Record;
 import com.windsnow1025.health_management_app.pojo.Report;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
@@ -36,8 +34,6 @@ public class SetAlertFragment extends Fragment {
     private  ArrayList<Report> reportArrayList;
     private  ArrayList<Record> historyArrayList;
     private UserLocalDao userLocalDao;
-    private ReportDao reportDao;
-    private HistoryDao historyDao;
     private String userID;
     AlertAdapter adapter;
     ListView listView;
@@ -54,29 +50,19 @@ public class SetAlertFragment extends Fragment {
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
         userID=userLocalDao.getPhoneNumber();
-        reportDao=new ReportDao();
-        historyDao=new HistoryDao();
-        try {
-            reportArrayList=reportDao.getReportList(userID);
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            historyArrayList=historyDao.getHistoryList(userID);
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
-        }
+        reportArrayList=userLocalDao.getReportList(userID);
+        historyArrayList=userLocalDao.getRecordList(userID);
 
         List<String[]> data = new ArrayList<>();
         for (Report report:reportArrayList
              ) {//时间、地点、类型、编号
-            data.add(new String[]{report.getReport_date(), report.getReport_place(), report.getReport_type(),report.getReport_No().toString()});
+            data.add(new String[]{report.getReport_date(), report.getHospital(), report.getReport_type(), String.valueOf(report.getID())});
         }
 
         List<String[]> data1 = new ArrayList<>();
         for (Record history :
                 historyArrayList) {
-            data1.add(new String[]{history.getHistory_date(),history.getHistory_place(),history.getHistory_organ(), String.valueOf(history.getHistory_No())});
+            data1.add(new String[]{history.getRecord_date(),history.getHospital(),history.getOrgan(), String.valueOf(history.getID())});
         }
 
 
