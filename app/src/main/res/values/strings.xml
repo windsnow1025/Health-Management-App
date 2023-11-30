@@ -5,4 +5,10 @@
     <string name="notice">暂无系统通知，有最新消息我们会第一时间通知你的噢！</string>
     <string name="update">当前系统版本为1.0，已是最新版本，暂无更新。</string>
     <string name="about">请合法使用该软件产品，盗版必究，欢迎您留下宝贵意见和建议！</string>
+
+
+    <string-array name="payment_methods">
+        <item>零钱支付</item>
+        <item>银行卡支付</item>
+    </string-array>
 </resources>
