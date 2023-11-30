@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.windsnow1025.health_management_app.R;
 import com.windsnow1025.health_management_app.TableEnterAdapter;
-import com.windsnow1025.health_management_app.jdbc.ReportDao;
 import com.windsnow1025.health_management_app.pojo.Report;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
@@ -49,21 +48,15 @@ public class ReportFragment extends Fragment {
             String username = userLocalDao.getPhoneNumber();
 
             // Get report list
-            ReportDao reportDao = new ReportDao();
             ArrayList<Report> reports;
-            try {
-                reports = reportDao.getReportList(username);
-                Log.i("test", "从服务器获取体检报告");
-            } catch (TimeoutException e) {
-                Log.i("test", "超时，从本地获取体检报告");
-                reports = userLocalDao.getReportList(username);
-            }
+            reports = userLocalDao.getReportList(username);
+            Log.i("test", "从服务器获取体检报告");
 
             // Set report list to recycler view
             List<String[]> data = new ArrayList<>();
             data.add(new String[]{"时间", "医院", "类型"});
             for (Report report : reports) {
-                data.add(new String[]{report.getReport_date(), report.getReport_place(), report.getReport_type()});
+                data.add(new String[]{report.getReport_date(), report.getHospital(), report.getReport_type()});
             }
 
             RecyclerView recyclerView = view.findViewById(R.id.report_recycler_view);
@@ -74,7 +67,7 @@ public class ReportFragment extends Fragment {
                 @Override
                 public void onClick(int position) {
                     // Get report id
-                    Integer report_id = finalReports.get(position - 1).getReport_No();
+                    Integer report_id = finalReports.get(position - 1).getID();
 
                     FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                     transaction.replace(R.id.fragment_container, new EditReportFragment(report_id));
@@ -86,11 +79,11 @@ public class ReportFragment extends Fragment {
                 @Override
                 public void onClick(int position) {
                     // Get report id
-                    Integer report_id = finalReports.get(position - 1).getReport_No();
+                    int report_id = finalReports.get(position - 1).getID();
 
                     // Delete report
                     try {
-                        reportDao.deleteReport(username, report_id);
+                        userLocalDao.deleteReport(username, report_id);
                         Log.i("test", "从服务器删除体检报告");
                     } catch (Exception e) {
                         Log.i("test", "从本地删除体检报告");

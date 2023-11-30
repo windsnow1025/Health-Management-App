@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.windsnow1025.health_management_app.R;
 import com.windsnow1025.health_management_app.jdbc.HistoryDao;
-import com.windsnow1025.health_management_app.pojo.History;
+import com.windsnow1025.health_management_app.pojo.Record;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
 import java.util.ArrayList;
@@ -75,8 +75,8 @@ public class EditRecordFragment extends Fragment {
 
             // Get record
             HistoryDao historyDao = new HistoryDao();
-            ArrayList<History> historyList = historyDao.getHistoryList(username);
-            History history = historyList.get(recordId - 1);
+            ArrayList<Record> historyList = historyDao.getHistoryList(username);
+            Record history = historyList.get(recordId - 1);
 
             // Get data
             date = history.getHistory_date();
@@ -144,7 +144,7 @@ public class EditRecordFragment extends Fragment {
                 Boolean insertStatus = false;
                 Log.i("主线程", "数据库测试开始");
                 HistoryDao historyDao = new HistoryDao();
-                History history = new History();
+                Record history = new Record();
                 history.setHistory_date(date);
                 history.setHistory_place(hospital);
                 history.setHistory_doctor(doctor);

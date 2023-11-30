@@ -1,52 +1,34 @@
 package com.windsnow1025.health_management_app.pojo;
 
 public class Alert {
-    private Integer Alert_No;
+    private int ID;
     private String phone_number;
-    private String date;
-    private String cycle;
-    private String content;
+    private String alert_type;
+    private String advice;
+    private String title;
+    private String alert_date;
+    private String alert_cycle;
     private String is_medicine;
-    private String type;
-    private Integer type_No;
-    private String is_deleted;
 
     public Alert() {
     }
-
-    public Alert(Integer alert_No, String is_medicine, String phone_number, String date, String cycle, String content, String type, Integer type_No, String is_deleted) {
-        Alert_No = alert_No;
+    public Alert(int ID, String phone_number, String alert_type, String advice, String title, String alert_date, String alert_cycle, String is_medicine) {
+        this.ID = ID;
         this.phone_number = phone_number;
-        this.is_medicine=is_medicine;
-        this.date = date;
-        this.cycle = cycle;
-        this.content = content;
-        this.type = type;
-        this.type_No = type_No;
-        this.is_deleted = is_deleted;
-    }
-    public String getIs_deleted() {
-        return is_deleted;
-    }
-
-    public String getIs_medicine() {
-        return is_medicine;
-    }
-
-    public void setIs_medicine(String is_medicine) {
+        this.alert_type = alert_type;
+        this.advice = advice;
+        this.title = title;
+        this.alert_date = alert_date;
+        this.alert_cycle = alert_cycle;
         this.is_medicine = is_medicine;
     }
 
-    public void setIs_deleted(String is_deleted) {
-        this.is_deleted = is_deleted;
+    public int getID() {
+        return ID;
     }
 
-    public Integer getAlert_No() {
-        return Alert_No;
-    }
-
-    public void setAlert_No(Integer alert_No) {
-        Alert_No = alert_No;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public String getPhone_number() {
@@ -57,43 +39,51 @@ public class Alert {
         this.phone_number = phone_number;
     }
 
-    public String getDate() {
-        return date;
+    public String getAlert_type() {
+        return alert_type;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setAlert_type(String alert_type) {
+        this.alert_type = alert_type;
     }
 
-    public String getCycle() {
-        return cycle;
+    public String getAdvice() {
+        return advice;
     }
 
-    public void setCycle(String cycle) {
-        this.cycle = cycle;
+    public void setAdvice(String advice) {
+        this.advice = advice;
     }
 
-    public String getContent() {
-        return content;
+    public String getTitle() {
+        return title;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getType() {
-        return type;
+    public String getAlert_date() {
+        return alert_date;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setAlert_date(String alert_date) {
+        this.alert_date = alert_date;
     }
 
-    public Integer getType_No() {
-        return type_No;
+    public String getAlert_cycle() {
+        return alert_cycle;
     }
 
-    public void setType_No(Integer type_No) {
-        this.type_No = type_No;
+    public void setAlert_cycle(String alert_cycle) {
+        this.alert_cycle = alert_cycle;
+    }
+
+    public String getIs_medicine() {
+        return is_medicine;
+    }
+
+    public void setIs_medicine(String is_medicine) {
+        this.is_medicine = is_medicine;
     }
 }

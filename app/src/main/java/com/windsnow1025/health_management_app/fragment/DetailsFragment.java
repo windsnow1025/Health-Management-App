@@ -26,11 +26,11 @@ import com.windsnow1025.health_management_app.jdbc.AlertDao;
 import com.windsnow1025.health_management_app.jdbc.HistoryDao;
 import com.windsnow1025.health_management_app.jdbc.ReportDao;
 import com.windsnow1025.health_management_app.pojo.Alert;
-import com.windsnow1025.health_management_app.pojo.History;
+import com.windsnow1025.health_management_app.pojo.Record;
 import com.windsnow1025.health_management_app.pojo.Report;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 import com.windsnow1025.health_management_app.utils.Info;
-import com.windsnow1025.health_management_app.utils.InfoAdapter;
+import com.windsnow1025.health_management_app.utils.AlertAdapter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -41,7 +41,7 @@ import java.util.concurrent.TimeoutException;
 public class DetailsFragment extends Fragment {
 
     private final ArrayList<Integer> Time = new ArrayList<Integer>();
-    private List<Info> infoList;
+    private List<Alert> alertList;
     private CheckBox Monday;
     private CheckBox Tuesday;
     private CheckBox Wednesday;
@@ -60,16 +60,16 @@ public class DetailsFragment extends Fragment {
     private TextView tv_part;
     private TextView tv_advice;
     private int H, M,i;
-    InfoAdapter adapter;
+    AlertAdapter adapter;
     private boolean flag = false;
     private ArrayList<Report> reportArrayList;
-    private ArrayList<History> historyArrayList;
+    private ArrayList<Record> historyArrayList;
     private ArrayList<Alert> alertArrayList;
     private UserLocalDao userLocalDao;
     private ReportDao reportDao;
     private HistoryDao historyDao;
     private AlertDao alertDao;
-    private History history;
+    private Record history;
     private Report report;
     private Alert alert;
     private String userID;
@@ -81,21 +81,21 @@ public class DetailsFragment extends Fragment {
 
 
     /*用于新建*/
-    public DetailsFragment(boolean ismedicine, int n, boolean isreport, InfoAdapter infoAdapter) {
+    public DetailsFragment(boolean isMedicine, int n, boolean isReport, AlertAdapter infoAdapter) {
         this.num = n;//num为捆绑的编号
         this.adapter = infoAdapter;
-        this.ismedicine=ismedicine;
-        this.isreport = isreport;//是否为报告
+        this.ismedicine=isMedicine;
+        this.isreport = isReport;//是否为报告
     }
 
     /*用于修改*/
-    public DetailsFragment(boolean ismedicine, int n, InfoAdapter infoAdapter, List<Info> Infolist, int I, boolean isreport, boolean Flag) {
+    public DetailsFragment(boolean ismedicine, int n, AlertAdapter infoAdapter, List<Alert> AlertList, int I, boolean isReport, boolean Flag) {
         this.adapter = infoAdapter;
         this.ismedicine=ismedicine;
         this.num = n;//num为捆绑的编号
-        this.isreport = isreport;//是否为报告
+        this.isreport = isReport;//是否为报告
         this.flag = Flag;//是否为修改
-        this.infoList = Infolist;
+        this.alertList = AlertList;
         this.i = I;//i为闹钟编号
     }
 

@@ -4,7 +4,7 @@ package com.windsnow1025.health_management_app.api;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.windsnow1025.health_management_app.pojo.UserInfo;
+import com.windsnow1025.health_management_app.pojo.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,14 +91,14 @@ public class SigninApi extends AsyncTask<String, Void, String> {
     }
 
     // 用于获取用户信息
-    public UserInfo getUserInformation(String phoneNumber,String password) {
+    public User getUserInformation(String phoneNumber, String password) {
         // 调用异步任务的 execute 方法，将用户名作为参数传递
         execute(phoneNumber,password);
         try {
             // 获取异步任务的结果，即API响应
             String apiResult = get();
 
-            UserInfo userInfo = new UserInfo();
+            User userInfo = new User();
             try {
                 // 从API响应中提取用户信息
                 JSONObject jsonResponse = new JSONObject(apiResult);

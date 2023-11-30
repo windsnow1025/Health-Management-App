@@ -18,10 +18,10 @@ import com.windsnow1025.health_management_app.R;
 import com.windsnow1025.health_management_app.TableAdapter;
 import com.windsnow1025.health_management_app.jdbc.HistoryDao;
 import com.windsnow1025.health_management_app.jdbc.ReportDao;
-import com.windsnow1025.health_management_app.pojo.History;
+import com.windsnow1025.health_management_app.pojo.Record;
 import com.windsnow1025.health_management_app.pojo.Report;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
-import com.windsnow1025.health_management_app.utils.InfoAdapter;
+import com.windsnow1025.health_management_app.utils.AlertAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,14 +34,14 @@ public class SetAlertFragment extends Fragment {
     private TableAdapter tableAdapter1;
     private TableAdapter tableAdapter2;
     private  ArrayList<Report> reportArrayList;
-    private  ArrayList<History> historyArrayList;
+    private  ArrayList<Record> historyArrayList;
     private UserLocalDao userLocalDao;
     private ReportDao reportDao;
     private HistoryDao historyDao;
     private String userID;
-    InfoAdapter adapter;
+    AlertAdapter adapter;
     ListView listView;
-    public SetAlertFragment(InfoAdapter madapter, ListView mlistView) {
+    public SetAlertFragment(AlertAdapter madapter, ListView mlistView) {
         this.adapter=madapter;
         this.listView=mlistView;
     }
@@ -74,7 +74,7 @@ public class SetAlertFragment extends Fragment {
         }
 
         List<String[]> data1 = new ArrayList<>();
-        for (History history :
+        for (Record history :
                 historyArrayList) {
             data1.add(new String[]{history.getHistory_date(),history.getHistory_place(),history.getHistory_organ(), String.valueOf(history.getHistory_No())});
         }

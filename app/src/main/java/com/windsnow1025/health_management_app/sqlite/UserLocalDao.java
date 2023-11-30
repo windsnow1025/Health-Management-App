@@ -7,40 +7,37 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
-
-import com.windsnow1025.health_management_app.jdbc.AlertDao;
-import com.windsnow1025.health_management_app.jdbc.HistoryDao;
-import com.windsnow1025.health_management_app.jdbc.ReportDao;
 import com.windsnow1025.health_management_app.pojo.Alert;
-import com.windsnow1025.health_management_app.pojo.History;
+import com.windsnow1025.health_management_app.pojo.Record;
 import com.windsnow1025.health_management_app.pojo.Report;
-import com.windsnow1025.health_management_app.pojo.UserInfo;
+import com.windsnow1025.health_management_app.pojo.User;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class UserLocalDao {
-    private Context context;         //上下文
-    private SqliteHelper dbHelper; //数据库访问对象
-    private SQLiteDatabase db;       //可对数据库进行读写的操作对象
+    private Context context;
+    private SqliteHelper dbHelper;
+    private SQLiteDatabase db;
     private ReportDao reportDao;
-    private HistoryDao historyDao;
+    private RecordDao recordDao;
     private AlertDao alertDao;
+
     public UserLocalDao(Context context) {
         this.context = context;
-        reportDao=new ReportDao();
-        historyDao=new HistoryDao();
-        alertDao=new AlertDao();
+        reportDao = new ReportDao();
+        recordDao = new RecordDao();
+        alertDao = new AlertDao();
     }
-    public UserLocalDao(){
-        reportDao=new ReportDao();
-        historyDao=new HistoryDao();
-        alertDao=new AlertDao();
+
+    public UserLocalDao() {
+        reportDao = new ReportDao();
+        recordDao = new RecordDao();
+        alertDao = new AlertDao();
     }
-    // 创建并打开数据库（如果数据库已存在直接打开）
-    public void open() throws SQLiteException{
+
+    public void open() throws SQLiteException {
         dbHelper = new SqliteHelper(context);
         try {
             db = dbHelper.getWritableDatabase();
@@ -48,412 +45,248 @@ public class UserLocalDao {
             db = dbHelper.getReadableDatabase();
         }
     }
-    // 关闭数据库
+
     public void close() {
         if (db != null) {
             db.close();
             db = null;
         }
     }
+
     //获取当前登录账号
     @SuppressLint("Range")
-    public String getPhoneNumber(){
-        String stringReturn = null;
-        Cursor cursor = db.query("user", null, "is_login = ?", new String[]{"true"}, null, null, null);
-        if(cursor.moveToFirst()){
+    public String getPhoneNumber() {
+        String phoneNumber = null;
+        Cursor cursor = db.query("user", null, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
             do {
                 {
-                    stringReturn= cursor.getString(cursor.getColumnIndex("phone_number"));
+                    phoneNumber = cursor.getString(cursor.getColumnIndex("phone_number"));
                 }
-            }while (cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
-        return stringReturn;
+        return phoneNumber;
     }
-    public Boolean checkUser(String account){
-        Boolean returnValue=false;
-        Cursor cursor= db.query("user", null, "phone_number = ?", new String[]{account}, null, null, null);
-        if(cursor.moveToNext()){
-            returnValue=(!returnValue);
+
+    public Boolean checkUser(String phoneNumber) {
+        Cursor cursor = db.query("user", null, "phone_number = ?", new String[]{phoneNumber}, null, null, null);
+        if (cursor.moveToNext()) {
+            return true;
         }
-        return  returnValue;
+        return false;
     }
+
     @SuppressLint("Range")
-    public UserInfo getUserInfo(String account){
-        UserInfo userInfo=new UserInfo();
-        Cursor cursor= db.query("user", null, "phone_number = ?", new String[]{account}, null, null, null);
-        if(cursor.moveToFirst()){
-            userInfo.setPhone_number(account);
+    public User getUserInfo(String phoneNumber) {
+        User userInfo = new User();
+        Cursor cursor = db.query("user", null, "phone_number = ?", new String[]{phoneNumber}, null, null, null);
+        if (cursor.moveToFirst()) {
+            userInfo.setPhone_number(phoneNumber);
             userInfo.setUsername(cursor.getString(cursor.getColumnIndex("username")));
-            userInfo.setEmail(cursor.getString(cursor.getColumnIndex("email")));
             userInfo.setBirthday(cursor.getString(cursor.getColumnIndex("birthday")));
             userInfo.setSex(cursor.getString(cursor.getColumnIndex("sex")));
         }
         return userInfo;
     }
-    public  void addOrUpdateUser(UserInfo userInfo){
+
+    public void addOrUpdateUser(User user) {
         ContentValues values = new ContentValues();
-        values.put("phone_number", userInfo.getPhone_number());
-        values.put("username", userInfo.getUsername());
-        values.put("email", userInfo.getEmail());
-        values.put("birthday", userInfo.getBirthday());
-        values.put("sex", userInfo.getSex());
-        values.put("is_login", "true");
-        values.put("is_multipled", "false");               //多用户状态 备用
-        if(checkUser(userInfo.getPhone_number()))
-        {
-            db.update("user",values,"phone_number=?",new String[]{userInfo.getPhone_number()});
-        }
-        else
-        {
+        values.put("phone_number", user.getPhone_number());
+        values.put("username", user.getUsername());
+        values.put("birthday", user.getBirthday());
+        values.put("sex", user.getSex());
+        if (checkUser(user.getPhone_number())) {
+            db.update("user", values, "phone_number=?", new String[]{user.getPhone_number()});
+        } else {
             db.insert("user", null, values);
         }
     }
-    //登录状态改变 账号原本存在于本地库中则更新 否则添加进入 并设置登录状态为true
-    public void addMulti(String account){
-        ContentValues values = new ContentValues();
-        values.put("is_multipled","true");
-        db.update("user",values,"phone_number=?",new String[]{account});
-    }
 
-    public void deleteMulti(String account){
-        ContentValues values = new ContentValues();
-        values.put("is_multipled","false");
-        db.update("user",values,"phone_number=?",new String[]{account});
-    }
-    @SuppressLint("Range")
-    public ArrayList<UserInfo> getMultiList(){
-        ArrayList<UserInfo> userInfoArrayList=new ArrayList<>();
-        Cursor cursor = db.query("user", null, "is_multipled = ?", new String[]{"true"}, null, null, null);
-        if(cursor.moveToFirst()){
-            do{
-                UserInfo userInfo=new UserInfo();
-                userInfo.setPhone_number(cursor.getString(cursor.getColumnIndex("phone_number")));
-                userInfo.setUsername(cursor.getString(cursor.getColumnIndex("username")));
-                userInfo.setEmail(cursor.getString(cursor.getColumnIndex("email")));
-                userInfo.setBirthday(cursor.getString(cursor.getColumnIndex("birthday")));
-                userInfo.setSex(cursor.getString(cursor.getColumnIndex("sex")));
-                userInfoArrayList.add(userInfo);
-            }while(cursor.moveToNext());
-        }
-        return userInfoArrayList;
-    }
     //账号登出
-    public void userLoginOut(String account) {
-        ContentValues values= new ContentValues();
-        values.put("is_login","false");
-        db.update("user",values,"phone_number = ?",new String[]{account});
-    }
-    //账号切换
-    public void userAlter(String newAccount,String oldAccount){
-        userLoginOut(oldAccount);
-        ContentValues values= new ContentValues();
-        values.put("is_login","true");
-        db.update("user",values,"phone_number = ?",new String[]{newAccount});
-    }
-    public void sync() throws TimeoutException {
-        sync_Download();
-        //sync_Upload();
-    }
-    public void sync_Download() throws TimeoutException {
-        ArrayList<History> historyArrayList=new ArrayList<>();
-        ArrayList<Report> reportArrayList=new ArrayList<>();
-        ArrayList<Alert> alertArrayList=new ArrayList<>();
-        historyArrayList=historyDao.getHistoryList(getPhoneNumber(),1);
-        reportArrayList=reportDao.getReportList(getPhoneNumber(),1);
-        alertArrayList=alertDao.getAlertList(getPhoneNumber(),1);
-        for (History history:historyArrayList) {
-            if(!isExistHistory(history.getHistory_No()))
-            {
-                insertHistory(getPhoneNumber(),history);
-            }
-            else
-            {
-                updateHistory(getPhoneNumber(),history);
-            }
-        }
-        for (Report report:reportArrayList)
-        {
-            if(!isExistReport(report.getReport_No()))
-            {
-                insertReport(getPhoneNumber(),report);
-            }
-            else
-            {
-                updateReport(getPhoneNumber(),report);
-            }
-        }
-        for(Alert alert:alertArrayList)
-        {
-            if(!isExistAlert(alert.getAlert_No())){
-                insertAlert(getPhoneNumber(),alert);
-            }
-            else
-            {
-                updateAlert(getPhoneNumber(),alert);
-            }
-        }
-    }
-    public void sync_Upload() throws TimeoutException {
-        alertDao.SyncAlertUpload(getPhoneNumber(),getAlertList(getPhoneNumber(),1));
-        reportDao.SyncReportUpload(getPhoneNumber(),getReportList(getPhoneNumber(),1));
-        historyDao.SyncHistoryUpload(getPhoneNumber(),getHistoryList(getPhoneNumber(),1));
-    }
-
-    public Boolean isExistHistory(Integer history_No){
-        Cursor cursor=db.query("history",null,"history_No = ? AND phone_number=?",new String[]{String.valueOf(history_No), getPhoneNumber()},null,null,null);
-        return cursor != null && cursor.getCount() > 0;
-    }
-    public Boolean isExistReport(Integer report_No){
-        Cursor cursor=db.query("report",null,"report_No = ? AND phone_number=?",new String[]{String.valueOf(report_No), getPhoneNumber()},null,null,null);
-        return cursor != null && cursor.getCount() > 0;
-    }
-    public Boolean isExistAlert(Integer alert_No){
-        Cursor cursor=db.query("alert",null,"alert_No= ? AND phone_number= ?",new String[]{String.valueOf(alert_No), getPhoneNumber()},null,null,null);
-        return cursor !=null &&cursor.getCount()>0;
+    public void userLoginOut(String phoneNumber) {
+        db.delete("user", "phone_number = ?", new String[]{phoneNumber});
     }
 
     @SuppressLint("Range")
-    public ArrayList<History> getHistoryList(String account,Integer...args) {
-        ArrayList<History> historyArrayList =new ArrayList<>();
-        Cursor cursor = db.query("history", null, "phone_number = ?", new String[]{account}, null, null, null);
-        if(cursor.moveToFirst()){
-            do{
-                History history=new History();
-                history.setPhone_number(cursor.getString(cursor.getColumnIndex("phone_number")));
-                history.setHistory_No(cursor.getInt(cursor.getColumnIndex("history_No")));
-                history.setHistory_date(cursor.getString(cursor.getColumnIndex("history_date")));
-                history.setHistory_place(cursor.getString(cursor.getColumnIndex("history_place")));
-                history.setHistory_doctor(cursor.getString(cursor.getColumnIndex("history_doctor")));
-                history.setHistory_organ(cursor.getString(cursor.getColumnIndex("history_organ")));
-                history.setConclusion(cursor.getString(cursor.getColumnIndex("conclusion")));
-                history.setSymptom(cursor.getString(cursor.getColumnIndex("symptom")));
-                history.setSuggestion(cursor.getString(cursor.getColumnIndex("suggestion")));
-                history.setIs_deleted(cursor.getString(cursor.getColumnIndex("is_deleted")));
-                historyArrayList.add(history);
-            }while(cursor.moveToNext());
-        }
-        if(args.length==0)
-        {
-            Stream<History> alertStream=historyArrayList.stream();
-            historyArrayList= (ArrayList<History>) alertStream.filter(history -> history.getIs_deleted().equals("false")).collect(Collectors.toList());
+    public ArrayList<Record> getRecordList(String phoneNumber) {
+        ArrayList<Record> historyArrayList = new ArrayList<>();
+        Cursor cursor = db.query("record", null, "phone_number = ?", new String[]{phoneNumber}, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                Record record = new Record();
+                record.setPhone_number(cursor.getString(cursor.getColumnIndex("phone_number")));
+                record.setRecord_date(cursor.getString(cursor.getColumnIndex("record_date")));
+                record.setHospital(cursor.getString(cursor.getColumnIndex("hospital")));
+                record.setDoctor(cursor.getString(cursor.getColumnIndex("doctor")));
+                record.setOrgan(cursor.getString(cursor.getColumnIndex("organ")));
+                record.setConclusion(cursor.getString(cursor.getColumnIndex("conclusion")));
+                record.setSymptom(cursor.getString(cursor.getColumnIndex("symptom")));
+                record.setSuggestion(cursor.getString(cursor.getColumnIndex("suggestion")));
+                historyArrayList.add(record);
+            } while (cursor.moveToNext());
         }
         return historyArrayList;
     }
-    public Boolean insertHistory(String account,History history){
-        Boolean valueReturn=false;
+
+    public Boolean insertRecord(String phoneNumber, Record record) {
         ContentValues values = new ContentValues();
-        values.put("phone_number",account);
-        values.put("history_No",history.getHistory_No());
-        values.put("history_date",history.getHistory_date());
-        values.put("history_place",history.getHistory_place());
-        values.put("history_doctor",history.getHistory_doctor());
-        values.put("history_organ",history.getHistory_organ());
-        values.put("conclusion",history.getConclusion());
-        values.put("symptom",history.getSymptom());
-        values.put("suggestion",history.getSuggestion());
-        values.put("is_deleted","false");
-        long flag=db.insert("history", null, values);
-        if(flag>0)
-        {
-            valueReturn=true;
-        }
-        return valueReturn;
+        values.put("phone_number", phoneNumber);
+        values.put("ID", record.getID());
+        values.put("record_date", record.getRecord_date());
+        values.put("hospital", record.getHospital());
+        values.put("doctor", record.getDoctor());
+        values.put("organ", record.getOrgan());
+        values.put("conclusion", record.getConclusion());
+        values.put("symptom", record.getSymptom());
+        values.put("suggestion", record.getSuggestion());
+        long rowsAffected = db.insert("record", null, values);
+        return rowsAffected > 0;
     }
+
 //    private Integer getHistoryCount(String account) {
 //        Integer valueReturn=0;
 //        valueReturn=db.query("history", null, "phone_number = ?", new String[]{account}, null, null, null).getCount();
 //        return valueReturn+1;
 //    }
-    public Boolean updateHistory(String account,History history){
-        Boolean valueReturn=false;
+
+    public Boolean updateRecord(String phoneNumber, Record record) {
         ContentValues values = new ContentValues();
-        values.put("phone_number",account);
-        values.put("history_No",history.getHistory_No());
-        values.put("history_date",history.getHistory_date());
-        values.put("history_place",history.getHistory_place());
-        values.put("history_doctor",history.getHistory_doctor());
-        values.put("history_organ",history.getHistory_organ());
-        values.put("conclusion",history.getConclusion());
-        values.put("symptom",history.getSymptom());
-        values.put("suggestion",history.getSuggestion());
-        values.put("is_deleted",history.getIs_deleted());
-        int flag=db.update("history", values, "history_No = ? AND phone_number=?", new String[]{String.valueOf(history.getHistory_No()),account});
-        if(flag>0)
-        {
-            valueReturn=true;
-        }
-        return valueReturn;
-    }
-    public Boolean deleteHistory(String account,Integer history_No){
-        Boolean valueReturn=false;
-        ContentValues values = new ContentValues();
-        values.put("is_deleted","true");
-        int flag=db.update("history", values, "history_No = ? AND phone_number=?", new String[]{String.valueOf(history_No),account});
-        if(flag>0)
-        {
-            valueReturn=true;
-        }
-        return valueReturn;
+        values.put("phone_number", phoneNumber);
+        values.put("ID", record.getID());
+        values.put("record_date", record.getRecord_date());
+        values.put("hospital", record.getHospital());
+        values.put("doctor", record.getDoctor());
+        values.put("organ", record.getOrgan());
+        values.put("conclusion", record.getConclusion());
+        values.put("symptom", record.getSymptom());
+        values.put("suggestion", record.getSuggestion());
+        int rowsAffected = db.update("history", values, "ID = ? AND phone_number=?", new String[]{String.valueOf(record.getID()), phoneNumber});
+        return rowsAffected > 0;
     }
 
+    public Boolean deleteRecord(String phoneNumber, int ID) {
+        int rowsAffected = db.delete("history", "ID = ? AND phone_number = ?", new String[]{String.valueOf(ID), phoneNumber});
+        return rowsAffected > 0;
+    }
+
+
     @SuppressLint("Range")
-    public ArrayList<Report> getReportList(String account,Integer...args) {
-        ArrayList<Report> reportArrayList =new ArrayList<>();
-        Cursor cursor = db.query("report", null, "phone_number = ?", new String[]{account}, null, null, null);
-        if(cursor.moveToFirst()){
-            do{
-                Report report=new Report();
+    public ArrayList<Report> getReportList(String phoneNumber) {
+        ArrayList<Report> reportArrayList = new ArrayList<>();
+        Cursor cursor = db.query("report", null, "phone_number = ?", new String[]{phoneNumber}, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                Report report = new Report();
                 report.setPhone_number(cursor.getString(cursor.getColumnIndex("phone_number")));
-                report.setReport_No(cursor.getInt(cursor.getColumnIndex("report_No")));
-                report.setReport_content(cursor.getString(cursor.getColumnIndex("report_content")));
-                report.setReport_picture(cursor.getString(cursor.getColumnIndex("report_picture")));
+                report.setID(cursor.getInt(cursor.getColumnIndex("ID")));
+                report.setDetail(cursor.getString(cursor.getColumnIndex("detail")));
+                report.setPicture(cursor.getBlob(cursor.getColumnIndex("picture")));
                 report.setReport_type(cursor.getString(cursor.getColumnIndex("report_type")));
-                report.setReport_place(cursor.getString(cursor.getColumnIndex("report_place")));
+                report.setHospital(cursor.getString(cursor.getColumnIndex("hospital")));
                 report.setReport_date(cursor.getString(cursor.getColumnIndex("report_date")));
-                report.setIs_deleted(cursor.getString(cursor.getColumnIndex("is_deleted")));
                 reportArrayList.add(report);
-            }while(cursor.moveToNext());
-        }
-        if(args.length==0)
-        {
-            Stream<Report> alertStream=reportArrayList.stream();
-            reportArrayList= (ArrayList<Report>) alertStream.filter(report -> report.getIs_deleted().equals("false")).collect(Collectors.toList());
+            } while (cursor.moveToNext());
         }
         return reportArrayList;
     }
-    public Boolean insertReport(String account,Report report){
-        Boolean valueReturn=false;
+
+    public Boolean insertReport(String phoneNumber, Report report) {
         ContentValues values = new ContentValues();
-        values.put("phone_number",account);
-        values.put("report_No",report.getReport_No());
-        values.put("report_content",report.getReport_content());
-        values.put("report_picture",report.getReport_picture());
-        values.put("report_type",report.getReport_type());
-        values.put("report_place",report.getReport_place());
-        values.put("report_date",report.getReport_date());
-        values.put("is_deleted","false");
-        long flag=db.insert("report", null, values);
-        if(flag>0)
-        {
-            valueReturn=true;
-        }
-        return valueReturn;
+        values.put("phone_number", phoneNumber);
+        values.put("ID", report.getID());
+        values.put("detail", report.getDetail());
+        values.put("picture", report.getPicture().toString());
+        values.put("report_type", report.getReport_type());
+        values.put("hospital", report.getHospital());
+        values.put("report_date", report.getReport_date());
+        long rowsAffected = db.insert("report", null, values);
+        return rowsAffected > 0;
     }
+
 //    private Integer getReportCount(String account) {
 //        Integer valueReturn=0;
 //        valueReturn=db.query("report", null, "phone_number = ?", new String[]{account}, null, null, null).getCount();
 //        return valueReturn+1;
 //    }
-    public Boolean updateReport(String account,Report report){
-        Boolean valueReturn=false;
+
+    public Boolean updateReport(String phoneNumber, Report report) {
         ContentValues values = new ContentValues();
-        values.put("phone_number",account);
-        values.put("report_No",report.getReport_No());
-        values.put("report_content",report.getReport_content());
-        values.put("report_picture",report.getReport_picture());
-        values.put("report_type",report.getReport_type());
-        values.put("report_place",report.getReport_place());
-        values.put("report_date",report.getReport_date());
-        values.put("is_deleted",report.getIs_deleted());
-        int flag=db.update("report", values, "Report_No = ? AND phone_number=?", new String[]{String.valueOf(report.getReport_No()),account});
-        if(flag>0)
-        {
-            valueReturn=true;
-        }
-        return valueReturn;
+        values.put("phone_number", phoneNumber);
+        values.put("ID", report.getID());
+        values.put("detail", report.getDetail());
+        values.put("report_picture", report.getPicture().toString());
+        values.put("report_type", report.getReport_type());
+        values.put("hospital", report.getHospital());
+        values.put("report_date", report.getReport_date());
+        int rowsAffected = db.update("report", values, "ID = ? AND phone_number=?", new String[]{String.valueOf(report.getID()), phoneNumber});
+        return rowsAffected > 0;
     }
-    public Boolean deleteReport(String account,Integer Report_No){
-        Boolean valueReturn=false;
-        ContentValues values = new ContentValues();
-        values.put("is_deleted","true");
-        int flag=db.update("report", values, "Report_No = ? AND phone_number=?", new String[]{String.valueOf(Report_No),account});
-        if(flag>0)
-        {
-            valueReturn=true;
-        }
-        return valueReturn;
+
+    public Boolean deleteReport(String phoneNumber, int ID) {
+        int flag = db.delete("report", "ID = ? AND phone_number=?", new String[]{String.valueOf(ID), phoneNumber});
+        return flag > 0;
     }
 
     @SuppressLint("Range")
-    public ArrayList<Alert> getAlertList(String account,Integer...args) {
-        ArrayList<Alert> alertArrayList =new ArrayList<>();
-        Cursor cursor = db.query("alert", null, "phone_number = ?", new String[]{account}, null, null, null);
-        if(cursor.moveToFirst()){
-            do{
-                Alert alert=new Alert();
+    public ArrayList<Alert> getAlertList(String phoneNumber) {
+        ArrayList<Alert> alertArrayList = new ArrayList<>();
+        Cursor cursor = db.query("alert", null, "phone_number = ?", new String[]{phoneNumber}, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                Alert alert = new Alert();
                 alert.setPhone_number(cursor.getString(cursor.getColumnIndex("phone_number")));
-                alert.setAlert_No(cursor.getInt(cursor.getColumnIndex("alert_No")));
-                alert.setDate(cursor.getString(cursor.getColumnIndex("date")));
-                alert.setContent(cursor.getString(cursor.getColumnIndex("content")));
-                alert.setCycle(cursor.getString(cursor.getColumnIndex("cycle")));
-                alert.setType(cursor.getString(cursor.getColumnIndex("type")));
-                alert.setType_No(cursor.getInt(cursor.getColumnIndex("type_No")));
+                alert.setID(cursor.getInt(cursor.getColumnIndex("ID")));
+                alert.setAlert_date(cursor.getString(cursor.getColumnIndex("alert_date")));
+                alert.setAdvice(cursor.getString(cursor.getColumnIndex("advice")));
+                alert.setAlert_cycle(cursor.getString(cursor.getColumnIndex("alert_cycle")));
+                alert.setAlert_type(cursor.getString(cursor.getColumnIndex("alert_type")));
+                alert.setTitle(cursor.getString(cursor.getColumnIndex("title")));
                 alert.setIs_medicine(cursor.getString(cursor.getColumnIndex("is_medicine")));
-                alert.setIs_deleted(cursor.getString(cursor.getColumnIndex("is_deleted")));
                 alertArrayList.add(alert);
-            }while(cursor.moveToNext());
-        }
-        if(args.length==0)
-        {
-            Stream<Alert> alertStream=alertArrayList.stream();
-            alertArrayList= (ArrayList<Alert>) alertStream.filter(alert -> alert.getIs_deleted().equals("false")).collect(Collectors.toList());
+            } while (cursor.moveToNext());
         }
         return alertArrayList;
     }
-    public Boolean insertAlert(String account,Alert alert){
-        Boolean valueReturn=false;
-        ContentValues values=new ContentValues();
-        values.put("phone_number",account);
-        values.put("Alert_No",alert.getAlert_No());
-        values.put("date",alert.getDate());
-        values.put("cycle",alert.getCycle());
-        values.put("content",alert.getContent());
-        values.put("type",alert.getType());
-        values.put("type_No",alert.getType_No());
-        values.put("is_medicine",alert.getIs_medicine());
-        values.put("is_deleted","false");
-        long flag=db.insert("alert",null,values);
-        if(flag>0)
-        {
-            valueReturn=true;
-        }
-        return valueReturn;
+
+    public Boolean insertAlert(String phoneNumber, Alert alert) {
+        ContentValues values = new ContentValues();
+        values.put("phone_number", phoneNumber);
+        values.put("ID", alert.getID());
+        values.put("alert_date", alert.getAlert_date());
+        values.put("alert_cycle", alert.getAlert_cycle());
+        values.put("advice", alert.getAdvice());
+        values.put("alert_type", alert.getAlert_type());
+        values.put("title", alert.getTitle());
+        values.put("is_medicine", alert.getIs_medicine());
+        long rowsAffected = db.insert("alert", null, values);
+        return rowsAffected > 0;
     }
+
 //    private Integer getAlertCount(String account) {
 //        Integer valueReturn=0;
 //        valueReturn=db.query("alert", null, "phone_number = ?", new String[]{account}, null, null, null).getCount();
 //        return valueReturn+1;
 //    }
-    public Boolean updateAlert(String account,Alert alert){
-        Boolean valueReturn=false;
-        ContentValues values=new ContentValues();
-        values.put("phone_number",account);
-        values.put("Alert_No",alert.getAlert_No());
-        values.put("date",alert.getDate());
-        values.put("cycle",alert.getCycle());
-        values.put("content",alert.getContent());
-        values.put("type",alert.getType());
-        values.put("type_No",alert.getType_No());
-        values.put("is_medicine",alert.getIs_medicine());
-        values.put("is_deleted",alert.getIs_deleted());
-        int flag=db.update("alert",values,"Alert_No=? AND phone_number=?",new String[]{String.valueOf(alert.getAlert_No()),account});
-        if(flag>0)
-        {
-            valueReturn=true;
-        }
-        return valueReturn;
+
+    public Boolean updateAlert(String phoneNumber, Alert alert) {
+        ContentValues values = new ContentValues();
+        values.put("phone_number", phoneNumber);
+        values.put("ID", alert.getID());
+        values.put("alert_date", alert.getAlert_date());
+        values.put("alert_cycle", alert.getAlert_cycle());
+        values.put("advice", alert.getAdvice());
+        values.put("alert_type", alert.getAlert_type());
+        values.put("title", alert.getTitle());
+        values.put("is_medicine", alert.getIs_medicine());
+        int rowsAffected = db.update("alert", values, "ID=? AND phone_number=?", new String[]{String.valueOf(alert.getID()), phoneNumber});
+        return rowsAffected > 0;
     }
-    public Boolean deleteAlert(String account,Integer alert_No){
-        Boolean valueReturn=false;
-        ContentValues values=new ContentValues();
-        values.put("is_deleted","true");
-        int flag=db.update("alert",values,"Alert_No=? AND phone_number=?",new String[]{String.valueOf(alert_No),account});
-        if(flag>0)
-        {
-            valueReturn=true;
-        }
-        return valueReturn;
+
+    public Boolean deleteAlert(String account, Integer alert_No) {
+        int flag = db.delete("alert","Alert_No=? AND phone_number=?", new String[]{String.valueOf(alert_No), account});
+        return flag > 0;
     }
+
 //    public Boolean deleteAlert(String account,Integer alert_No){
 //        Boolean valueReturn=false;
 //        int flag=db.delete("alert","Alert_No=? AND phone_number=?",new String[]{String.valueOf(alert_No),account});
@@ -463,22 +296,22 @@ public class UserLocalDao {
 //        }
 //        return valueReturn;
 //    }
-    public static Alert getAlert(ArrayList<Alert> alertArrayList,Integer alert_No){
-        Alert alertReturn=null;
-        Stream<Alert> alertStream=alertArrayList.stream();
-        alertReturn=alertStream.filter(e->e.getAlert_No()==alert_No).collect(Collectors.toList()).get(0);
-        return alertReturn;
+
+    public static Alert getAlert(ArrayList<Alert> alertArrayList, Integer alert_No) {
+        Stream<Alert> alertStream = alertArrayList.stream();
+        Alert alert = alertStream.filter(e -> e.getID() == alert_No).collect(Collectors.toList()).get(0);
+        return alert;
     }
-    public static History getHistory(ArrayList<History> historyArrayList,Integer history_No){
-        History historyReturn=null;
-        Stream<History> historyStream=historyArrayList.stream();
-        historyReturn=historyStream.filter(e->e.getHistory_No()==history_No).collect(Collectors.toList()).get(0);
-        return historyReturn;
+
+    public static Record getHistory(ArrayList<Record> historyArrayList, Integer history_No) {
+        Stream<Record> historyStream = historyArrayList.stream();
+        Record record = historyStream.filter(e -> e.getID() == history_No).collect(Collectors.toList()).get(0);
+        return record;
     }
-    public static Report gerReport(ArrayList<Report> reportArrayList,Integer report_No){
-        Report reportReturn=null;
-        Stream<Report> reportStream=reportArrayList.stream();
-        reportReturn=reportStream.filter(e->e.getReport_No()==report_No).collect(Collectors.toList()).get(0);
-        return reportReturn;
+
+    public static Report gerReport(ArrayList<Report> reportArrayList, Integer report_No) {
+        Stream<Report> reportStream = reportArrayList.stream();
+        Report report = reportStream.filter(e -> e.getID() == report_No).collect(Collectors.toList()).get(0);
+        return report;
     }
 }

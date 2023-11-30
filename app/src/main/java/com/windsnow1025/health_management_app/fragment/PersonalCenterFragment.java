@@ -24,7 +24,7 @@ import com.windsnow1025.health_management_app.LoginActivity;
 import com.windsnow1025.health_management_app.R;
 import com.windsnow1025.health_management_app.api.GetInfoApi;
 import com.windsnow1025.health_management_app.api.UpdateBirthdayApi;
-import com.windsnow1025.health_management_app.pojo.UserInfo;
+import com.windsnow1025.health_management_app.pojo.User;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
 import java.text.ParseException;
@@ -51,7 +51,7 @@ public class PersonalCenterFragment extends Fragment implements DatePickerDialog
     private FragmentTransaction transaction;
     private UserLocalDao userLocalDao;
     private String phoneNumber;
-    private UserInfo userInfo;
+    private User userInfo;
 
 
     public PersonalCenterFragment() {

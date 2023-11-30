@@ -27,11 +27,11 @@ import com.windsnow1025.health_management_app.jdbc.AlertDao;
 import com.windsnow1025.health_management_app.jdbc.HistoryDao;
 import com.windsnow1025.health_management_app.jdbc.ReportDao;
 import com.windsnow1025.health_management_app.pojo.Alert;
-import com.windsnow1025.health_management_app.pojo.History;
+import com.windsnow1025.health_management_app.pojo.Record;
 import com.windsnow1025.health_management_app.pojo.Report;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 import com.windsnow1025.health_management_app.utils.Info;
-import com.windsnow1025.health_management_app.utils.InfoAdapter;
+import com.windsnow1025.health_management_app.utils.AlertAdapter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,7 +43,7 @@ import java.util.concurrent.TimeoutException;
 
 public class DetailsRecordFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
     private int i;
-    private  List<Info> infoList;
+    private List<Alert> alertList;
     private Button rStartAlarm;
     private Button bt_rcancel;
 
@@ -54,16 +54,16 @@ public class DetailsRecordFragment extends Fragment implements DatePickerDialog.
     private TextView rtv_hospital;
     private TextView rtv_part;
     private EditText rtv_advice;
-    InfoAdapter adapter;
+    AlertAdapter adapter;
     private boolean flag;
     private ArrayList<Report> reportArrayList;
-    private ArrayList<History> historyArrayList;
+    private ArrayList<Record> historyArrayList;
     private ArrayList<Alert> alertArrayList;
     private UserLocalDao userLocalDao;
     private ReportDao reportDao;
     private HistoryDao historyDao;
     private AlertDao alertDao;
-    private History history;
+    private Record history;
     private Report report;
     private Alert alert;
     private String userID;
@@ -75,21 +75,21 @@ public class DetailsRecordFragment extends Fragment implements DatePickerDialog.
     private int H, M;
 
     /*用于新建*/
-    public DetailsRecordFragment(boolean ismedicine, int n, boolean isreport, InfoAdapter infoAdapter) {
+    public DetailsRecordFragment(boolean isMedicine, int n, boolean isReport, AlertAdapter infoAdapter) {
         this.num = n;
-        this.ismedicine=ismedicine;
+        this.ismedicine=isMedicine;
         this.adapter = infoAdapter;
-        this.isreport = isreport;//是否为报告
+        this.isreport = isReport;//是否为报告
     }
 
     /*用于修改*/
-    public DetailsRecordFragment(boolean ismedicine, int n, InfoAdapter infoAdapter, List<Info> Infolist, int I, boolean isreport, boolean Flag) {
+    public DetailsRecordFragment(boolean isMedicine, int n, AlertAdapter infoAdapter, List<Alert> AlertList, int I, boolean isReport, boolean flag) {
         this.adapter = infoAdapter;
         this.num = n;//num为捆绑的编号
-        this.ismedicine=ismedicine;
-        this.isreport = isreport;//是否为报告
-        this.flag = Flag;//是否为修改
-        this.infoList = Infolist;
+        this.ismedicine=isMedicine;
+        this.isreport = isReport;//是否为报告
+        this.flag = flag;//是否为修改
+        this.alertList = AlertList;
         this.i = I;//i为闹钟编号
     }
 

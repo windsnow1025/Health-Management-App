@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.windsnow1025.health_management_app.R;
 import com.windsnow1025.health_management_app.TableEnterAdapter;
 import com.windsnow1025.health_management_app.jdbc.HistoryDao;
-import com.windsnow1025.health_management_app.pojo.History;
+import com.windsnow1025.health_management_app.pojo.Record;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class RecordFragment extends Fragment {
 
             // Get history list
             HistoryDao historyDao = new HistoryDao();
-            ArrayList<History> histories;
+            ArrayList<Record> histories;
             try {
                 histories=historyDao.getHistoryList(username);
                 Log.i("test","从服务器获取就诊记录");
@@ -58,19 +58,19 @@ public class RecordFragment extends Fragment {
             catch (TimeoutException e)
             {
                 Log.i("test","超时，从本地获取就诊记录");
-                histories = userLocalDao.getHistoryList(username);
+                histories = userLocalDao.getRecordList(username);
             }
 
             // Set history list to recycler view
             List<String[]> data = new ArrayList<>();
             data.add(new String[]{"时间", "医院", "部位"});
-            for (History history : histories) {
+            for (Record history : histories) {
                 data.add(new String[]{history.getHistory_date(), history.getHistory_place(), history.getHistory_organ()});
             }
 
             RecyclerView recyclerView = view.findViewById(R.id.record_recycler_view);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            ArrayList<History> finalHistories = histories;
+            ArrayList<Record> finalHistories = histories;
             recyclerView.setAdapter(new TableEnterAdapter(data, new TableEnterAdapter.OnItemClickListener() {
                 // Edit Button
                 @Override
@@ -98,7 +98,7 @@ public class RecordFragment extends Fragment {
                     catch (TimeoutException e)
                     {
                         Log.i("test","超时，从本地删除就诊记录");
-                        userLocalDao.deleteHistory(username, record_id);
+                        userLocalDao.deleteRecord(username, record_id);
                     }
 
                     // Reload fragment

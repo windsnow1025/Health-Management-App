@@ -14,8 +14,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.windsnow1025.health_management_app.R;
-import com.windsnow1025.health_management_app.jdbc.HistoryDao;
-import com.windsnow1025.health_management_app.pojo.History;
+import com.windsnow1025.health_management_app.pojo.Record;
+import com.windsnow1025.health_management_app.pojo.User;
+import com.windsnow1025.health_management_app.sqlite.RecordDao;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
 import java.util.Calendar;
@@ -28,18 +29,19 @@ public class EnterRecordFragment extends Fragment {
 
     String date;
     String hospital;
-    String type;
+    String doctor;
     String symptom;
     String conclusion;
     String suggestion;
 
     EditText editTextDate;
     EditText editTextHospital;
-    EditText editTextType;
+    EditText editTextDoctor;
     EditText editTextOrgan;
     EditText editTextSymptom;
     EditText editTextConclusion;
     EditText editTextSuggestion;
+    UserLocalDao userLocalDao;
 
     public EnterRecordFragment(String organ) {
         this.organ = organ;
@@ -56,7 +58,7 @@ public class EnterRecordFragment extends Fragment {
 
         // Get username
         try {
-            UserLocalDao userLocalDao = new UserLocalDao(getContext());
+            userLocalDao = new UserLocalDao(getContext());
             userLocalDao.open();
             username = userLocalDao.getPhoneNumber();
         } catch (Exception e) {
@@ -66,7 +68,7 @@ public class EnterRecordFragment extends Fragment {
         // Get views
         editTextDate = view.findViewById(R.id.editTextDate);
         editTextHospital = view.findViewById(R.id.editTextHospital);
-        editTextType = view.findViewById(R.id.editTextType);
+        editTextDoctor = view.findViewById(R.id.editTextDoctor);
         editTextOrgan = view.findViewById(R.id.editTextOrgan);
         editTextSymptom = view.findViewById(R.id.editTextSymptom);
         editTextConclusion = view.findViewById(R.id.editTextConclusion);
@@ -103,45 +105,41 @@ public class EnterRecordFragment extends Fragment {
 
         // Confirm button
         Button buttonConfirm = view.findViewById(R.id.buttonConfirm);
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get data
-                date = editTextDate.getText().toString();
-                hospital = editTextHospital.getText().toString();
-                type = editTextType.getText().toString();
-                organ = editTextOrgan.getText().toString();
-                symptom = editTextSymptom.getText().toString();
-                conclusion = editTextConclusion.getText().toString();
-                suggestion = editTextSuggestion.getText().toString();
+        buttonConfirm.setOnClickListener(v -> {
+            // Get data
+            date = editTextDate.getText().toString();
+            hospital = editTextHospital.getText().toString();
+            doctor = editTextDoctor.getText().toString();
+            organ = editTextOrgan.getText().toString();
+            symptom = editTextSymptom.getText().toString();
+            conclusion = editTextConclusion.getText().toString();
+            suggestion = editTextSuggestion.getText().toString();
 
-                // Insert data into database
-                Boolean insertStatus = false;
-                Log.i("主线程", "数据库测试开始");
-                HistoryDao historyDao = new HistoryDao();
-                History history = new History();
-                history.setHistory_date(date);
-                history.setHistory_place(hospital);
-                history.setHistory_organ(type);
-                history.setHistory_organ(organ);
-                history.setSymptom(symptom);
-                history.setConclusion(conclusion);
-                history.setSuggestion(suggestion);
-                history.setIs_deleted("false");
-                try {
-                    insertStatus = historyDao.insertHistory(username, history);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                Log.i("主线程", "记录插入情况" + insertStatus);
-                Log.i("主线程", "数据库测试结束");
-
-                // Jump to organ page
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new OrganFragment(organ));
-                transaction.addToBackStack(null);
-                transaction.commit();
+            // Insert data into database
+            Boolean insertStatus = false;
+            Log.i("主线程", "数据库测试开始");
+            RecordDao recordDao = new RecordDao();
+            Record history = new Record();
+            history.setRecord_date(date);
+            history.setHospital(hospital);
+            history.setDoctor(doctor);
+            history.setOrgan(organ);
+            history.setSymptom(symptom);
+            history.setConclusion(conclusion);
+            history.setSuggestion(suggestion);
+            try {
+                insertStatus = userLocalDao.insertRecord(username, history);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            Log.i("主线程", "记录插入情况" + insertStatus);
+            Log.i("主线程", "数据库测试结束");
+
+            // Jump to organ page
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, new OrganFragment(organ));
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
         return view;

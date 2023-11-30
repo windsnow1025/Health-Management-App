@@ -18,7 +18,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.windsnow1025.health_management_app.LoginActivity;
 import com.windsnow1025.health_management_app.R;
 import com.windsnow1025.health_management_app.api.GetInfoApi;
-import com.windsnow1025.health_management_app.jdbc.AlertDao;
 import com.windsnow1025.health_management_app.pojo.Alert;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
@@ -40,7 +39,6 @@ public class HomeFragment extends Fragment {
     private TextView tv_kefu;
     private TextView tv_setting;
     private static String phoneNumber;
-    private AlertDao alertDao;
 
     private UserLocalDao userLocalDao;
     private String userID;
@@ -71,11 +69,7 @@ public class HomeFragment extends Fragment {
     }
 
     void load() {
-        try {
-            alertArrayList = alertDao.getAlertList(userID);
-        } catch (TimeoutException e) {
-            throw new RuntimeException(e);
-        }
+        alertArrayList = userLocalDao.getAlertList(userID);
         int x = userLocalDao.getAlertList(userID).size();
         if (x > 0) {
             for (int i = x; i >= 0; i--) {
@@ -94,7 +88,6 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
-        alertDao = new AlertDao();
         userID = userLocalDao.getPhoneNumber();
         try {
             init(view);

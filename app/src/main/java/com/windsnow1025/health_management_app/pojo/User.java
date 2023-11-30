@@ -1,19 +1,19 @@
 package com.windsnow1025.health_management_app.pojo;
 
-public class UserInfo {
+import java.io.Serializable;
+
+public class User implements Serializable {
     String phone_number;
     String username;
-    String email;
     String birthday;
     String sex;
 
-    public UserInfo() {
+    public User() {
     }
 
-    public UserInfo(String phone_number, String username, String email, String birthday, String sex) {
+    public User(String phone_number, String username, String birthday, String sex) {
         this.phone_number = phone_number;
         this.username = username;
-        this.email = email;
         this.birthday = birthday;
         this.sex = sex;
     }
@@ -32,14 +32,6 @@ public class UserInfo {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getBirthday() {

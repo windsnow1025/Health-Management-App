@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.windsnow1025.health_management_app.R;
-import com.windsnow1025.health_management_app.pojo.UserInfo;
+import com.windsnow1025.health_management_app.pojo.User;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
 // Logcat Filter:
@@ -27,7 +27,7 @@ public class MainFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Init user
-        UserInfo userInfo = new UserInfo();
+        User userInfo = new User();
         UserLocalDao userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
 
