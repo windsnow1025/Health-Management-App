@@ -53,7 +53,7 @@ public class SetAlertFragment extends Fragment {
          view = inflater.inflate(R.layout.fragment_alert_set, container, false);
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
-        userID=userLocalDao.getUser();
+        userID=userLocalDao.getPhoneNumber();
         reportDao=new ReportDao();
         historyDao=new HistoryDao();
         try {

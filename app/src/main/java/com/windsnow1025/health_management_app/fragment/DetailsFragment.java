@@ -184,7 +184,7 @@ public class DetailsFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
-        userID = userLocalDao.getUser();
+        userID = userLocalDao.getPhoneNumber();
         alertArrayList=userLocalDao.getAlertList(userID);
         reportDao = new ReportDao();
         historyDao = new HistoryDao();

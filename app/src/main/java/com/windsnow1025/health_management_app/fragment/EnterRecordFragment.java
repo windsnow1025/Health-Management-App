@@ -58,7 +58,7 @@ public class EnterRecordFragment extends Fragment {
         try {
             UserLocalDao userLocalDao = new UserLocalDao(getContext());
             userLocalDao.open();
-            username = userLocalDao.getUser();
+            username = userLocalDao.getPhoneNumber();
         } catch (Exception e) {
             e.printStackTrace();
         }

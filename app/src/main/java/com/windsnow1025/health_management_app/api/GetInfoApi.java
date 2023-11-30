@@ -3,6 +3,8 @@ package com.windsnow1025.health_management_app.api;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.windsnow1025.health_management_app.pojo.UserInfo;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,38 +15,30 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class UpdatePasswordApi extends AsyncTask<String, Void, String> {
+public class GetInfoApi extends AsyncTask<String, Void, String> {
 
-    private static final String API_URL_UPDATE_PASSWORD = "https://www.windsnow1025.com/learn/api/android/user/password";
+    private static final String API_URL_GET = "https://www.windsnow1025.com/learn/api/android/user/info";
 
     @Override
     protected String doInBackground(String... params) {
         String phoneNumber = params[0];
-        String password = params[1];
+
 
         // 先调用登录API获取用户信息
-        String apiResult = callApi(phoneNumber, password);
+        String apiResult = callApi(phoneNumber);
         return apiResult;
     }
 
-    private String callApi(String phoneNumber, String password) {
+    private String callApi(String phoneNumber) {
         HttpURLConnection urlConnection = null;
 
         try {
-            URL url = new URL(API_URL_UPDATE_PASSWORD);
+            // 构建带有查询参数的URL
+            URL url = new URL(API_URL_GET + "?phoneNumber=" + phoneNumber);
             urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("PUT");
-            urlConnection.setRequestProperty("Content-Type", "application/json");
-            urlConnection.setDoOutput(true);
 
-            // 构建请求体
-            JSONObject jsonParam = new JSONObject();
-            jsonParam.put("phoneNumber", phoneNumber);
-            jsonParam.put("password", password);
-
-            OutputStream outputStream = urlConnection.getOutputStream();
-            outputStream.write(jsonParam.toString().getBytes("UTF-8"));
-            outputStream.close();
+            // 设置请求方法为GET
+            urlConnection.setRequestMethod("GET");
 
             int responseCode = urlConnection.getResponseCode();
 
@@ -62,7 +56,7 @@ public class UpdatePasswordApi extends AsyncTask<String, Void, String> {
             } else {
                 return "HTTP请求失败，响应码: " + responseCode;
             }
-        } catch (IOException | JSONException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return "发生异常: " + e.getMessage();
         } finally {
@@ -72,18 +66,33 @@ public class UpdatePasswordApi extends AsyncTask<String, Void, String> {
         }
     }
 
-    // 用于提交密码并返回是否更新成功
-    public String updatePassword(String phoneNumber, String password) {
-        // 调用异步任务的 execute 方法，将手机号和密码作为参数传递
-        execute(phoneNumber, password);
+    // 用于检查用户密码并返回手机号
+    public UserInfo getUserInformation(String phoneNumber) {
+        // 调用异步任务的 execute 方法，将用户名作为参数传递
+        execute(phoneNumber);
         try {
-            JSONObject jsonResponse = new JSONObject(get());
-            // 提取并返回API响应中的手机号
-            return jsonResponse.getString("message");
-            // 获取异步任务的结果
+            // 获取异步任务的结果，即API响应
+            String apiResult = get();
+
+            UserInfo userInfo = new UserInfo();
+            try {
+                // 从API响应中提取用户信息
+                JSONObject jsonResponse = new JSONObject(apiResult);
+
+                userInfo.setPhone_number(jsonResponse.getString("phoneNumber"));
+                userInfo.setUsername(jsonResponse.getString("username"));
+                userInfo.setEmail(null);
+                userInfo.setSex(jsonResponse.getString("sex"));
+                userInfo.setBirthday(jsonResponse.getString("birthday"));
+
+                return userInfo;
+            } catch (JSONException e) {
+                e.printStackTrace();
+                throw new RuntimeException("解析用户信息时发生异常: " + e.getMessage());
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return null; // 或者返回空字符串，取决于你的需求
+            throw new RuntimeException("获取用户信息时发生异常: " + e.getMessage());
         }
     }
 
@@ -98,4 +107,3 @@ public class UpdatePasswordApi extends AsyncTask<String, Void, String> {
         }
     }
 }
-

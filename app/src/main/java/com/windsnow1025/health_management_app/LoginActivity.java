@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.windsnow1025.health_management_app.api.GetInfoApi;
 import com.windsnow1025.health_management_app.api.SigninApi;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 import com.windsnow1025.health_management_app.utils.MainApplication;
@@ -135,16 +136,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     editor.putString("phone", et_phone.getText().toString());
                     editor.putString("password", et_password.getText().toString());
                     editor.apply();
-                    SigninApi signinApi = new SigninApi();
-                    userLocalDao.addOrUpdateUser(signinApi.getUserInformation(username,password));
+                    GetInfoApi get = new GetInfoApi();
+                    userLocalDao.addOrUpdateUser(get.getUserInformation(username));
                     startActivity(intent);
                 } else {
                     SharedPreferences.Editor editor = mShared.edit();
                     editor.putString("phone", "");
                     editor.putString("password", "");
                     editor.apply();
-                    SigninApi signinApi = new SigninApi();
-                    userLocalDao.addOrUpdateUser(signinApi.getUserInformation(username,password));
+                    GetInfoApi getInfoApi = new GetInfoApi();
+                    userLocalDao.addOrUpdateUser(getInfoApi.getUserInformation(username));
                     startActivity(intent);
                 }
             } else Toast.makeText(this, "用户名或密码错误", Toast.LENGTH_SHORT).show();

@@ -26,11 +26,11 @@ public class SignupApi extends AsyncTask<String, Void, String> {
         String birthday = params[4];
 
         // 先调用登录API获取用户信息
-        String apiResult = callSignInApi(phoneNumber, password,sex,birthday);
+        String apiResult = callApi(phoneNumber, password,sex,birthday);
         return apiResult;
     }
 
-    private String callSignInApi(String phoneNumber, String password, String sex, String birthday) {
+    private String callApi(String phoneNumber, String password, String sex, String birthday) {
         HttpURLConnection urlConnection = null;
 
         try {

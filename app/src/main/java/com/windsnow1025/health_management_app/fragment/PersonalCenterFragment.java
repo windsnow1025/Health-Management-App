@@ -22,7 +22,8 @@ import android.widget.Toast;
 
 import com.windsnow1025.health_management_app.LoginActivity;
 import com.windsnow1025.health_management_app.R;
-import com.windsnow1025.health_management_app.jdbc.UserDao;
+import com.windsnow1025.health_management_app.api.GetInfoApi;
+import com.windsnow1025.health_management_app.api.UpdateBirthdayApi;
 import com.windsnow1025.health_management_app.pojo.UserInfo;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
@@ -30,8 +31,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.concurrent.TimeoutException;
 
 
 public class PersonalCenterFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
@@ -39,7 +38,6 @@ public class PersonalCenterFragment extends Fragment implements DatePickerDialog
     private Button bt_back;
     private Button bt_username;
     private Button bt_password;
-    private Button bt_email;
     private Button bt_exit;
     private Button bt_age;
 
@@ -51,9 +49,8 @@ public class PersonalCenterFragment extends Fragment implements DatePickerDialog
     private int age;
     private Boolean flag = false;
     private FragmentTransaction transaction;
-    private UserDao userDao;
     private UserLocalDao userLocalDao;
-    private String userID;
+    private String phoneNumber;
     private UserInfo userInfo;
 
 
@@ -65,26 +62,23 @@ public class PersonalCenterFragment extends Fragment implements DatePickerDialog
         et_password = view.findViewById(R.id.et_password);
         bt_username = view.findViewById(R.id.bt_username);
         bt_password = view.findViewById(R.id.bt_password);
-        bt_email = view.findViewById(R.id.bt_email);
         bt_username.setOnClickListener(new btListener());
         bt_password.setOnClickListener(new btListener());
-        bt_email.setOnClickListener(new btListener());
         bt_back = view.findViewById(R.id.bt_back);
         bt_back.setOnClickListener(new btListener());
         bt_exit = view.findViewById(R.id.bt_exit);
         bt_exit.setOnClickListener(new btListener());
         tv_age = view.findViewById(R.id.tv_age);
         bt_age = view.findViewById(R.id.bt_age);
-        userID = userLocalDao.getUser();
-        userInfo = userLocalDao.getUserInfo(userID);
-        tv_age.setText(getAge(parse(userLocalDao.getUserInfo(userID).getBirthday())));
+        phoneNumber = userLocalDao.getPhoneNumber();
+        userInfo = userLocalDao.getUserInfo(phoneNumber);
+        tv_age.setText(getAge(parse(userLocalDao.getUserInfo(phoneNumber).getBirthday())));
     }
 
     @SuppressLint("MissingInflatedId")
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_personal_center, container, false);
-        userDao = new UserDao();
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
         try {
@@ -127,14 +121,11 @@ public class PersonalCenterFragment extends Fragment implements DatePickerDialog
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            HashMap<String, String> hashMap = new HashMap<>();
-            hashMap.put("birthday", year + "-" + (month + 1) + "-" + dayOfMonth);
-            try {
-                userDao.updateUserInformation(userID, hashMap);
-                userLocalDao.addOrUpdateUser(userDao.getUserInformation(userID));
-            } catch (TimeoutException e) {
-                throw new RuntimeException(e);
-            }
+            String birthday=year + "-" + (month + 1) + "-" + dayOfMonth;
+            UpdateBirthdayApi updateBirthdayApi = new UpdateBirthdayApi();
+            updateBirthdayApi.updateBirthday(phoneNumber, birthday);
+            GetInfoApi getInfoApi = new GetInfoApi();
+            userLocalDao.addOrUpdateUser(getInfoApi.getUserInformation(phoneNumber));
         } else {
             Toast.makeText(getContext(), "出生日期不能小于当前日期", Toast.LENGTH_SHORT).show();
         }
@@ -156,11 +147,6 @@ public class PersonalCenterFragment extends Fragment implements DatePickerDialog
                 transaction.replace(R.id.fragment_container, new SetPasswordFragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
-            } else if (id == R.id.bt_email) {
-                transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new SetEmailFragment());
-                transaction.addToBackStack(null);
-                transaction.commit();
             } else if (id == R.id.bt_back) {
                 getParentFragmentManager().popBackStack();
             } else if (id == R.id.bt_exit) {
@@ -171,7 +157,7 @@ public class PersonalCenterFragment extends Fragment implements DatePickerDialog
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(getActivity(), LoginActivity.class);
-                        userLocalDao.userLoginOut(userID);
+                        userLocalDao.userLoginOut(phoneNumber);
                         startActivity(intent);
                     }
                 });

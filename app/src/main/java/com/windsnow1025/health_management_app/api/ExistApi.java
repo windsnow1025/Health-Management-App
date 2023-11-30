@@ -20,14 +20,11 @@ public class ExistApi extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         String phoneNumber = params[0];
-
-
-        // 先调用登录API获取用户信息
-        String apiResult = callSignInApi(phoneNumber);
+        String apiResult = callApi(phoneNumber);
         return apiResult;
     }
 
-    private String callSignInApi(String phoneNumber) {
+    private String callApi(String phoneNumber) {
         HttpURLConnection urlConnection = null;
 
         try {

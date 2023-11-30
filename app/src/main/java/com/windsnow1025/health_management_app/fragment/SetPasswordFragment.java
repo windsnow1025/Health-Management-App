@@ -17,11 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.windsnow1025.health_management_app.R;
-import com.windsnow1025.health_management_app.jdbc.UserDao;
+import com.windsnow1025.health_management_app.api.UpdatePasswordApi;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
-
-import java.util.HashMap;
-import java.util.concurrent.TimeoutException;
 
 
 public class SetPasswordFragment extends Fragment {
@@ -33,9 +30,8 @@ public class SetPasswordFragment extends Fragment {
     private EditText et_password1;
     private EditText et_password2;
     private TextView tv_password;
-    private UserDao userDao;
     private UserLocalDao userLocalDao;
-    private String username;
+    private String phoneNumber;
 
     public SetPasswordFragment() {
         // Required empty public constructor
@@ -57,10 +53,9 @@ public class SetPasswordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_st_pass, container, false);
-        userDao = new UserDao();
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
-        username=userLocalDao.getUser();
+        phoneNumber =userLocalDao.getPhoneNumber();
         init(view);
         bt_eye.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,23 +86,18 @@ public class SetPasswordFragment extends Fragment {
                 getParentFragmentManager().popBackStack();
             } else if (id == R.id.bt_set) {
                 /*验证密码*/
-                String password1 = et_password1.getText().toString();
-                String password2 = et_password2.getText().toString();
-                if (password1.equals("") || password2.equals("")) {
+                String newPassword = et_password1.getText().toString();
+                String passwordRepeat = et_password2.getText().toString();
+                if (newPassword.equals("") || passwordRepeat.equals("")) {
                     Toast.makeText(getContext(), "密码不能为空", Toast.LENGTH_SHORT).show();
-                } else if (password1.equals(password2)) {
+                } else if (newPassword.equals(passwordRepeat)) {
                     Toast.makeText(getContext(), "密码修改成功", Toast.LENGTH_SHORT).show();
-                    tv_password.setText(password1);
+                    tv_password.setText(newPassword);
                     et_password1.setText("");
                     et_password2.setText("");
                     et_password2.clearFocus();
-                    HashMap<String, String> hashMap = new HashMap<>();
-                    hashMap.put("password", password1);
-                    try {
-                        userDao.updateUserInformation(username, hashMap);
-                    } catch (TimeoutException e) {
-                        throw new RuntimeException(e);
-                    }
+                    UpdatePasswordApi updatePasswordApi = new UpdatePasswordApi();
+                    updatePasswordApi.updatePassword(phoneNumber,newPassword);
                 } else {
                     Toast.makeText(getContext(), "密码不正确，请再次确认", Toast.LENGTH_SHORT).show();
                 }

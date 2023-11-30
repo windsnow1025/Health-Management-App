@@ -71,7 +71,7 @@ public class EditRecordFragment extends Fragment {
             // Get username
             UserLocalDao userLocalDao = new UserLocalDao(getContext());
             userLocalDao.open();
-            username = userLocalDao.getUser();
+            username = userLocalDao.getPhoneNumber();
 
             // Get record
             HistoryDao historyDao = new HistoryDao();

@@ -46,7 +46,7 @@ public class ReportFragment extends Fragment {
             // Get username
             UserLocalDao userLocalDao = new UserLocalDao(getContext());
             userLocalDao.open();
-            String username = userLocalDao.getUser();
+            String username = userLocalDao.getPhoneNumber();
 
             // Get report list
             ReportDao reportDao = new ReportDao();

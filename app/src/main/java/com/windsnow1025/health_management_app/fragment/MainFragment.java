@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.windsnow1025.health_management_app.R;
-import com.windsnow1025.health_management_app.jdbc.UserDao;
 import com.windsnow1025.health_management_app.pojo.UserInfo;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
@@ -34,17 +33,12 @@ public class MainFragment extends Fragment {
 
         // Get Sex
         String gender = "male";
-        String username;
-        username = userLocalDao.getUser();
-        try {
-            userInfo = new UserDao().getUserInformation(username);
-            gender = userInfo.getSex();
-            Log.i("test", "从服务器获取用户数据");
-        } catch (Exception e) {
-            Log.i("test", "超时，从本地获取用户数据");
-            userInfo = userLocalDao.getUserInfo(username);
-            gender = userInfo.getSex();
-        }
+        String phoneNumber;
+        phoneNumber = userLocalDao.getPhoneNumber();
+        Log.i("test", "这里把从服务器获取数据删了，从本地获取用户数据");
+        userInfo = userLocalDao.getUserInfo(phoneNumber);
+        gender = userInfo.getSex();
+
 
         // Set Image
         ImageView imageAnatomy = view.findViewById(R.id.imageAnatomy);

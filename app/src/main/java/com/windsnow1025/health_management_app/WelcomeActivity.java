@@ -32,7 +32,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 }
                 userLocalDao = new UserLocalDao(getApplicationContext());
                 userLocalDao.open();
-                userID = userLocalDao.getUser();
+                userID = userLocalDao.getPhoneNumber();
                 Intent intent = new Intent();
                 if (userID==null) {
                     intent.setClass(WelcomeActivity.this, LoginActivity.class);

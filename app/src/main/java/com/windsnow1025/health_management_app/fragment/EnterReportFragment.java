@@ -83,7 +83,7 @@ public class EnterReportFragment extends Fragment {
         try {
             UserLocalDao userLocalDao = new UserLocalDao(this.getActivity().getApplicationContext());
             userLocalDao.open();
-            username = userLocalDao.getUser();
+            username = userLocalDao.getPhoneNumber();
         } catch (Exception e) {
             e.printStackTrace();
         }

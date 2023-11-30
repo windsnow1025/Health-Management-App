@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteException;
 import com.windsnow1025.health_management_app.jdbc.AlertDao;
 import com.windsnow1025.health_management_app.jdbc.HistoryDao;
 import com.windsnow1025.health_management_app.jdbc.ReportDao;
-import com.windsnow1025.health_management_app.jdbc.UserDao;
 import com.windsnow1025.health_management_app.pojo.Alert;
 import com.windsnow1025.health_management_app.pojo.History;
 import com.windsnow1025.health_management_app.pojo.Report;
@@ -26,19 +25,16 @@ public class UserLocalDao {
     private Context context;         //上下文
     private SqliteHelper dbHelper; //数据库访问对象
     private SQLiteDatabase db;       //可对数据库进行读写的操作对象
-    private UserDao userDao; //用于数据同步
     private ReportDao reportDao;
     private HistoryDao historyDao;
     private AlertDao alertDao;
     public UserLocalDao(Context context) {
         this.context = context;
-        userDao=new UserDao();
         reportDao=new ReportDao();
         historyDao=new HistoryDao();
         alertDao=new AlertDao();
     }
     public UserLocalDao(){
-        userDao=new UserDao();
         reportDao=new ReportDao();
         historyDao=new HistoryDao();
         alertDao=new AlertDao();
@@ -61,7 +57,7 @@ public class UserLocalDao {
     }
     //获取当前登录账号
     @SuppressLint("Range")
-    public String getUser(){
+    public String getPhoneNumber(){
         String stringReturn = null;
         Cursor cursor = db.query("user", null, "is_login = ?", new String[]{"true"}, null, null, null);
         if(cursor.moveToFirst()){
@@ -162,57 +158,57 @@ public class UserLocalDao {
         ArrayList<History> historyArrayList=new ArrayList<>();
         ArrayList<Report> reportArrayList=new ArrayList<>();
         ArrayList<Alert> alertArrayList=new ArrayList<>();
-        historyArrayList=historyDao.getHistoryList(getUser(),1);
-        reportArrayList=reportDao.getReportList(getUser(),1);
-        alertArrayList=alertDao.getAlertList(getUser(),1);
+        historyArrayList=historyDao.getHistoryList(getPhoneNumber(),1);
+        reportArrayList=reportDao.getReportList(getPhoneNumber(),1);
+        alertArrayList=alertDao.getAlertList(getPhoneNumber(),1);
         for (History history:historyArrayList) {
             if(!isExistHistory(history.getHistory_No()))
             {
-                insertHistory(getUser(),history);
+                insertHistory(getPhoneNumber(),history);
             }
             else
             {
-                updateHistory(getUser(),history);
+                updateHistory(getPhoneNumber(),history);
             }
         }
         for (Report report:reportArrayList)
         {
             if(!isExistReport(report.getReport_No()))
             {
-                insertReport(getUser(),report);
+                insertReport(getPhoneNumber(),report);
             }
             else
             {
-                updateReport(getUser(),report);
+                updateReport(getPhoneNumber(),report);
             }
         }
         for(Alert alert:alertArrayList)
         {
             if(!isExistAlert(alert.getAlert_No())){
-                insertAlert(getUser(),alert);
+                insertAlert(getPhoneNumber(),alert);
             }
             else
             {
-                updateAlert(getUser(),alert);
+                updateAlert(getPhoneNumber(),alert);
             }
         }
     }
     public void sync_Upload() throws TimeoutException {
-        alertDao.SyncAlertUpload(getUser(),getAlertList(getUser(),1));
-        reportDao.SyncReportUpload(getUser(),getReportList(getUser(),1));
-        historyDao.SyncHistoryUpload(getUser(),getHistoryList(getUser(),1));
+        alertDao.SyncAlertUpload(getPhoneNumber(),getAlertList(getPhoneNumber(),1));
+        reportDao.SyncReportUpload(getPhoneNumber(),getReportList(getPhoneNumber(),1));
+        historyDao.SyncHistoryUpload(getPhoneNumber(),getHistoryList(getPhoneNumber(),1));
     }
 
     public Boolean isExistHistory(Integer history_No){
-        Cursor cursor=db.query("history",null,"history_No = ? AND phone_number=?",new String[]{String.valueOf(history_No),getUser()},null,null,null);
+        Cursor cursor=db.query("history",null,"history_No = ? AND phone_number=?",new String[]{String.valueOf(history_No), getPhoneNumber()},null,null,null);
         return cursor != null && cursor.getCount() > 0;
     }
     public Boolean isExistReport(Integer report_No){
-        Cursor cursor=db.query("report",null,"report_No = ? AND phone_number=?",new String[]{String.valueOf(report_No),getUser()},null,null,null);
+        Cursor cursor=db.query("report",null,"report_No = ? AND phone_number=?",new String[]{String.valueOf(report_No), getPhoneNumber()},null,null,null);
         return cursor != null && cursor.getCount() > 0;
     }
     public Boolean isExistAlert(Integer alert_No){
-        Cursor cursor=db.query("alert",null,"alert_No= ? AND phone_number= ?",new String[]{String.valueOf(alert_No),getUser()},null,null,null);
+        Cursor cursor=db.query("alert",null,"alert_No= ? AND phone_number= ?",new String[]{String.valueOf(alert_No), getPhoneNumber()},null,null,null);
         return cursor !=null &&cursor.getCount()>0;
     }
 

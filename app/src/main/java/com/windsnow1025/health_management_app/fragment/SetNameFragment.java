@@ -14,11 +14,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.windsnow1025.health_management_app.R;
-import com.windsnow1025.health_management_app.jdbc.UserDao;
+import com.windsnow1025.health_management_app.api.GetInfoApi;
+import com.windsnow1025.health_management_app.api.UpdateUsernameApi;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
-
-import java.util.HashMap;
-import java.util.concurrent.TimeoutException;
 
 public class SetNameFragment extends Fragment {
 
@@ -26,9 +24,8 @@ public class SetNameFragment extends Fragment {
     private Button bt_set;
     private EditText et_name;
     private TextView tv_name;
-    private UserDao userDao;
     private UserLocalDao userLocalDao;
-    private String username;
+    private String phoneNumber;
     public SetNameFragment() {
         // Required empty public constructor
     }
@@ -47,12 +44,11 @@ public class SetNameFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_st_name, container, false);
-        userDao = new UserDao();
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
-        username=userLocalDao.getUser();
+        phoneNumber =userLocalDao.getPhoneNumber();
         init(view);
-        tv_name.setText(userLocalDao.getUserInfo(username).getUsername()+"");
+        tv_name.setText(userLocalDao.getUserInfo(phoneNumber).getUsername()+"");
         return view;
     }
     private class BTlistener implements View.OnClickListener{
@@ -63,23 +59,19 @@ public class SetNameFragment extends Fragment {
             if (id == R.id.bt_back) {
                 getParentFragmentManager().popBackStack();
             } else if (id == R.id.bt_set) {
-                String username1=et_name.getText().toString();
-                if(!username1.equals("")){
-                    HashMap<String, String> hashMap = new HashMap<>();
-                    hashMap.put("username", username1);
+                String newUsername=et_name.getText().toString();
+                if(!newUsername.equals("")){
                     try {
-                        try {
-                            userDao.updateUserInformation(username, hashMap);
-                            userLocalDao.addOrUpdateUser(userDao.getUserInformation(username));
-                        } catch (TimeoutException e) {
-                            throw new RuntimeException(e);
-                        }
+                        UpdateUsernameApi updateUsernameApi = new UpdateUsernameApi();
+                        updateUsernameApi.updateUsername(phoneNumber,newUsername);
+                        GetInfoApi getInfoApi = new GetInfoApi();
+                        userLocalDao.addOrUpdateUser(getInfoApi.getUserInformation(phoneNumber));
                         Toast.makeText(getContext(), "用户名称修改成功", Toast.LENGTH_SHORT).show();
-                        tv_name.setText(username1);
+                        tv_name.setText(newUsername);
                         et_name.setText("");
                         et_name.clearFocus();
-                    } finally {
-
+                    }catch (Exception e){
+                        Toast.makeText(getContext(), "用户名称修改失败", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

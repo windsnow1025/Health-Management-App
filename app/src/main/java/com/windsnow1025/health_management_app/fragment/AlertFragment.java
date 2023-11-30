@@ -84,7 +84,7 @@ public class AlertFragment extends Fragment {
 
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
-        userID = userLocalDao.getUser();
+        userID = userLocalDao.getPhoneNumber();
         alertDao = new AlertDao();
         load();
         infoList = getInfoList();

@@ -17,8 +17,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.windsnow1025.health_management_app.LoginActivity;
 import com.windsnow1025.health_management_app.R;
+import com.windsnow1025.health_management_app.api.GetInfoApi;
 import com.windsnow1025.health_management_app.jdbc.AlertDao;
-import com.windsnow1025.health_management_app.jdbc.UserDao;
 import com.windsnow1025.health_management_app.pojo.Alert;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
@@ -39,8 +39,7 @@ public class HomeFragment extends Fragment {
     private TextView tv_exchange;
     private TextView tv_kefu;
     private TextView tv_setting;
-    private static String username;
-    private UserDao userDao;
+    private static String phoneNumber;
     private AlertDao alertDao;
 
     private UserLocalDao userLocalDao;
@@ -65,9 +64,10 @@ public class HomeFragment extends Fragment {
         imageButton3 = view.findViewById(R.id.imageButton3);
         bt_disease = view.findViewById(R.id.bt_disease);
         bt_kefu = view.findViewById(R.id.bt_kefu);
-        username = userLocalDao.getUser();
-        String ID = userLocalDao.getUserInfo(username).getPhone_number();
-        userLocalDao.addOrUpdateUser(userDao.getUserInformation(ID));
+        phoneNumber = userLocalDao.getPhoneNumber();
+        GetInfoApi getInfoApi = new GetInfoApi();
+        String phoneNumber = userLocalDao.getUserInfo(HomeFragment.phoneNumber).getPhone_number();
+        userLocalDao.addOrUpdateUser(getInfoApi.getUserInformation(phoneNumber));
     }
 
     void load() {
@@ -92,20 +92,19 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        userDao = new UserDao();
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
         alertDao = new AlertDao();
-        userID = userLocalDao.getUser();
+        userID = userLocalDao.getPhoneNumber();
         try {
             init(view);
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
         }
         /*若用户已登录则让按钮失效*/
-        if (username != null) {
+        if (phoneNumber != null) {
             tv_user.setEnabled(false);
-            tv_user.setText(username);
+            tv_user.setText(phoneNumber);
         } else tv_user.setText("请先登录!");
         tv_user.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,7 +150,7 @@ public class HomeFragment extends Fragment {
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(getActivity(), LoginActivity.class);
-                        userLocalDao.userLoginOut(username);
+                        userLocalDao.userLoginOut(phoneNumber);
                         startActivity(intent);
                     }
                 });

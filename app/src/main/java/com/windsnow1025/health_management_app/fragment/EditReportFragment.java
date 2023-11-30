@@ -91,7 +91,7 @@ public class EditReportFragment extends Fragment {
             // Get username
             UserLocalDao userLocalDao = new UserLocalDao(getContext());
             userLocalDao.open();
-            username = userLocalDao.getUser();
+            username = userLocalDao.getPhoneNumber();
 
             // Get record
             ReportDao reportDao = new ReportDao();
