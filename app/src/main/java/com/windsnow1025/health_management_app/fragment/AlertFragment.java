@@ -17,7 +17,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.windsnow1025.health_management_app.R;
 import com.windsnow1025.health_management_app.pojo.Alert;
-import com.windsnow1025.health_management_app.sqlite.AlertDao;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 import com.windsnow1025.health_management_app.utils.AlertAdapter;
 
@@ -33,7 +32,6 @@ public class AlertFragment extends Fragment {
     private Button button;
     private boolean is_report, alert_type_bool, isMedicine_bool;
     private UserLocalDao userLocalDao;
-    private AlertDao alertDao;
     private ArrayList<Alert> alertArrayList;
     private String phoneNumber, alert_type, isMedicine;
 
@@ -80,7 +78,6 @@ public class AlertFragment extends Fragment {
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
         phoneNumber = userLocalDao.getPhoneNumber();
-        alertDao = new AlertDao();
         load();
         alertList = getAlertList();
         View view = inflater.inflate(R.layout.fragment_alert, container, false);
@@ -97,33 +94,30 @@ public class AlertFragment extends Fragment {
         adapter = new AlertAdapter(requireContext(), R.layout.listview, alertList);
         listView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                is_report = alertList.get(position).getAlert_type().equals("true");//是否为报告
-                Boolean isMedicine = alertList.get(position).getIs_medicine().equals("true");//是否为吃药
-                int ID = alertList.get(position).getID();
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+        listView.setOnItemClickListener((parent, view12, position, id) -> {
+            is_report = alertList.get(position).getAlert_type().equals("true");//是否为报告
+            Boolean isMedicine = alertList.get(position).getIs_medicine().equals("true");//是否为吃药
+            int ID = alertList.get(position).getID();
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
 
-                if (isMedicine) {
-                    if (is_report) {
-                        transaction.replace(R.id.fragment_container, new DetailsFragment(isMedicine, ID, adapter, alertList, numList.get(position), is_report, true));
-                    } else {
-                        transaction.replace(R.id.fragment_container, new DetailsFragment(isMedicine, ID, adapter, alertList, numList.get(position), is_report, true));
-
-                    }
+            if (isMedicine) {
+                if (is_report) {
+                    transaction.replace(R.id.fragment_container, new DetailsFragment(isMedicine, ID, adapter, alertList, numList.get(position), is_report, true));
                 } else {
-                    if (is_report) {
-                        transaction.replace(R.id.fragment_container, new DetailsRecordFragment(isMedicine, ID, adapter, alertList, numList.get(position), is_report, true));
-                    } else {
-                        transaction.replace(R.id.fragment_container, new DetailsRecordFragment(isMedicine, ID, adapter, alertList, numList.get(position), is_report, true));
-
-                    }
+                    transaction.replace(R.id.fragment_container, new DetailsFragment(isMedicine, ID, adapter, alertList, numList.get(position), is_report, true));
 
                 }
-                transaction.addToBackStack(null);
-                transaction.commit();
+            } else {
+                if (is_report) {
+                    transaction.replace(R.id.fragment_container, new DetailsRecordFragment(isMedicine, ID, adapter, alertList, numList.get(position), is_report, true));
+                } else {
+                    transaction.replace(R.id.fragment_container, new DetailsRecordFragment(isMedicine, ID, adapter, alertList, numList.get(position), is_report, true));
+
+                }
+
             }
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
         listView.setOnItemLongClickListener((parent, view1, position, id) -> {
 

@@ -165,7 +165,7 @@ public class EditReportFragment extends Fragment {
             report.setPhone_number(username);
             report.setReport_type(type);
             report.setHospital(hospital);
-            report.setPicture(bitmapString.getBytes());
+            report.setPicture(bitmapString);
             report.setDetail(OCRTxt);
             report.setID(reportId);
             if (date.equals("")) {

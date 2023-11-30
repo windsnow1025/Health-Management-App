@@ -8,7 +8,7 @@ public class Report implements Serializable {
     private String report_date;
     private String hospital;
     private String report_type;
-    private byte[] picture;
+    private String picture;
     private String detail;
 
     public int getID() {
@@ -51,11 +51,11 @@ public class Report implements Serializable {
         this.report_type = report_type;
     }
 
-    public byte[] getPicture() {
+    public String getPicture() {
         return picture;
     }
 
-    public void setPicture(byte[] picture) {
+    public void setPicture(String picture) {
         this.picture = picture;
     }
 

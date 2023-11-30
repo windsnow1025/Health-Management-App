@@ -145,7 +145,7 @@ public class EnterReportFragment extends Fragment {
             report.setPhone_number(username);
             report.setReport_type(type);
             report.setHospital(hospital);
-            report.setPicture(bitmapString.getBytes());
+            report.setPicture(bitmapString);
             report.setDetail(OCRTxt);
             if (date.equals("")) {
                 //判定日期是否填写 未填写则设置为null

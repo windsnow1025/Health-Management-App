@@ -20,21 +20,12 @@ public class UserLocalDao {
     private Context context;
     private SqliteHelper dbHelper;
     private SQLiteDatabase db;
-    private ReportDao reportDao;
-    private RecordDao recordDao;
-    private AlertDao alertDao;
 
     public UserLocalDao(Context context) {
         this.context = context;
-        reportDao = new ReportDao();
-        recordDao = new RecordDao();
-        alertDao = new AlertDao();
     }
 
     public UserLocalDao() {
-        reportDao = new ReportDao();
-        recordDao = new RecordDao();
-        alertDao = new AlertDao();
     }
 
     public void open() throws SQLiteException {
@@ -180,7 +171,7 @@ public class UserLocalDao {
                 report.setPhone_number(cursor.getString(cursor.getColumnIndex("phone_number")));
                 report.setID(cursor.getInt(cursor.getColumnIndex("ID")));
                 report.setDetail(cursor.getString(cursor.getColumnIndex("detail")));
-                report.setPicture(cursor.getBlob(cursor.getColumnIndex("picture")));
+                report.setPicture(cursor.getString(cursor.getColumnIndex("picture")));
                 report.setReport_type(cursor.getString(cursor.getColumnIndex("report_type")));
                 report.setHospital(cursor.getString(cursor.getColumnIndex("hospital")));
                 report.setReport_date(cursor.getString(cursor.getColumnIndex("report_date")));
@@ -195,7 +186,11 @@ public class UserLocalDao {
         values.put("phone_number", phoneNumber);
         values.put("ID", report.getID());
         values.put("detail", report.getDetail());
-        values.put("picture", report.getPicture().toString());
+        if (report.getPicture() == null) {
+            values.put("picture", "");
+        } else {
+            values.put("picture", report.getPicture().toString());
+        }
         values.put("report_type", report.getReport_type());
         values.put("hospital", report.getHospital());
         values.put("report_date", report.getReport_date());
@@ -282,8 +277,8 @@ public class UserLocalDao {
         return rowsAffected > 0;
     }
 
-    public Boolean deleteAlert(String account, Integer alert_No) {
-        int flag = db.delete("alert","Alert_No=? AND phone_number=?", new String[]{String.valueOf(alert_No), account});
+    public Boolean deleteAlert(String phoneNumber, int ID) {
+        int flag = db.delete("alert","ID=? AND phone_number=?", new String[]{String.valueOf(ID), phoneNumber});
         return flag > 0;
     }
 
@@ -297,21 +292,21 @@ public class UserLocalDao {
 //        return valueReturn;
 //    }
 
-    public static Alert getAlert(ArrayList<Alert> alertArrayList, Integer alert_No) {
+    public static Alert getAlert(ArrayList<Alert> alertArrayList, int ID) {
         Stream<Alert> alertStream = alertArrayList.stream();
-        Alert alert = alertStream.filter(e -> e.getID() == alert_No).collect(Collectors.toList()).get(0);
+        Alert alert = alertStream.filter(e -> e.getID() == ID).collect(Collectors.toList()).get(0);
         return alert;
     }
 
-    public static Record getHistory(ArrayList<Record> historyArrayList, Integer history_No) {
-        Stream<Record> historyStream = historyArrayList.stream();
-        Record record = historyStream.filter(e -> e.getID() == history_No).collect(Collectors.toList()).get(0);
+    public static Record getHistory(ArrayList<Record> recordList, int ID) {
+        Stream<Record> historyStream = recordList.stream();
+        Record record = historyStream.filter(e -> e.getID() == ID).collect(Collectors.toList()).get(0);
         return record;
     }
 
-    public static Report gerReport(ArrayList<Report> reportArrayList, Integer report_No) {
-        Stream<Report> reportStream = reportArrayList.stream();
-        Report report = reportStream.filter(e -> e.getID() == report_No).collect(Collectors.toList()).get(0);
+    public static Report gerReport(ArrayList<Report> reportList, int ID) {
+        Stream<Report> reportStream = reportList.stream();
+        Report report = reportStream.filter(e -> e.getID() == ID).collect(Collectors.toList()).get(0);
         return report;
     }
 }

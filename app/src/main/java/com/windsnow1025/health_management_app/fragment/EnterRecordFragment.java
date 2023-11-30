@@ -15,8 +15,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.windsnow1025.health_management_app.R;
 import com.windsnow1025.health_management_app.pojo.Record;
-import com.windsnow1025.health_management_app.pojo.User;
-import com.windsnow1025.health_management_app.sqlite.RecordDao;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
 import java.util.Calendar;
@@ -118,7 +116,6 @@ public class EnterRecordFragment extends Fragment {
             // Insert data into database
             Boolean insertStatus = false;
             Log.i("主线程", "数据库测试开始");
-            RecordDao recordDao = new RecordDao();
             Record history = new Record();
             history.setRecord_date(date);
             history.setHospital(hospital);

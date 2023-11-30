@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class SqliteHelper extends SQLiteOpenHelper {
     private static final String DATABASE = "Android.db";
-    private static final int VERSION = 6;
+    private static final int VERSION = 10;
 
     public SqliteHelper(Context context) {
         super(context, DATABASE, null, VERSION);
@@ -15,15 +15,14 @@ public class SqliteHelper extends SQLiteOpenHelper {
     private static final String CREATE_USER = """
                 CREATE TABLE user (
                     phone_number TEXT PRIMARY KEY,
-                    name TEXT,
-                    email TEXT,
+                    username TEXT,
                     birthday TEXT,
                     sex TEXT
                 )
             """;
 
     private static final String CREATE_RECORD = """
-                CREATE TABLE history (
+                CREATE TABLE record (
                     ID INTEGER PRIMARY KEY AUTOINCREMENT,
                     phone_number TEXT,
                     record_date TEXT,
@@ -77,6 +76,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS user");
         db.execSQL("DROP TABLE IF EXISTS report");
         db.execSQL("DROP TABLE IF EXISTS history");
+        db.execSQL("DROP TABLE IF EXISTS record");
         db.execSQL("DROP TABLE IF EXISTS alert");
         onCreate(db);
     }
