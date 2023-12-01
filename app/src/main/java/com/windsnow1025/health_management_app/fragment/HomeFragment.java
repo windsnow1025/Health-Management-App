@@ -18,7 +18,11 @@ import androidx.fragment.app.FragmentTransaction;
 import com.windsnow1025.health_management_app.LoginActivity;
 import com.windsnow1025.health_management_app.R;
 import com.windsnow1025.health_management_app.api.GetInfoApi;
+import com.windsnow1025.health_management_app.api.UpdateAlertApi;
+import com.windsnow1025.health_management_app.api.UpdateRecordApi;
+import com.windsnow1025.health_management_app.api.UpdateReportApi;
 import com.windsnow1025.health_management_app.pojo.Alert;
+import com.windsnow1025.health_management_app.pojo.Record;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
 import java.util.ArrayList;
@@ -38,10 +42,9 @@ public class HomeFragment extends Fragment {
     private TextView tv_exchange;
     private TextView tv_kefu;
     private TextView tv_setting;
-    private static String phoneNumber;
+    private String phoneNumber;
 
     private UserLocalDao userLocalDao;
-    private String userID;
     private ArrayList<Alert> alertArrayList;
 
     public HomeFragment() {
@@ -63,22 +66,16 @@ public class HomeFragment extends Fragment {
         bt_disease = view.findViewById(R.id.bt_disease);
         bt_kefu = view.findViewById(R.id.bt_kefu);
         phoneNumber = userLocalDao.getPhoneNumber();
-        GetInfoApi getInfoApi = new GetInfoApi();
-        String phoneNumber = userLocalDao.getUserInfo(HomeFragment.phoneNumber).getPhone_number();
-        userLocalDao.addOrUpdateUser(getInfoApi.getUserInformation(phoneNumber));
+        userLocalDao.addOrUpdateUser(userLocalDao.getUserInfo(phoneNumber));
     }
 
     void load() {
-        alertArrayList = userLocalDao.getAlertList(userID);
-        int x = userLocalDao.getAlertList(userID).size();
-        if (x > 0) {
-            for (int i = x; i >= 0; i--) {
-                userLocalDao.deleteAlert(userID, i);
-            }
-        }
-        for (Alert alert : alertArrayList) {
-            userLocalDao.insertAlert(userID, alert);
-        }
+        UpdateRecordApi updateRecordApi = new UpdateRecordApi();
+        updateRecordApi.updateRecords(userLocalDao.getRecordList(phoneNumber));
+        UpdateReportApi updateReportApi = new UpdateReportApi();
+        updateReportApi.updateReports(userLocalDao.getReportList(phoneNumber));
+        UpdateAlertApi updateAlertApi = new UpdateAlertApi();
+        updateAlertApi.updateAlerts(userLocalDao.getAlertList(phoneNumber));
     }
 
 
@@ -88,7 +85,6 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
-        userID = userLocalDao.getPhoneNumber();
         try {
             init(view);
         } catch (TimeoutException e) {

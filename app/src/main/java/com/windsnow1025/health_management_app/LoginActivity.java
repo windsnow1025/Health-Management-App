@@ -20,6 +20,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.windsnow1025.health_management_app.api.GetAlertApi;
+import com.windsnow1025.health_management_app.api.GetRecordApi;
+import com.windsnow1025.health_management_app.api.GetReportApi;
 import com.windsnow1025.health_management_app.api.GetInfoApi;
 import com.windsnow1025.health_management_app.api.SigninApi;
 import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
@@ -38,7 +41,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ImageButton bt_eye;
     private boolean bRemember = false;
     private boolean flag = false;
-    private String username;
+    private String phoneNumber;
     private String password;
     private Intent intent;
     private SharedPreferences mShared;
@@ -86,9 +89,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         /*保留手机号码*/
         intent = getIntent();
-        username = intent.getStringExtra("username");
-        if (username != null) {
-            et_phone.setText(username);
+        phoneNumber = intent.getStringExtra("username");
+        if (phoneNumber != null) {
+            et_phone.setText(phoneNumber);
         }
         /*记住密码功能*/
         mShared = getSharedPreferences("share_login", MODE_PRIVATE);
@@ -111,12 +114,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
 
-        username = et_phone.getText().toString();
+        phoneNumber = et_phone.getText().toString();
         password = et_password.getText().toString();
         /*注册*/
         if (v.getId() == R.id.btn_register) {
             intent = new Intent(this, LoginForgetActivity.class);
-            intent.putExtra("username", username);
+            intent.putExtra("username", phoneNumber);
             intent.putExtra("flag", true);
             startActivity(intent);
         }
@@ -127,7 +130,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             boolean is= false;
             try {
                 SigninApi signinApi = new SigninApi();
-                is = username.equals(signinApi.checkUserPassword(username, password));
+                is = phoneNumber.equals(signinApi.checkUserPassword(phoneNumber, password));
             } catch (RuntimeException e) {
             }
             if (is) {
@@ -136,8 +139,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     editor.putString("phone", et_phone.getText().toString());
                     editor.putString("password", et_password.getText().toString());
                     editor.apply();
-                    GetInfoApi get = new GetInfoApi();
-                    userLocalDao.addOrUpdateUser(get.getUserInformation(username));
+                    GetInfoApi getInfoApi = new GetInfoApi();
+                    userLocalDao.addOrUpdateUser(getInfoApi.getUserInformation(phoneNumber));
+                    userLocalDao.deleteAlerts(phoneNumber);
+                    userLocalDao.deleteRecords(phoneNumber);
+                    userLocalDao.deleteReports(phoneNumber);
+                    GetReportApi getReportApi = new GetReportApi();
+                    userLocalDao.insertReports(phoneNumber,getReportApi.getReportInformation(phoneNumber));
+                    GetRecordApi getRecordApi = new GetRecordApi();
+                    userLocalDao.insertRecords(phoneNumber,getRecordApi.getRecordInformation(phoneNumber));
+                    GetAlertApi getAlertApi = new GetAlertApi();
+                    userLocalDao.insertAlerts(phoneNumber,getAlertApi.getAlertInformation(phoneNumber));
+
                     startActivity(intent);
                 } else {
                     SharedPreferences.Editor editor = mShared.edit();
@@ -145,7 +158,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     editor.putString("password", "");
                     editor.apply();
                     GetInfoApi getInfoApi = new GetInfoApi();
-                    userLocalDao.addOrUpdateUser(getInfoApi.getUserInformation(username));
+                    userLocalDao.addOrUpdateUser(getInfoApi.getUserInformation(phoneNumber));
+                    userLocalDao.deleteAlerts(phoneNumber);
+                    userLocalDao.deleteRecords(phoneNumber);
+                    userLocalDao.deleteReports(phoneNumber);
+                    GetReportApi getReportApi = new GetReportApi();
+                    userLocalDao.insertReports(phoneNumber,getReportApi.getReportInformation(phoneNumber));
+                    GetRecordApi getRecordApi = new GetRecordApi();
+                    userLocalDao.insertRecords(phoneNumber,getRecordApi.getRecordInformation(phoneNumber));
+                    GetAlertApi getAlertApi = new GetAlertApi();
+                    userLocalDao.insertAlerts(phoneNumber,getAlertApi.getAlertInformation(phoneNumber));
+
                     startActivity(intent);
                 }
             } else Toast.makeText(this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
@@ -153,7 +176,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         /*忘记密码*/
         else if (v.getId() == R.id.btn_forget) {
             intent = new Intent(this, LoginForgetActivity.class);
-            intent.putExtra("username", username);
+            intent.putExtra("username", phoneNumber);
             intent.putExtra("flag", false);
             startActivity(intent);
         }

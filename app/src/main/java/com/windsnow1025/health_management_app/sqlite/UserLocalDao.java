@@ -13,6 +13,7 @@ import com.windsnow1025.health_management_app.pojo.Report;
 import com.windsnow1025.health_management_app.pojo.User;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -66,6 +67,26 @@ public class UserLocalDao {
         }
         return false;
     }
+    public Boolean checkReport(String phoneNumber) {
+        Cursor cursor = db.query("report", null, "phone_number = ?", new String[]{phoneNumber}, null, null, null);
+        if (cursor.moveToNext()) {
+            return true;
+        }
+        return false;
+    }
+    public Boolean checkRecord(String phoneNumber) {
+        Cursor cursor = db.query("record", null, "phone_number = ?", new String[]{phoneNumber}, null, null, null);
+        if (cursor.moveToNext()) {
+            return true;
+        }
+        return false;
+    }    public Boolean checkAlert(String phoneNumber) {
+        Cursor cursor = db.query("alert", null, "phone_number = ?", new String[]{phoneNumber}, null, null, null);
+        if (cursor.moveToNext()) {
+            return true;
+        }
+        return false;
+    }
 
     @SuppressLint("Range")
     public User getUserInfo(String phoneNumber) {
@@ -90,6 +111,142 @@ public class UserLocalDao {
             db.update("user", values, "phone_number=?", new String[]{user.getPhone_number()});
         } else {
             db.insert("user", null, values);
+        }
+    }
+
+    //仿照上面的addOrUpdateUser写个addOrUpdateReport
+    public void addOrUpdateReport(Report report){
+        ContentValues values = new ContentValues();
+        values.put("phone_number",report.getPhone_number());
+        values.put("report_date", report.getReport_date());
+        values.put("hospital", report.getHospital());
+        values.put("report_type", report.getReport_type());
+        values.put("picture", report.getPicture());
+        values.put("detail", report.getDetail());
+        if (checkReport(report.getPhone_number())) {
+            db.update("report", values, "phone_number=?", new String[]{report.getPhone_number()});
+        } else {
+            db.insert("report", null, values);
+        }
+    }
+    //仿照上面的addOrUpdateUser写个addOrUpdateRecord
+    public void addOrUpdateRecord(Record record){
+        ContentValues values = new ContentValues();
+        values.put("phone_number",record.getPhone_number());
+        values.put("report_date", record.getRecord_date());
+        values.put("hospital", record.getHospital());
+        values.put("doctor", record.getDoctor());
+        values.put("organ", record.getOrgan());
+        values.put("symptom", record.getSymptom());
+        values.put("conclusion", record.getConclusion());
+        values.put("suggestion", record.getSuggestion());
+        if (checkRecord(record.getPhone_number())) {
+            db.update("record", values, "phone_number=?", new String[]{record.getPhone_number()});
+        } else {
+            db.insert("record", null, values);
+        }
+    }
+
+    public Boolean insertOrUpdateReport(String phoneNumber, Report report) {
+        // 检查数据库中是否存在指定的记录
+        Cursor cursor = db.query("report", null, "ID = ? AND phone_number=?", new String[]{String.valueOf(report.getID()), phoneNumber}, null, null, null);
+        if (cursor != null && cursor.getCount() > 0) {
+            // 数据库中存在记录，执行更新操作
+            ContentValues values = new ContentValues();
+            values.put("phone_number", phoneNumber);
+            values.put("ID", report.getID());
+            values.put("detail", report.getDetail());
+            values.put("report_picture", report.getPicture().toString());
+            values.put("report_type", report.getReport_type());
+            values.put("hospital", report.getHospital());
+            values.put("report_date", report.getReport_date());
+            int rowsAffected = db.update("report", values, "ID = ? AND phone_number=?", new String[]{String.valueOf(report.getID()), phoneNumber});
+            cursor.close();
+            return rowsAffected > 0;
+        } else {
+            // 数据库中不存在记录，执行插入操作
+            ContentValues values = new ContentValues();
+            values.put("phone_number", phoneNumber);
+            values.put("ID", report.getID());
+            values.put("detail", report.getDetail());
+            if (report.getPicture() == null) {
+                values.put("report_picture", "");
+            } else {
+                values.put("report_picture", report.getPicture().toString());
+            }
+            values.put("report_type", report.getReport_type());
+            values.put("hospital", report.getHospital());
+            values.put("report_date", report.getReport_date());
+            long rowsAffected = db.insert("report", null, values);
+            return rowsAffected > 0;
+        }
+    }
+
+    public Boolean insertOrUpdateRecord(String phoneNumber, Record record) {
+        // 检查数据库中是否存在指定的记录
+        Cursor cursor = db.query("record", null, "ID = ? AND phone_number=?", new String[]{String.valueOf(record.getID()), phoneNumber}, null, null, null);
+        if (cursor != null && cursor.getCount() > 0) {
+            // 数据库中存在记录，执行更新操作
+            ContentValues values = new ContentValues();
+            values.put("phone_number", phoneNumber);
+            values.put("ID", record.getID());
+            values.put("record_date", record.getRecord_date());
+            values.put("hospital", record.getHospital());
+            values.put("doctor", record.getDoctor());
+            values.put("organ", record.getOrgan());
+            values.put("conclusion", record.getConclusion());
+            values.put("symptom", record.getSymptom());
+            values.put("suggestion", record.getSuggestion());
+            int rowsAffected = db.update("record", values, "ID = ? AND phone_number=?", new String[]{String.valueOf(record.getID()), phoneNumber});
+            cursor.close();
+            return rowsAffected > 0;
+        } else {
+            // 数据库中不存在记录，执行插入操作
+            ContentValues values = new ContentValues();
+            values.put("phone_number", phoneNumber);
+            values.put("ID", record.getID());
+            values.put("record_date", record.getRecord_date());
+            values.put("hospital", record.getHospital());
+            values.put("doctor", record.getDoctor());
+            values.put("organ", record.getOrgan());
+            values.put("conclusion", record.getConclusion());
+            values.put("symptom", record.getSymptom());
+            values.put("suggestion", record.getSuggestion());
+            long rowsAffected = db.insert("record", null, values);
+            return rowsAffected > 0;
+        }
+    }
+
+    public Boolean insertOrUpdateAlert(String phoneNumber, Alert alert) {
+        // 检查数据库中是否存在指定的记录
+        Cursor cursor = db.query("alert", null, "ID=? AND phone_number=?", new String[]{String.valueOf(alert.getID()), phoneNumber}, null, null, null);
+        if (cursor != null && cursor.getCount() > 0) {
+            // 数据库中存在记录，执行更新操作
+            ContentValues values = new ContentValues();
+            values.put("phone_number", phoneNumber);
+            values.put("ID", alert.getID());
+            values.put("alert_date", alert.getAlert_date());
+            values.put("alert_cycle", alert.getAlert_cycle());
+            values.put("advice", alert.getAdvice());
+            values.put("alert_type", alert.getAlert_type());
+            values.put("title", alert.getTitle());
+            values.put("is_medicine", alert.getIs_medicine());
+            int rowsAffected = db.update("alert", values, "ID=? AND phone_number=?", new String[]{String.valueOf(alert.getID()), phoneNumber});
+            cursor.close();
+            return rowsAffected > 0;
+        } else {
+            // 数据库中不存在记录，执行插入操作
+            ContentValues values = new ContentValues();
+            values.put("phone_number", phoneNumber);
+            values.put("ID", alert.getID());
+            values.put("alert_date", alert.getAlert_date());
+            values.put("alert_cycle", alert.getAlert_cycle());
+            values.put("advice", alert.getAdvice());
+            values.put("alert_type", alert.getAlert_type());
+            values.put("title", alert.getTitle());
+            values.put("is_medicine", alert.getIs_medicine());
+            long rowsAffected = db.insert("alert", null, values);
+            return rowsAffected > 0;
         }
     }
 
@@ -122,7 +279,6 @@ public class UserLocalDao {
     public Boolean insertRecord(String phoneNumber, Record record) {
         ContentValues values = new ContentValues();
         values.put("phone_number", phoneNumber);
-        values.put("ID", record.getID());
         values.put("record_date", record.getRecord_date());
         values.put("hospital", record.getHospital());
         values.put("doctor", record.getDoctor());
@@ -133,6 +289,28 @@ public class UserLocalDao {
         long rowsAffected = db.insert("record", null, values);
         return rowsAffected > 0;
     }
+
+    public boolean insertRecords(String phoneNumber, List<Record> records) {
+        boolean success = true;
+
+        for (Record record : records) {
+            ContentValues values = new ContentValues();
+            values.put("phone_number", phoneNumber);
+            values.put("record_date", record.getRecord_date());
+            values.put("hospital", record.getHospital());
+            values.put("doctor", record.getDoctor());
+            values.put("organ", record.getOrgan());
+            values.put("conclusion", record.getConclusion());
+            values.put("symptom", record.getSymptom());
+            values.put("suggestion", record.getSuggestion());
+
+            long rowsAffected = db.insert("record", null, values);
+            success &= rowsAffected > 0;
+        }
+
+        return success;
+    }
+
 
 //    private Integer getHistoryCount(String account) {
 //        Integer valueReturn=0;
@@ -151,12 +329,17 @@ public class UserLocalDao {
         values.put("conclusion", record.getConclusion());
         values.put("symptom", record.getSymptom());
         values.put("suggestion", record.getSuggestion());
-        int rowsAffected = db.update("history", values, "ID = ? AND phone_number=?", new String[]{String.valueOf(record.getID()), phoneNumber});
+        int rowsAffected = db.update("record", values, "ID = ? AND phone_number=?", new String[]{String.valueOf(record.getID()), phoneNumber});
         return rowsAffected > 0;
     }
 
     public Boolean deleteRecord(String phoneNumber, int ID) {
-        int rowsAffected = db.delete("history", "ID = ? AND phone_number = ?", new String[]{String.valueOf(ID), phoneNumber});
+        int rowsAffected = db.delete("record", "ID = ? AND phone_number = ?", new String[]{String.valueOf(ID), phoneNumber});
+        return rowsAffected > 0;
+    }
+
+    public Boolean deleteRecords(String phoneNumber) {
+        int rowsAffected = db.delete("record", "phone_number = ?", new String[]{phoneNumber});
         return rowsAffected > 0;
     }
 
@@ -184,7 +367,6 @@ public class UserLocalDao {
     public Boolean insertReport(String phoneNumber, Report report) {
         ContentValues values = new ContentValues();
         values.put("phone_number", phoneNumber);
-        values.put("ID", report.getID());
         values.put("detail", report.getDetail());
         if (report.getPicture() == null) {
             values.put("picture", "");
@@ -197,6 +379,33 @@ public class UserLocalDao {
         long rowsAffected = db.insert("report", null, values);
         return rowsAffected > 0;
     }
+
+    public boolean insertReports(String phoneNumber, List<Report> reports) {
+        boolean success = true;
+
+        for (Report report : reports) {
+            ContentValues values = new ContentValues();
+            values.put("phone_number", phoneNumber);
+            values.put("detail", report.getDetail());
+
+            // 请注意这里的判断和处理图片的方式，可以根据实际情况修改
+            if (report.getPicture() == null) {
+                values.put("picture", "");
+            } else {
+                values.put("picture", report.getPicture().toString());
+            }
+
+            values.put("report_type", report.getReport_type());
+            values.put("hospital", report.getHospital());
+            values.put("report_date", report.getReport_date());
+
+            long rowsAffected = db.insert("report", null, values);
+            success &= rowsAffected > 0;
+        }
+
+        return success;
+    }
+
 
 //    private Integer getReportCount(String account) {
 //        Integer valueReturn=0;
@@ -219,6 +428,11 @@ public class UserLocalDao {
 
     public Boolean deleteReport(String phoneNumber, int ID) {
         int flag = db.delete("report", "ID = ? AND phone_number=?", new String[]{String.valueOf(ID), phoneNumber});
+        return flag > 0;
+    }
+
+    public Boolean deleteReports(String phoneNumber) {
+        int flag = db.delete("report", "phone_number=?", new String[]{phoneNumber});
         return flag > 0;
     }
 
@@ -246,7 +460,9 @@ public class UserLocalDao {
     public Boolean insertAlert(String phoneNumber, Alert alert) {
         ContentValues values = new ContentValues();
         values.put("phone_number", phoneNumber);
-        values.put("ID", alert.getID());
+        //依靠bug运行
+        //这个ID不好删，它用在提醒页的显示上了，它靠的是ID唯一性，点击提醒就会添加失败，删了会点一次添加一次
+        values.put("ID",alert.getID());
         values.put("alert_date", alert.getAlert_date());
         values.put("alert_cycle", alert.getAlert_cycle());
         values.put("advice", alert.getAdvice());
@@ -255,6 +471,26 @@ public class UserLocalDao {
         values.put("is_medicine", alert.getIs_medicine());
         long rowsAffected = db.insert("alert", null, values);
         return rowsAffected > 0;
+    }
+
+    public boolean insertAlerts(String phoneNumber, List<Alert> alerts) {
+        boolean success = true;
+
+        for (Alert alert : alerts) {
+            ContentValues values = new ContentValues();
+            values.put("phone_number", phoneNumber);
+            values.put("alert_date", alert.getAlert_date());
+            values.put("alert_cycle", alert.getAlert_cycle());
+            values.put("advice", alert.getAdvice());
+            values.put("alert_type", alert.getAlert_type());
+            values.put("title", alert.getTitle());
+            values.put("is_medicine", alert.getIs_medicine());
+
+            long rowsAffected = db.insert("alert", null, values);
+            success &= rowsAffected > 0;
+        }
+
+        return success;
     }
 
 //    private Integer getAlertCount(String account) {
@@ -279,6 +515,11 @@ public class UserLocalDao {
 
     public Boolean deleteAlert(String phoneNumber, int ID) {
         int flag = db.delete("alert","ID=? AND phone_number=?", new String[]{String.valueOf(ID), phoneNumber});
+        return flag > 0;
+    }
+
+    public Boolean deleteAlerts(String phoneNumber) {
+        int flag = db.delete("alert", "phone_number=?", new String[]{phoneNumber});
         return flag > 0;
     }
 

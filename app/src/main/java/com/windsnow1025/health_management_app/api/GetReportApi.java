@@ -1,11 +1,12 @@
 package com.windsnow1025.health_management_app.api;
 
-
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.windsnow1025.health_management_app.pojo.User;
+import com.windsnow1025.health_management_app.pojo.Report;
+import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,26 +16,28 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-public class SigninApi extends AsyncTask<String, Void, String> {
+public class GetReportApi extends AsyncTask<String, Void, String> {
 
-    private static final String API_URL_SIGNIN = "https://www.windsnow1025.com/learn/api/android/user/signin";
+    private static final String API_URL_SYNC_GET_REPORT = "https://www.windsnow1025.com/learn/api/android/sync/get/report";
+
 
     @Override
     protected String doInBackground(String... params) {
         String phoneNumber = params[0];
-        String password = params[1];
 
         // 先调用登录API获取用户信息
-        String apiResult = callSignInApi(phoneNumber, password);
+        String apiResult = callApi(phoneNumber);
         return apiResult;
     }
 
-    private String callSignInApi(String phoneNumber, String password) {
+    private String callApi(String phoneNumber) {
         HttpURLConnection urlConnection = null;
 
         try {
-            URL url = new URL(API_URL_SIGNIN);
+            URL url = new URL(API_URL_SYNC_GET_REPORT);
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -43,7 +46,6 @@ public class SigninApi extends AsyncTask<String, Void, String> {
             // 构建请求体
             JSONObject jsonParam = new JSONObject();
             jsonParam.put("phoneNumber", phoneNumber);
-            jsonParam.put("password", password);
 
             OutputStream outputStream = urlConnection.getOutputStream();
             outputStream.write(jsonParam.toString().getBytes("UTF-8"));
@@ -75,59 +77,52 @@ public class SigninApi extends AsyncTask<String, Void, String> {
         }
     }
 
-    // 用于检查用户密码并返回手机号
-    public String checkUserPassword(String phoneNumber, String password) {
-        // 调用异步任务的 execute 方法，将用户名和密码作为参数传递
-        execute(phoneNumber, password);
-        try {
-            JSONObject jsonResponse = new JSONObject(get());
-            // 提取并返回API响应中的手机号
-            return jsonResponse.getString("phoneNumber");
-            // 获取异步任务的结果，即手机号
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null; // 或者返回空字符串，取决于你的需求
-        }
-    }
-
-    // 用于获取用户信息
-    public User getUserInformation(String phoneNumber, String password) {
+    // 用于获取Report信息
+    public List<Report> getReportInformation(String phoneNumber) {
         // 调用异步任务的 execute 方法，将用户名作为参数传递
-        execute(phoneNumber,password);
+        execute(phoneNumber);
         try {
             // 获取异步任务的结果，即API响应
             String apiResult = get();
 
-            User userInfo = new User();
+            List<Report> reports = new ArrayList<>();
             try {
                 // 从API响应中提取用户信息
-                JSONObject jsonResponse = new JSONObject(apiResult);
+                JSONArray jsonArray = new JSONArray(apiResult);
 
-                userInfo.setPhone_number(jsonResponse.getString("phoneNumber"));
-                userInfo.setUsername(jsonResponse.getString("username"));
-                userInfo.setSex(jsonResponse.getString("sex"));
-                userInfo.setBirthday(jsonResponse.getString("birthday"));
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonResponse = jsonArray.getJSONObject(i);
 
-                return userInfo;
+                    Report report = new Report();
+                    report.setPhone_number(jsonResponse.getString("phone_number"));
+                    report.setID(jsonResponse.getInt("id"));
+                    report.setReport_date(jsonResponse.getString("report_date"));
+                    report.setHospital(jsonResponse.getString("hospital"));
+                    report.setReport_type(jsonResponse.getString("report_type"));
+                    report.setPicture(jsonResponse.getString("picture"));
+                    report.setDetail(jsonResponse.getString("detail"));
+
+                    reports.add(report);
+                }
+
+                return reports;
             } catch (JSONException e) {
                 e.printStackTrace();
-                throw new RuntimeException("SigninApi 解析用户信息时发生异常: " + e.getMessage());
+                throw new RuntimeException("GetReportApi 解析用户信息时发生异常: " + e.getMessage());
             }
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("SigninApi 获取用户信息时发生异常: " + e.getMessage());
+            throw new RuntimeException("GetReportApi 获取用户信息时发生异常: " + e.getMessage());
         }
     }
-
-
 
     @Override
     protected void onPostExecute(String result) {
         // 在UI线程中处理返回的结果
         if (result != null) {
-            Log.d("API Response", "SigninApi Raw Response: " + result);
+            Log.d("API Response", "GetReportApi Raw Response: " + result);
         } else {
-            Log.e("API Response", "SigninApi 获取手机号时发生异常或为空");
+            Log.e("API Response", "GetReportApi 获取手机号时发生异常或为空");
         }
     }
 }
