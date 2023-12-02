@@ -289,7 +289,7 @@ public class UserLocalDao {
         for (Record record : records) {
             ContentValues values = new ContentValues();
             values.put("phone_number", phoneNumber);
-            values.put("id",record.getId());
+            values.put("id", record.getId());
             values.put("record_date", record.getRecord_date());
             values.put("hospital", record.getHospital());
             values.put("doctor", record.getDoctor());
@@ -380,7 +380,7 @@ public class UserLocalDao {
         for (Report report : reports) {
             ContentValues values = new ContentValues();
             values.put("phone_number", phoneNumber);
-            values.put("id",report.getId());
+            values.put("id", report.getId());
             values.put("detail", report.getDetail());
 
             // 请注意这里的判断和处理图片的方式，可以根据实际情况修改
@@ -478,7 +478,7 @@ public class UserLocalDao {
         for (Alert alert : alerts) {
             ContentValues values = new ContentValues();
             values.put("phone_number", phoneNumber);
-            values.put("id",alert.getId());
+            values.put("id", alert.getId());
             values.put("alert_date", alert.getAlert_date());
             values.put("record_id", alert.getRecord_id());
             values.put("report_id", alert.getReport_id());
@@ -504,7 +504,6 @@ public class UserLocalDao {
     public Boolean updateAlert(String phoneNumber, Alert alert) {
         ContentValues values = new ContentValues();
         values.put("phone_number", phoneNumber);
-        values.put("id", alert.getId());
         values.put("record_id", alert.getRecord_id());
         values.put("report_id", alert.getReport_id());
         values.put("alert_date", alert.getAlert_date());
@@ -538,20 +537,25 @@ public class UserLocalDao {
 //    }
 
     public static Alert getAlert(ArrayList<Alert> alertArrayList, int id) {
-        Stream<Alert> alertStream = alertArrayList.stream();
-        Alert alert = alertStream.filter(e -> e.getId() == id).collect(Collectors.toList()).get(0);
-        return alert;
+        return alertArrayList.stream()
+                .filter(e -> e.getId() == id)
+                .findFirst()
+                .orElse(null);
     }
 
     public static Record getRecord(ArrayList<Record> recordList, int id) {
-        Stream<Record> recordStream = recordList.stream();
-        Record record = recordStream.filter(e -> e.getId() == id).collect(Collectors.toList()).get(0);
-        return record;
+        return recordList.stream()
+                .filter(e -> e.getId() == id)
+                .findFirst()
+                .orElse(null);
     }
+
     public static Report getReport(ArrayList<Report> reportList, int id) {
-        Stream<Report> reportStream = reportList.stream();
-        Report report = reportStream.filter(e -> e.getId() == id).collect(Collectors.toList()).get(0);
-        return report;
+        return reportList.stream()
+                .filter(e -> e.getId() == id)
+                .findFirst()
+                .orElse(null);
     }
+
 
 }
