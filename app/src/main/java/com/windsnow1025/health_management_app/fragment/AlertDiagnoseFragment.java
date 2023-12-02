@@ -173,7 +173,9 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
                 AlertDiagnoseFragment.this.alert = alert;
                 // 是否为修改
                 if (flag) {
-                    userLocalDao.updateAlert(phoneNumber, AlertDiagnoseFragment.this.alert);
+//                    userLocalDao.updateAlert(phoneNumber, AlertDiagnoseFragment.this.alert);
+                    userLocalDao.deleteAlert(phoneNumber, alert_id);
+                    userLocalDao.insertAlert(phoneNumber, AlertDiagnoseFragment.this.alert);
                 } else {
                     userLocalDao.insertAlert(phoneNumber, AlertDiagnoseFragment.this.alert);
                 }

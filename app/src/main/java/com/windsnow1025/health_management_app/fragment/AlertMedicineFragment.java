@@ -197,7 +197,9 @@ public class AlertMedicineFragment extends Fragment {
                 AlertMedicineFragment.this.alert = alert;
                 // 是否为修改
                 if (flag) {
-                    userLocalDao.updateAlert(phoneNumber, AlertMedicineFragment.this.alert);
+//                    userLocalDao.updateAlert(phoneNumber, AlertMedicineFragment.this.alert);
+                    userLocalDao.deleteAlert(phoneNumber, alert_id);
+                    userLocalDao.insertAlert(phoneNumber, AlertMedicineFragment.this.alert);
                 } else {
                     userLocalDao.insertAlert(phoneNumber, AlertMedicineFragment.this.alert);
                 }
