@@ -437,6 +437,8 @@ public class UserLocalDao {
                 Alert alert = new Alert();
                 alert.setPhone_number(cursor.getString(cursor.getColumnIndex("phone_number")));
                 alert.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                alert.setRecord_id(cursor.getInt(cursor.getColumnIndex("record_id")));
+                alert.setReport_id(cursor.getInt(cursor.getColumnIndex("report_id")));
                 alert.setAlert_date(cursor.getString(cursor.getColumnIndex("alert_date")));
                 alert.setAdvice(cursor.getString(cursor.getColumnIndex("advice")));
                 alert.setAlert_cycle(cursor.getString(cursor.getColumnIndex("alert_cycle")));
@@ -455,6 +457,8 @@ public class UserLocalDao {
         //依靠bug运行
         //这个id不好删，它用在提醒页的显示上了，它靠的是id唯一性，点击提醒就会添加失败，删了会点一次添加一次
         values.put("id", alert.getId());
+        values.put("record_id", alert.getRecord_id());
+        values.put("report_id", alert.getReport_id());
         values.put("alert_date", alert.getAlert_date());
         values.put("alert_cycle", alert.getAlert_cycle());
         values.put("advice", alert.getAdvice());
@@ -472,6 +476,8 @@ public class UserLocalDao {
             ContentValues values = new ContentValues();
             values.put("phone_number", phoneNumber);
             values.put("alert_date", alert.getAlert_date());
+            values.put("record_id", alert.getRecord_id());
+            values.put("report_id", alert.getReport_id());
             values.put("alert_cycle", alert.getAlert_cycle());
             values.put("advice", alert.getAdvice());
             values.put("alert_type", alert.getAlert_type());
@@ -495,6 +501,8 @@ public class UserLocalDao {
         ContentValues values = new ContentValues();
         values.put("phone_number", phoneNumber);
         values.put("id", alert.getId());
+        values.put("record_id", alert.getRecord_id());
+        values.put("report_id", alert.getReport_id());
         values.put("alert_date", alert.getAlert_date());
         values.put("alert_cycle", alert.getAlert_cycle());
         values.put("advice", alert.getAdvice());
