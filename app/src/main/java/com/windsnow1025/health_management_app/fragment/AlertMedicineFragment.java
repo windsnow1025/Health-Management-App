@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.AlarmClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,9 +109,13 @@ public class AlertMedicineFragment extends Fragment {
         bt_cancel = view.findViewById(R.id.bt_cancel);
 
         if (is_report) {
+            Log.d("AlertMedicineFragment", "init: is_report");
+            Log.d("AlertMedicineFragment", "init: bindID = " + bindID);
             report = UserLocalDao.getReport(reportArrayList, bindID);
         }
         else {
+            Log.d("AlertMedicineFragment", "init: is_record");
+            Log.d("AlertMedicineFragment", "init: bindID = " + bindID);
             record = UserLocalDao.getRecord(recordArrayList, bindID);
         }
         num_alert = userLocalDao.getAlertList(phoneNumber).size();
@@ -192,8 +197,7 @@ public class AlertMedicineFragment extends Fragment {
                 AlertMedicineFragment.this.alert = alert;
                 // 是否为修改
                 if (flag) {
-                    userLocalDao.deleteAlert(phoneNumber,alert_id);
-                    userLocalDao.insertAlert(phoneNumber, AlertMedicineFragment.this.alert);
+                    userLocalDao.updateAlert(phoneNumber, AlertMedicineFragment.this.alert);
                 } else {
                     userLocalDao.insertAlert(phoneNumber, AlertMedicineFragment.this.alert);
                 }

@@ -504,7 +504,6 @@ public class UserLocalDao {
     public Boolean updateAlert(String phoneNumber, Alert alert) {
         ContentValues values = new ContentValues();
         values.put("phone_number", phoneNumber);
-        values.put("id", alert.getId());
         values.put("record_id", alert.getRecord_id());
         values.put("report_id", alert.getReport_id());
         values.put("alert_date", alert.getAlert_date());
