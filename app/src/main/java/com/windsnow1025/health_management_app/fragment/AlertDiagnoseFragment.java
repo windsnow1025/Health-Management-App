@@ -102,7 +102,7 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
         else {
             record = userLocalDao.getRecord(historyArrayList, bindID);
         }
-        num_alert = userLocalDao.getAlertList(phoneNumber).size();
+        num_alert = alertArrayList.get(alertArrayList.size()-1).getId() + 1;
     }
 
     /*获取数据*/

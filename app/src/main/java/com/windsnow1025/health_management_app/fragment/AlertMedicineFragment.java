@@ -113,7 +113,7 @@ public class AlertMedicineFragment extends Fragment {
         else {
             record = userLocalDao.getRecord(recordArrayList, bindID);
         }
-        num_alert = userLocalDao.getAlertList(phoneNumber).size();
+        num_alert = alertArrayList.get(alertArrayList.size()-1).getId() + 1;
     }
 
     /*数据导入*/
