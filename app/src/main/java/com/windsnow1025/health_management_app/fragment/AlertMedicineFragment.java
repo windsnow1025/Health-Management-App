@@ -71,18 +71,18 @@ public class AlertMedicineFragment extends Fragment {
 
     /*用于新建*/
     public AlertMedicineFragment(boolean isMedicine, int bindID, boolean is_report, AlertAdapter infoAdapter) {
-        this.bindID = bindID;//num为捆绑的编号
+        this.bindID = bindID;
         this.adapter = infoAdapter;
         this.isMedicine = isMedicine;
-        this.is_report = is_report;//是否为报告
+        this.is_report = is_report;
     }
 
     /*用于修改*/
     public AlertMedicineFragment(boolean isMedicine, int bindID, AlertAdapter infoAdapter, List<Alert> AlertList,  int alert_id,boolean is_report, boolean Flag) {
         this.adapter = infoAdapter;
         this.isMedicine = isMedicine;
-        this.bindID = bindID;//num为捆绑的编号
-        this.is_report = is_report;//是否为报告
+        this.bindID = bindID;
+        this.is_report = is_report;
         this.alert_id = alert_id;
         this.flag = Flag;//是否为修改
     }
@@ -107,9 +107,11 @@ public class AlertMedicineFragment extends Fragment {
         et_time = view.findViewById(R.id.et_time);
         bt_cancel = view.findViewById(R.id.bt_cancel);
 
-        if (is_report) report = UserLocalDao.getReport(reportArrayList, bindID);
+        if (is_report) {
+            report = reportArrayList.get(bindID);
+        }
         else {
-            record = UserLocalDao.getRecord(recordArrayList, bindID);
+            record = recordArrayList.get(bindID);
         }
         num_alert = userLocalDao.getAlertList(phoneNumber).size();
     }
@@ -131,7 +133,7 @@ public class AlertMedicineFragment extends Fragment {
 
         /*表修改状态，非新增时*/
         if (flag) {
-            Alert alert1 = userLocalDao.getAlert(alertArrayList, alert_id);
+            Alert alert1 = alertArrayList.get(alert_id);
             et_title.setText(alert1.getTitle());
             et_time.setText(alert1.getAlert_date());
             String[] times = alert1.getAlert_date().split(":");

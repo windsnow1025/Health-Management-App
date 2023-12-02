@@ -96,8 +96,12 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
         ret_time = view.findViewById(R.id.ret_time);
         bt_rcancel = view.findViewById(R.id.bt_cancel);
         rtv_hospital = view.findViewById(R.id.rtv_hospital);
-        if (is_report) report = UserLocalDao.getReport(reportArrayList, bindID);
-        else record = UserLocalDao.getRecord(historyArrayList, bindID);
+        if (is_report) {
+            report = reportArrayList.get(bindID);
+        }
+        else {
+            record = historyArrayList.get(bindID);
+        }
         num_alert = userLocalDao.getAlertList(phoneNumber).size();
     }
 
@@ -117,7 +121,7 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
         }
         /*表修改状态，非新增时*/
         if (flag) {
-            Alert alert1 = userLocalDao.getAlert(alertArrayList, bindID);
+            Alert alert1 = alertList.get(i);
             ret_title.setText(alert1.getTitle());
             ret_time.setText(alert1.getAlert_date());
             String[] times = alert1.getAlert_date().split(":");

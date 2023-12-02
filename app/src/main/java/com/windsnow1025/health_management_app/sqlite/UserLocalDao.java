@@ -543,15 +543,4 @@ public class UserLocalDao {
         return alert;
     }
 
-    public static Record getRecord(ArrayList<Record> recordList, int id) {
-        Stream<Record> recordStream = recordList.stream();
-        Record record = recordStream.filter(e -> e.getId() == id).collect(Collectors.toList()).get(0);
-        return record;
-    }
-
-    public static Report getReport(ArrayList<Report> reportList, int id) {
-        Stream<Report> reportStream = reportList.stream();
-        Report report = reportStream.filter(e -> e.getId() == id).collect(Collectors.toList()).get(0);
-        return report;
-    }
 }
