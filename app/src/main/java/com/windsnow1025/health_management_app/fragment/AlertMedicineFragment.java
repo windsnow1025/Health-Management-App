@@ -133,6 +133,8 @@ public class AlertMedicineFragment extends Fragment {
 
         /*表修改状态，非新增时*/
         if (flag) {
+//            Alert alert1 = alertArrayList.get(alert_id);
+            // Idk why i can't use the above line, so i use the following line instead.
             Alert alert1 = userLocalDao.getAlert(alertArrayList, alert_id);
             et_title.setText(alert1.getTitle());
             et_time.setText(alert1.getAlert_date());
