@@ -118,7 +118,7 @@ public class AlertMedicineFragment extends Fragment {
             Log.d("AlertMedicineFragment", "init: bindID = " + bindID);
             record = UserLocalDao.getRecord(recordArrayList, bindID);
         }
-        num_alert = userLocalDao.getAlertList(phoneNumber).size();
+        num_alert = alertArrayList.get(alertArrayList.size()-1).getId() + 1;
     }
 
     /*数据导入*/
