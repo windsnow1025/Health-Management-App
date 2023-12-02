@@ -255,6 +255,7 @@ public class UserLocalDao {
             do {
                 Record record = new Record();
                 record.setPhone_number(cursor.getString(cursor.getColumnIndex("phone_number")));
+                record.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 record.setRecord_date(cursor.getString(cursor.getColumnIndex("record_date")));
                 record.setHospital(cursor.getString(cursor.getColumnIndex("hospital")));
                 record.setDoctor(cursor.getString(cursor.getColumnIndex("doctor")));
@@ -288,6 +289,7 @@ public class UserLocalDao {
         for (Record record : records) {
             ContentValues values = new ContentValues();
             values.put("phone_number", phoneNumber);
+            values.put("id",record.getId());
             values.put("record_date", record.getRecord_date());
             values.put("hospital", record.getHospital());
             values.put("doctor", record.getDoctor());
@@ -378,6 +380,7 @@ public class UserLocalDao {
         for (Report report : reports) {
             ContentValues values = new ContentValues();
             values.put("phone_number", phoneNumber);
+            values.put("id",report.getId());
             values.put("detail", report.getDetail());
 
             // 请注意这里的判断和处理图片的方式，可以根据实际情况修改
@@ -475,6 +478,7 @@ public class UserLocalDao {
         for (Alert alert : alerts) {
             ContentValues values = new ContentValues();
             values.put("phone_number", phoneNumber);
+            values.put("id",alert.getId());
             values.put("alert_date", alert.getAlert_date());
             values.put("record_id", alert.getRecord_id());
             values.put("report_id", alert.getReport_id());
@@ -509,7 +513,7 @@ public class UserLocalDao {
         values.put("alert_type", alert.getAlert_type());
         values.put("title", alert.getTitle());
         values.put("is_medicine", alert.getIs_medicine());
-        int rowsAffected = db.update("alert", values, "id=? AND phone_number=?", new String[]{String.valueOf(alert.getId()), phoneNumber});
+        int rowsAffected = db.update("alert", values, "id=?", new String[]{String.valueOf(alert.getId())});
         return rowsAffected > 0;
     }
 

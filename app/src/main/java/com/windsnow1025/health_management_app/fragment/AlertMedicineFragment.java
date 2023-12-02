@@ -50,7 +50,7 @@ public class AlertMedicineFragment extends Fragment {
     private TextView tv_hospital;
     private TextView tv_part;
     private TextView tv_advice;
-    private int H, M, i;
+    private int H, M, alert_id;
     AlertAdapter adapter;
     private boolean flag = false;
     private ArrayList<Report> reportArrayList;
@@ -78,13 +78,13 @@ public class AlertMedicineFragment extends Fragment {
     }
 
     /*用于修改*/
-    public AlertMedicineFragment(boolean isMedicine, int bindID, AlertAdapter infoAdapter, List<Alert> AlertList, int I, boolean is_report, boolean Flag) {
+    public AlertMedicineFragment(boolean isMedicine, int bindID, AlertAdapter infoAdapter, List<Alert> AlertList,  int alert_id,boolean is_report, boolean Flag) {
         this.adapter = infoAdapter;
         this.isMedicine = isMedicine;
         this.bindID = bindID;//num为捆绑的编号
         this.is_report = is_report;//是否为报告
+        this.alert_id = alert_id;
         this.flag = Flag;//是否为修改
-        this.i = I;//i为闹钟编号
     }
 
     private void init(View view) {
@@ -131,7 +131,7 @@ public class AlertMedicineFragment extends Fragment {
 
         /*表修改状态，非新增时*/
         if (flag) {
-            Alert alert1 = userLocalDao.getAlert(alertArrayList, bindID);
+            Alert alert1 = userLocalDao.getAlert(alertArrayList, alert_id);
             et_title.setText(alert1.getTitle());
             et_time.setText(alert1.getAlert_date());
             String[] times = alert1.getAlert_date().split(":");

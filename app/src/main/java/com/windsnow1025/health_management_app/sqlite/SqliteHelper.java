@@ -23,7 +23,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_RECORD = """
                     CREATE TABLE record (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        id INTEGER PRIMARY KEY,
                         phone_number TEXT,
                         record_date TEXT,
                         hospital TEXT,
@@ -39,7 +39,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_REPORT = """
                     CREATE TABLE report (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        id INTEGER PRIMARY KEY,
                         phone_number TEXT,
                         report_date TEXT,
                         hospital TEXT,

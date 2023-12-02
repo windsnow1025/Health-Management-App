@@ -92,8 +92,10 @@ public class UpdateRecordApi extends AsyncTask<ArrayList<Record>, Void, String> 
 
             jsonArray.put(jsonRecord);
         }
+        Log.d("API Response", "UpdateRecordApi Raw Response: " + jsonArray);
 
         return jsonArray;
+
     }
 
     public String updateRecords(ArrayList<Record> records) {
