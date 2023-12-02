@@ -513,7 +513,7 @@ public class UserLocalDao {
         values.put("alert_type", alert.getAlert_type());
         values.put("title", alert.getTitle());
         values.put("is_medicine", alert.getIs_medicine());
-        int rowsAffected = db.update("alert", values, "id=?", new String[]{String.valueOf(alert.getId())});
+        int rowsAffected = db.update("alert", values, "id=? AND phone_number=?", new String[]{String.valueOf(alert.getId()), phoneNumber});
         return rowsAffected > 0;
     }
 
