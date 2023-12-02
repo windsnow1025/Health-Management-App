@@ -56,27 +56,28 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
     private Report report;
     private Alert alert;
     private String userID;
-    private int num, num_alert;
-    private boolean isreport;
+    private int bindID;
+    private int num_alert;
+    private boolean is_report;
     private boolean isMedicine;
     private TimePickerDialog timePickerDialog;
     private Calendar calendar;
     private int H, M;
 
     /*用于新建*/
-    public AlertDiagnoseFragment(boolean isMedicine, int n, boolean isReport, AlertAdapter infoAdapter) {
-        this.num = n;
+    public AlertDiagnoseFragment(boolean isMedicine, int bindID, boolean is_report, AlertAdapter infoAdapter) {
+        this.bindID = bindID;
         this.isMedicine = isMedicine;
         this.adapter = infoAdapter;
-        this.isreport = isReport;//是否为报告
+        this.is_report = is_report;//是否为报告
     }
 
     /*用于修改*/
-    public AlertDiagnoseFragment(boolean isMedicine, int n, AlertAdapter infoAdapter, List<Alert> AlertList, int I, boolean isReport, boolean flag) {
+    public AlertDiagnoseFragment(boolean isMedicine, int bindID, AlertAdapter infoAdapter, List<Alert> AlertList, int I, boolean isReport, boolean flag) {
+        this.bindID = bindID;
         this.adapter = infoAdapter;
-        this.num = n;//num为捆绑的编号
         this.isMedicine = isMedicine;
-        this.isreport = isReport;//是否为报告
+        this.is_report = isReport;//是否为报告
         this.flag = flag;//是否为修改
         this.alertList = AlertList;
         this.i = I;//i为闹钟编号
@@ -95,15 +96,15 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
         ret_time = view.findViewById(R.id.ret_time);
         bt_rcancel = view.findViewById(R.id.bt_cancel);
         rtv_hospital = view.findViewById(R.id.rtv_hospital);
-        if (isreport) report = UserLocalDao.getReport(reportArrayList, num);
-        else record = UserLocalDao.getRecord(historyArrayList, num);
+        if (is_report) report = UserLocalDao.getReport(reportArrayList, bindID);
+        else record = UserLocalDao.getRecord(historyArrayList, bindID);
         num_alert = userLocalDao.getAlertList(userID).size();
     }
 
     /*获取数据*/
     @SuppressLint("SetTextI18n")
     private void infoSet(boolean flag) {
-        if (isreport) {
+        if (is_report) {
             rtv_time.setText(report.getReport_date() + "");
             rtv_part.setText(report.getReport_type() + "");
             rtv_advice.setText(report.getDetail() + "");
@@ -157,11 +158,15 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
         });
         rStartAlarm.setOnClickListener(v -> {
             if (!ret_title.getText().toString().equals("") && !rtv_date.getText().toString().equals("") && !ret_time.getText().toString().equals("")) {
-                Alert alert = new Alert(num_alert, 0, 0, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
-                AlertDiagnoseFragment.this.alert = new Alert(num_alert, 0, 0, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
+                Alert alert;
+                if (is_report) { //report
+                     alert = new Alert(num_alert, 0, bindID, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
+                } else { //record
+                    alert = new Alert(num_alert, bindID, 0, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
+                }
+                AlertDiagnoseFragment.this.alert = alert;
                 // 是否为修改
                 if (flag) {
-                    AlertDiagnoseFragment.this.alert = new Alert(i, 0, 0, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
                     userLocalDao.updateAlert(userID, AlertDiagnoseFragment.this.alert);
                 } else {
                     userLocalDao.insertAlert(userID, AlertDiagnoseFragment.this.alert);
@@ -225,7 +230,7 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = year + "-" + (month + 1) + "-" + dayOfMonth;
         System.out.println(dateString);
-        Date date2 = null;
+        Date date2;
         try {
             date2 = sdf.parse(dateString);
         } catch (ParseException e) {

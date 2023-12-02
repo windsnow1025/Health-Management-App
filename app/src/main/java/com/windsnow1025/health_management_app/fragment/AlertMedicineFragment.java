@@ -3,7 +3,6 @@ package com.windsnow1025.health_management_app.fragment;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.AlarmClock;
@@ -63,27 +62,28 @@ public class AlertMedicineFragment extends Fragment {
     private Report report;
     private Alert alert;
     private String phoneNumber;
-    private int ID, num_alert;
-    private boolean isReport;
+    private int bindID;
+    private int num_alert;
+    private boolean is_report;
     private boolean isMedicine;
     private TimePickerDialog timePickerDialog;
     private Calendar calendar;
 
 
     /*用于新建*/
-    public AlertMedicineFragment(boolean isMedicine, int ID, boolean isReport, AlertAdapter infoAdapter) {
-        this.ID = ID;//num为捆绑的编号
+    public AlertMedicineFragment(boolean isMedicine, int bindID, boolean is_report, AlertAdapter infoAdapter) {
+        this.bindID = bindID;//num为捆绑的编号
         this.adapter = infoAdapter;
         this.isMedicine = isMedicine;
-        this.isReport = isReport;//是否为报告
+        this.is_report = is_report;//是否为报告
     }
 
     /*用于修改*/
-    public AlertMedicineFragment(boolean isMedicine, int ID, AlertAdapter infoAdapter, List<Alert> AlertList, int I, boolean isReport, boolean Flag) {
+    public AlertMedicineFragment(boolean isMedicine, int bindID, AlertAdapter infoAdapter, List<Alert> AlertList, int I, boolean is_report, boolean Flag) {
         this.adapter = infoAdapter;
         this.isMedicine = isMedicine;
-        this.ID = ID;//num为捆绑的编号
-        this.isReport = isReport;//是否为报告
+        this.bindID = bindID;//num为捆绑的编号
+        this.is_report = is_report;//是否为报告
         this.flag = Flag;//是否为修改
         this.alertList = AlertList;
         this.i = I;//i为闹钟编号
@@ -109,9 +109,9 @@ public class AlertMedicineFragment extends Fragment {
         et_time = view.findViewById(R.id.et_time);
         bt_cancel = view.findViewById(R.id.bt_cancel);
 
-        if (isReport) report = UserLocalDao.getReport(reportArrayList, ID);
+        if (is_report) report = UserLocalDao.getReport(reportArrayList, bindID);
         else {
-            record = UserLocalDao.getRecord(recordArrayList, ID);
+            record = UserLocalDao.getRecord(recordArrayList, bindID);
         }
         num_alert = userLocalDao.getAlertList(phoneNumber).size();
     }
@@ -119,7 +119,7 @@ public class AlertMedicineFragment extends Fragment {
     /*数据导入*/
     @SuppressLint("SetTextI18n")
     private void infoSet(boolean flag) {
-        if (isReport) {
+        if (is_report) {
             tv_time.setText(report.getReport_date() + "");
             tv_part.setText(report.getReport_type() + "");
             tv_advice.setText(report.getDetail() + "");
@@ -196,16 +196,16 @@ public class AlertMedicineFragment extends Fragment {
         StartAlarm.setOnClickListener(v -> {
             setAlarmTime();
             if (!et_title.getText().toString().equals("") && !Time.isEmpty() && !et_time.getText().toString().equals("")) {
-                Alert alert = new Alert(ID, 0, 0, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
-                AlertMedicineFragment.this.alert = new Alert(ID, 0, 0, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
-                System.out.println("编号" + ID);
-
-//                   是否为修改
+                Alert alert;
+                if (is_report) {
+                    alert = new Alert(num_alert, 0, bindID, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
+                } else {
+                    alert = new Alert(num_alert, bindID, 0, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
+                }
+                AlertMedicineFragment.this.alert = alert;
+                // 是否为修改
                 if (flag) {
-                    AlertMedicineFragment.this.alert = new Alert(i, 0, 0, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
-                    System.out.println("编号" + i);
                     userLocalDao.updateAlert(phoneNumber, AlertMedicineFragment.this.alert);
-
                 } else {
                     userLocalDao.insertAlert(phoneNumber, AlertMedicineFragment.this.alert);
                 }
@@ -222,14 +222,12 @@ public class AlertMedicineFragment extends Fragment {
             builder.setTitle("取消修改？");
             builder.setMessage("取消编辑将返回原界面，本次修改将不被保存！");
             builder.setNegativeButton("继续编辑", null);
-            builder.setPositiveButton("确定返回", new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
-                    Fragment fragment = new AlertFragment();
-                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container, fragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                }
+            builder.setPositiveButton("确定返回", (dialog, which) -> {
+                Fragment fragment = new AlertFragment();
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             });
             builder.show();
         });

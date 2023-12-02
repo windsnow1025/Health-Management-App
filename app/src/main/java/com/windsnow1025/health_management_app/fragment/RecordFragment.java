@@ -60,23 +60,20 @@ public class RecordFragment extends Fragment {
 
             RecyclerView recyclerView = view.findViewById(R.id.record_recycler_view);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            ArrayList<Record> finalHistories = records;
+            ArrayList<Record> finalRecords = records;
             // Delete Button
-            recyclerView.setAdapter(new TableEnterAdapter(data, new TableEnterAdapter.OnItemClickListener() {
-                // Edit Button
-                @Override
-                public void onClick(int position) {
-                    // Get record id
-                    Integer record_id = finalHistories.get(position - 1).getId();
+            // Edit Button
+            recyclerView.setAdapter(new TableEnterAdapter(data, position -> {
+                // Get record id
+                Integer record_id = finalRecords.get(position - 1).getId();
 
-                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container, new EditRecordFragment(record_id));
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                }
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, new EditRecordFragment(record_id));
+                transaction.addToBackStack(null);
+                transaction.commit();
             }, position -> {
                 // Get record id
-                Integer record_id = finalHistories.get(position - 1).getId();
+                int record_id = finalRecords.get(position - 1).getId();
 
                 // Delete record
                 userLocalDao.deleteRecord(phoneNumber, record_id);
@@ -94,14 +91,11 @@ public class RecordFragment extends Fragment {
         }
 
         Button buttonEnterRecord = view.findViewById(R.id.buttonEnterRecord);
-        buttonEnterRecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new EnterRecordFragment(organ));
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
+        buttonEnterRecord.setOnClickListener(v -> {
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, new EnterRecordFragment(organ));
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
         return view;

@@ -77,15 +77,23 @@ public class AlertFragment extends Fragment {
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view12, position, id) -> {
-            is_report = alertList.get(position).getAlert_type().equals("true");//是否为报告
+            Alert alert = alertList.get(position);
+            int bind_id;
+            if (alert.getReport_id() > 0) {
+                is_report = true;
+                bind_id = alert.getReport_id();
+            } else {
+                is_report = false;
+                bind_id = alert.getRecord_id();
+            }
             boolean isMedicine = alertList.get(position).getIs_medicine().equals("true");//是否为吃药
-            int ID = alertList.get(position).getId();
+
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
 
             if (isMedicine) {
-                transaction.replace(R.id.fragment_container, new AlertMedicineFragment(isMedicine, ID, adapter, alertList, alertIDList.get(position), is_report, true));
+                transaction.replace(R.id.fragment_container, new AlertMedicineFragment(isMedicine, bind_id, adapter, alertList, alertIDList.get(position), is_report, true));
             } else {
-                transaction.replace(R.id.fragment_container, new AlertDiagnoseFragment(isMedicine, ID, adapter, alertList, alertIDList.get(position), is_report, true));
+                transaction.replace(R.id.fragment_container, new AlertDiagnoseFragment(isMedicine, bind_id, adapter, alertList, alertIDList.get(position), is_report, true));
             }
             transaction.addToBackStack(null);
             transaction.commit();

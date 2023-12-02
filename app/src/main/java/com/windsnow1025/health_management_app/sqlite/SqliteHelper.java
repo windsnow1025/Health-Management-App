@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class SqliteHelper extends SQLiteOpenHelper {
     private static final String DATABASE = "health-management-app.db";
-    private static final int VERSION = 11;
+    private static final int VERSION = 12;
 
     public SqliteHelper(Context context) {
         super(context, DATABASE, null, VERSION);
@@ -61,9 +61,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
                     alert_date TEXT,
                     alert_cycle TEXT,
                     is_medicine TEXT,
-                    FOREIGN KEY (phone_number) REFERENCES user(phone_number),
-                    FOREIGN KEY (record_id) REFERENCES record(id),
-                    FOREIGN KEY (report_id) REFERENCES report(id)
+                    FOREIGN KEY (phone_number) REFERENCES user(phone_number)
                 )
             """;
 

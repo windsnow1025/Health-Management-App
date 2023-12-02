@@ -52,9 +52,7 @@ public class UserLocalDao {
         Cursor cursor = db.query("user", null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                {
-                    phoneNumber = cursor.getString(cursor.getColumnIndex("phone_number"));
-                }
+                phoneNumber = cursor.getString(cursor.getColumnIndex("phone_number"));
             } while (cursor.moveToNext());
         }
         return phoneNumber;
@@ -150,7 +148,7 @@ public class UserLocalDao {
             values.put("phone_number", phoneNumber);
             values.put("id", report.getId());
             values.put("detail", report.getDetail());
-            values.put("report_picture", report.getPicture().toString());
+            values.put("report_picture", report.getPicture());
             values.put("report_type", report.getReport_type());
             values.put("hospital", report.getHospital());
             values.put("report_date", report.getReport_date());
@@ -166,7 +164,7 @@ public class UserLocalDao {
             if (report.getPicture() == null) {
                 values.put("report_picture", "");
             } else {
-                values.put("report_picture", report.getPicture().toString());
+                values.put("report_picture", report.getPicture());
             }
             values.put("report_type", report.getReport_type());
             values.put("hospital", report.getHospital());
