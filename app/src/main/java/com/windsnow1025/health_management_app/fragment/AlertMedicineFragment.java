@@ -108,10 +108,10 @@ public class AlertMedicineFragment extends Fragment {
         bt_cancel = view.findViewById(R.id.bt_cancel);
 
         if (is_report) {
-            report = userLocalDao.getReport(reportArrayList, bindID);
+            report = UserLocalDao.getReport(reportArrayList, bindID);
         }
         else {
-            record = userLocalDao.getRecord(recordArrayList, bindID);
+            record = UserLocalDao.getRecord(recordArrayList, bindID);
         }
         num_alert = userLocalDao.getAlertList(phoneNumber).size();
     }

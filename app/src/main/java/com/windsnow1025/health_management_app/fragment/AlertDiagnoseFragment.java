@@ -49,7 +49,7 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
     AlertAdapter adapter;
     private boolean flag;
     private ArrayList<Report> reportArrayList;
-    private ArrayList<Record> historyArrayList;
+    private ArrayList<Record> recordArrayList;
     private ArrayList<Alert> alertArrayList;
     private UserLocalDao userLocalDao;
     private Record record;
@@ -97,10 +97,10 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
         bt_rcancel = view.findViewById(R.id.bt_cancel);
         rtv_hospital = view.findViewById(R.id.rtv_hospital);
         if (is_report) {
-            report = userLocalDao.getReport(reportArrayList, bindID);
+            report = UserLocalDao.getReport(reportArrayList, bindID);
         }
         else {
-            record = userLocalDao.getRecord(historyArrayList, bindID);
+            record = UserLocalDao.getRecord(recordArrayList, bindID);
         }
         num_alert = userLocalDao.getAlertList(phoneNumber).size();
     }
@@ -141,7 +141,7 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
         alertArrayList = userLocalDao.getAlertList(phoneNumber);
         calendar = Calendar.getInstance();
         reportArrayList = userLocalDao.getReportList(phoneNumber);
-        historyArrayList = userLocalDao.getRecordList(phoneNumber);
+        recordArrayList = userLocalDao.getRecordList(phoneNumber);
         init(view);
         infoSet(flag);
 
