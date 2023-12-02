@@ -39,7 +39,7 @@ public class RecordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_record, container, false);
 
-        // Get history list from database
+        // Get record list from database
         try {
             // Get username
             UserLocalDao userLocalDao = new UserLocalDao(getContext());
@@ -51,7 +51,7 @@ public class RecordFragment extends Fragment {
             records = userLocalDao.getRecordList(phoneNumber);
             Log.i("test", "从服务器获取就诊记录");
 
-            // Set history list to recycler view
+            // Set record list to recycler view
             List<String[]> data = new ArrayList<>();
             data.add(new String[]{"时间", "医院", "部位"});
             for (Record record : records) {

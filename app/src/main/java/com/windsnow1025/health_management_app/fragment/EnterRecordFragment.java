@@ -116,16 +116,16 @@ public class EnterRecordFragment extends Fragment {
             // Insert data into database
             Boolean insertStatus = false;
             Log.i("主线程", "数据库测试开始");
-            Record history = new Record();
-            history.setRecord_date(date);
-            history.setHospital(hospital);
-            history.setDoctor(doctor);
-            history.setOrgan(organ);
-            history.setSymptom(symptom);
-            history.setConclusion(conclusion);
-            history.setSuggestion(suggestion);
+            Record record = new Record();
+            record.setRecord_date(date);
+            record.setHospital(hospital);
+            record.setDoctor(doctor);
+            record.setOrgan(organ);
+            record.setSymptom(symptom);
+            record.setConclusion(conclusion);
+            record.setSuggestion(suggestion);
             try {
-                insertStatus = userLocalDao.insertRecord(username, history);
+                insertStatus = userLocalDao.insertRecord(username, record);
             } catch (Exception e) {
                 e.printStackTrace();
             }

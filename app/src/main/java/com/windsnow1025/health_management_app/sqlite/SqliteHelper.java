@@ -79,7 +79,6 @@ public class SqliteHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS user");
         db.execSQL("DROP TABLE IF EXISTS report");
-        db.execSQL("DROP TABLE IF EXISTS history");
         db.execSQL("DROP TABLE IF EXISTS record");
         db.execSQL("DROP TABLE IF EXISTS alert");
         onCreate(db);

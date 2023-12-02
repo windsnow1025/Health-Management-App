@@ -57,9 +57,8 @@ public class SetAlertFragment extends Fragment {
         }
 
         List<String[]> data1 = new ArrayList<>();
-        for (Record history :
-                records) {
-            data1.add(new String[]{history.getRecord_date(), history.getHospital(), history.getOrgan(), String.valueOf(history.getId())});
+        for (Record record : records) {
+            data1.add(new String[]{record.getRecord_date(), record.getHospital(), record.getOrgan(), String.valueOf(record.getId())});
         }
 
 

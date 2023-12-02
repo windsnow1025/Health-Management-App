@@ -306,9 +306,9 @@ public class UserLocalDao {
     }
 
 
-//    private Integer getHistoryCount(String account) {
+//    private Integer getRecordCount(String account) {
 //        Integer valueReturn=0;
-//        valueReturn=db.query("history", null, "phone_number = ?", new String[]{account}, null, null, null).getCount();
+//        valueReturn=db.query("record", null, "phone_number = ?", new String[]{account}, null, null, null).getCount();
 //        return valueReturn+1;
 //    }
 

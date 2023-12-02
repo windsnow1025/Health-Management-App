@@ -27,7 +27,7 @@ public class EditRecordFragment extends Fragment {
 
     String organ;
 
-    String username;
+    String phoneNumber;
 
     String date;
     String hospital;
@@ -71,20 +71,20 @@ public class EditRecordFragment extends Fragment {
             // Get username
             userLocalDao = new UserLocalDao(getContext());
             userLocalDao.open();
-            username = userLocalDao.getPhoneNumber();
+            phoneNumber = userLocalDao.getPhoneNumber();
 
             // Get record
-            ArrayList<Record> historyList = userLocalDao.getRecordList(username);
-            Record history = historyList.get(recordId - 1);
+            ArrayList<Record> recordList = userLocalDao.getRecordList(phoneNumber);
+            Record record = recordList.get(recordId - 1);
 
             // Get data
-            date = history.getRecord_date();
-            hospital = history.getHospital();
-            doctor = history.getDoctor();
-            organ = history.getOrgan();
-            symptom = history.getSymptom();
-            conclusion = history.getConclusion();
-            suggestion = history.getSuggestion();
+            date = record.getRecord_date();
+            hospital = record.getHospital();
+            doctor = record.getDoctor();
+            organ = record.getOrgan();
+            symptom = record.getSymptom();
+            conclusion = record.getConclusion();
+            suggestion = record.getSuggestion();
 
             // Set data to views
             editTextDate.setText(date);
@@ -142,17 +142,17 @@ public class EditRecordFragment extends Fragment {
                 // Insert data into database
                 Boolean insertStatus = false;
                 Log.i("主线程", "数据库测试开始");
-                Record history = new Record();
-                history.setRecord_date(date);
-                history.setHospital(hospital);
-                history.setDoctor(doctor);
-                history.setOrgan(organ);
-                history.setSymptom(symptom);
-                history.setConclusion(conclusion);
-                history.setSuggestion(suggestion);
-                history.setId(recordId);
+                Record record = new Record();
+                record.setRecord_date(date);
+                record.setHospital(hospital);
+                record.setDoctor(doctor);
+                record.setOrgan(organ);
+                record.setSymptom(symptom);
+                record.setConclusion(conclusion);
+                record.setSuggestion(suggestion);
+                record.setId(recordId);
                 try {
-                    insertStatus = userLocalDao.updateRecord(username, history);
+                    insertStatus = userLocalDao.updateRecord(phoneNumber, record);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
