@@ -97,10 +97,10 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
         bt_rcancel = view.findViewById(R.id.bt_cancel);
         rtv_hospital = view.findViewById(R.id.rtv_hospital);
         if (is_report) {
-            report = reportArrayList.get(bindID);
+            report = userLocalDao.getReport(reportArrayList, bindID);
         }
         else {
-            record = historyArrayList.get(bindID);
+            record = userLocalDao.getRecord(historyArrayList, bindID);
         }
         num_alert = userLocalDao.getAlertList(phoneNumber).size();
     }
