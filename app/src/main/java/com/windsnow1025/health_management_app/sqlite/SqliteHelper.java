@@ -22,31 +22,33 @@ public class SqliteHelper extends SQLiteOpenHelper {
             """;
 
     private static final String CREATE_RECORD = """
-                CREATE TABLE record (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    phone_number TEXT,
-                    record_date TEXT,
-                    hospital TEXT,
-                    doctor TEXT,
-                    organ TEXT,
-                    symptom TEXT,
-                    conclusion TEXT,
-                    suggestion TEXT,
-                    FOREIGN KEY (phone_number) REFERENCES user(phone_number)
-                )
+                    CREATE TABLE record (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        phone_number TEXT,
+                        record_date TEXT,
+                        hospital TEXT,
+                        doctor TEXT,
+                        organ TEXT,
+                        symptom TEXT,
+                        conclusion TEXT,
+                        suggestion TEXT,
+                        UNIQUE (id, phone_number),
+                        FOREIGN KEY (phone_number) REFERENCES user(phone_number)
+                    )
             """;
 
     private static final String CREATE_REPORT = """
-                CREATE TABLE report (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    phone_number TEXT,
-                    report_date TEXT,
-                    hospital TEXT,
-                    report_type TEXT,
-                    picture BLOB,
-                    detail TEXT,
-                    FOREIGN KEY (phone_number) REFERENCES user(phone_number)
-                )
+                    CREATE TABLE report (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        phone_number TEXT,
+                        report_date TEXT,
+                        hospital TEXT,
+                        report_type TEXT,
+                        picture BLOB,
+                        detail TEXT,
+                        UNIQUE (id, phone_number),
+                        FOREIGN KEY (phone_number) REFERENCES user(phone_number)
+                    )
             """;
 
     private static final String CREATE_ALERT = """
