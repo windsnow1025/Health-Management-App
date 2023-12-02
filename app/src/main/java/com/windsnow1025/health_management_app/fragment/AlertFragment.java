@@ -23,7 +23,7 @@ import java.util.List;
 
 public class AlertFragment extends Fragment {
     private static List<Alert> alertList = new ArrayList<>();
-    private static List<Integer> numList = new ArrayList<>();
+    private static List<Integer> alertIDList = new ArrayList<>();
     private AlertAdapter adapter;
     private ListView listView;
     private TableLayout tableLayout;
@@ -42,10 +42,10 @@ public class AlertFragment extends Fragment {
     /*读取数据*/
     public List<Alert> getAlertList() {
         alertList.clear();
-        numList.clear();
+        alertIDList.clear();
         alertArrayList = userLocalDao.getAlertList(phoneNumber);
         for (Alert alert : alertArrayList) {
-            numList.add(alert.getID());
+            alertIDList.add(alert.getID());
             alertList.add(new Alert(alert.getID(), alert.getPhone_number(), alert.getAlert_type(), alert.getAdvice(), alert.getTitle(), alert.getAlert_date(), alert.getAlert_cycle(), alert.getIs_medicine()));
         }
 
@@ -87,9 +87,9 @@ public class AlertFragment extends Fragment {
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
 
             if (isMedicine) {
-                transaction.replace(R.id.fragment_container, new AlertMedicineFragment(isMedicine, ID, adapter, alertList, numList.get(position), is_report, true));
+                transaction.replace(R.id.fragment_container, new AlertMedicineFragment(isMedicine, ID, adapter, alertList, alertIDList.get(position), is_report, true));
             } else {
-                transaction.replace(R.id.fragment_container, new AlertDiagnoseFragment(isMedicine, ID, adapter, alertList, numList.get(position), is_report, true));
+                transaction.replace(R.id.fragment_container, new AlertDiagnoseFragment(isMedicine, ID, adapter, alertList, alertIDList.get(position), is_report, true));
             }
             transaction.addToBackStack(null);
             transaction.commit();
@@ -100,11 +100,11 @@ public class AlertFragment extends Fragment {
             builder.setMessage("请问您确定要删除该提醒吗？");
             builder.setNegativeButton("取消", null);
             builder.setPositiveButton("确定", (dialog, which) -> {
-                if(position < numList.size() && position < alertList.size()) {
-                    int alertId = numList.get(position);
+                if(position < alertIDList.size() && position < alertList.size()) {
+                    int alertId = alertIDList.get(position);
                     userLocalDao.deleteAlert(phoneNumber, alertId);
                     alertList.remove(position);
-                    numList.remove(position);
+                    alertIDList.remove(position);
                     adapter.notifyDataSetChanged();
                     Toast.makeText(getContext(), "提醒删除成功", Toast.LENGTH_SHORT).show();
                 }

@@ -56,14 +56,14 @@ public class AlertMedicineFragment extends Fragment {
     AlertAdapter adapter;
     private boolean flag = false;
     private ArrayList<Report> reportArrayList;
-    private ArrayList<Record> historyArrayList;
+    private ArrayList<Record> recordArrayList;
     private ArrayList<Alert> alertArrayList;
     private UserLocalDao userLocalDao;
     private Record record;
     private Report report;
     private Alert alert;
     private String phoneNumber;
-    private int num, num_alerk;
+    private int ID, num_alert;
     private boolean isReport;
     private boolean isMedicine;
     private TimePickerDialog timePickerDialog;
@@ -71,18 +71,18 @@ public class AlertMedicineFragment extends Fragment {
 
 
     /*用于新建*/
-    public AlertMedicineFragment(boolean isMedicine, int n, boolean isReport, AlertAdapter infoAdapter) {
-        this.num = n;//num为捆绑的编号
+    public AlertMedicineFragment(boolean isMedicine, int ID, boolean isReport, AlertAdapter infoAdapter) {
+        this.ID = ID;//num为捆绑的编号
         this.adapter = infoAdapter;
         this.isMedicine = isMedicine;
         this.isReport = isReport;//是否为报告
     }
 
     /*用于修改*/
-    public AlertMedicineFragment(boolean isMedicine, int n, AlertAdapter infoAdapter, List<Alert> AlertList, int I, boolean isReport, boolean Flag) {
+    public AlertMedicineFragment(boolean isMedicine, int ID, AlertAdapter infoAdapter, List<Alert> AlertList, int I, boolean isReport, boolean Flag) {
         this.adapter = infoAdapter;
         this.isMedicine = isMedicine;
-        this.num = n;//num为捆绑的编号
+        this.ID = ID;//num为捆绑的编号
         this.isReport = isReport;//是否为报告
         this.flag = Flag;//是否为修改
         this.alertList = AlertList;
@@ -109,11 +109,11 @@ public class AlertMedicineFragment extends Fragment {
         et_time = view.findViewById(R.id.et_time);
         bt_cancel = view.findViewById(R.id.bt_cancel);
 
-        if (isReport) report = UserLocalDao.getReport(reportArrayList, num);
+        if (isReport) report = UserLocalDao.getReport(reportArrayList, ID);
         else {
-            record = UserLocalDao.getRecord(historyArrayList, num);
+            record = UserLocalDao.getRecord(recordArrayList, ID);
         }
-        num_alerk = userLocalDao.getAlertList(phoneNumber).size();
+        num_alert = userLocalDao.getAlertList(phoneNumber).size();
     }
 
     /*数据导入*/
@@ -179,7 +179,7 @@ public class AlertMedicineFragment extends Fragment {
         alertArrayList = userLocalDao.getAlertList(phoneNumber);
         calendar = Calendar.getInstance();
         reportArrayList = userLocalDao.getReportList(phoneNumber);
-        historyArrayList = userLocalDao.getRecordList(phoneNumber);
+        recordArrayList = userLocalDao.getRecordList(phoneNumber);
         init(view);
         infoSet(flag);
         et_time.setOnClickListener(v -> {
@@ -196,9 +196,9 @@ public class AlertMedicineFragment extends Fragment {
         StartAlarm.setOnClickListener(v -> {
             setAlarmTime();
             if (!et_title.getText().toString().equals("") && !Time.isEmpty() && !et_time.getText().toString().equals("")) {
-                Alert alert = new Alert(num_alerk, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
-                AlertMedicineFragment.this.alert = new Alert(num_alerk, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
-                System.out.println("编号" + num_alerk);
+                Alert alert = new Alert(ID, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
+                AlertMedicineFragment.this.alert = new Alert(ID, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
+                System.out.println("编号" + ID);
 
 //                   是否为修改
                 if (flag) {
