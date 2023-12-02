@@ -32,8 +32,7 @@ import java.util.List;
 
 public class AlertMedicineFragment extends Fragment {
 
-    private final ArrayList<Integer> Time = new ArrayList<Integer>();
-    private List<Alert> alertList;
+    private final ArrayList<Integer> Time = new ArrayList<>();
     private CheckBox Monday;
     private CheckBox Tuesday;
     private CheckBox Wednesday;
@@ -85,7 +84,6 @@ public class AlertMedicineFragment extends Fragment {
         this.bindID = bindID;//num为捆绑的编号
         this.is_report = is_report;//是否为报告
         this.flag = Flag;//是否为修改
-        this.alertList = AlertList;
         this.i = I;//i为闹钟编号
     }
 
@@ -120,20 +118,20 @@ public class AlertMedicineFragment extends Fragment {
     @SuppressLint("SetTextI18n")
     private void infoSet(boolean flag) {
         if (is_report) {
-            tv_time.setText(report.getReport_date() + "");
-            tv_part.setText(report.getReport_type() + "");
-            tv_advice.setText(report.getDetail() + "");
-            tv_hospital.setText(report.getHospital() + "");
+            tv_time.setText(report.getReport_date());
+            tv_part.setText(report.getReport_type());
+            tv_advice.setText(report.getDetail());
+            tv_hospital.setText(report.getHospital());
         } else {
-            tv_time.setText(record.getRecord_date() + "");
-            tv_part.setText(record.getOrgan() + "");
-            tv_advice.setText(record.getSuggestion() + "");
-            tv_hospital.setText(record.getHospital() + "");
+            tv_time.setText(record.getRecord_date());
+            tv_part.setText(record.getOrgan());
+            tv_advice.setText(record.getSuggestion());
+            tv_hospital.setText(record.getHospital());
         }
 
         /*表修改状态，非新增时*/
         if (flag) {
-            Alert alert1 = userLocalDao.getAlert(alertArrayList, i);
+            Alert alert1 = userLocalDao.getAlert(alertArrayList, bindID);
             et_title.setText(alert1.getTitle());
             et_time.setText(alert1.getAlert_date());
             String[] times = alert1.getAlert_date().split(":");
@@ -142,27 +140,13 @@ public class AlertMedicineFragment extends Fragment {
             String[] newArray = alert1.getAlert_cycle().split("\\s");
             for (String str : newArray) {
                 switch (str) {
-                    case "周日":
-                        Sunday.setChecked(true);
-                        break;
-                    case "周一":
-                        Monday.setChecked(true);
-                        break;
-                    case "周二":
-                        Tuesday.setChecked(true);
-                        break;
-                    case "周三":
-                        Wednesday.setChecked(true);
-                        break;
-                    case "周四":
-                        Thursday.setChecked(true);
-                        break;
-                    case "周五":
-                        Friday.setChecked(true);
-                        break;
-                    case "周六":
-                        Saturday.setChecked(true);
-                        break;
+                    case "周日" -> Sunday.setChecked(true);
+                    case "周一" -> Monday.setChecked(true);
+                    case "周二" -> Tuesday.setChecked(true);
+                    case "周三" -> Wednesday.setChecked(true);
+                    case "周四" -> Thursday.setChecked(true);
+                    case "周五" -> Friday.setChecked(true);
+                    case "周六" -> Saturday.setChecked(true);
                 }
             }
         }
@@ -170,8 +154,7 @@ public class AlertMedicineFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
@@ -198,9 +181,11 @@ public class AlertMedicineFragment extends Fragment {
             if (!et_title.getText().toString().equals("") && !Time.isEmpty() && !et_time.getText().toString().equals("")) {
                 Alert alert;
                 if (is_report) {
-                    alert = new Alert(num_alert, 0, bindID, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
+                    String alert_type = report.getReport_type();
+                    alert = new Alert(num_alert, 0, bindID, phoneNumber, alert_type, tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
                 } else {
-                    alert = new Alert(num_alert, bindID, 0, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
+                    String alert_type = record.getOrgan();
+                    alert = new Alert(num_alert, bindID, 0, phoneNumber, alert_type, tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
                 }
                 AlertMedicineFragment.this.alert = alert;
                 // 是否为修改

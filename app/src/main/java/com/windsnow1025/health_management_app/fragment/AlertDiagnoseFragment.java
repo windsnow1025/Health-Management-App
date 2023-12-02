@@ -55,7 +55,7 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
     private Record record;
     private Report report;
     private Alert alert;
-    private String userID;
+    private String phoneNumber;
     private int bindID;
     private int num_alert;
     private boolean is_report;
@@ -98,26 +98,26 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
         rtv_hospital = view.findViewById(R.id.rtv_hospital);
         if (is_report) report = UserLocalDao.getReport(reportArrayList, bindID);
         else record = UserLocalDao.getRecord(historyArrayList, bindID);
-        num_alert = userLocalDao.getAlertList(userID).size();
+        num_alert = userLocalDao.getAlertList(phoneNumber).size();
     }
 
     /*获取数据*/
     @SuppressLint("SetTextI18n")
     private void infoSet(boolean flag) {
         if (is_report) {
-            rtv_time.setText(report.getReport_date() + "");
-            rtv_part.setText(report.getReport_type() + "");
-            rtv_advice.setText(report.getDetail() + "");
-            rtv_hospital.setText(report.getHospital() + "");
+            rtv_time.setText(report.getReport_date());
+            rtv_part.setText(report.getReport_type());
+            rtv_advice.setText(report.getDetail());
+            rtv_hospital.setText(report.getHospital());
         } else {
-            rtv_time.setText(record.getRecord_date() + "");
-            rtv_part.setText(record.getOrgan() + "");
-            rtv_advice.setText(record.getSuggestion() + "");
-            rtv_hospital.setText(record.getHospital() + "");
+            rtv_time.setText(record.getRecord_date());
+            rtv_part.setText(record.getOrgan());
+            rtv_advice.setText(record.getSuggestion());
+            rtv_hospital.setText(record.getHospital());
         }
         /*表修改状态，非新增时*/
         if (flag) {
-            Alert alert1 = userLocalDao.getAlert(alertArrayList, i);
+            Alert alert1 = userLocalDao.getAlert(alertArrayList, bindID);
             ret_title.setText(alert1.getTitle());
             ret_time.setText(alert1.getAlert_date());
             String[] times = alert1.getAlert_date().split(":");
@@ -133,11 +133,11 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
         View view = inflater.inflate(R.layout.fragment_details__record, container, false);
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
-        userID = userLocalDao.getPhoneNumber();
-        alertArrayList = userLocalDao.getAlertList(userID);
+        phoneNumber = userLocalDao.getPhoneNumber();
+        alertArrayList = userLocalDao.getAlertList(phoneNumber);
         calendar = Calendar.getInstance();
-        reportArrayList = userLocalDao.getReportList(userID);
-        historyArrayList = userLocalDao.getRecordList(userID);
+        reportArrayList = userLocalDao.getReportList(phoneNumber);
+        historyArrayList = userLocalDao.getRecordList(phoneNumber);
         init(view);
         infoSet(flag);
 
@@ -160,16 +160,18 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
             if (!ret_title.getText().toString().equals("") && !rtv_date.getText().toString().equals("") && !ret_time.getText().toString().equals("")) {
                 Alert alert;
                 if (is_report) { //report
-                     alert = new Alert(num_alert, 0, bindID, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
+                    String alert_type = report.getReport_type();
+                    alert = new Alert(num_alert, 0, bindID, phoneNumber, alert_type, rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
                 } else { //record
-                    alert = new Alert(num_alert, bindID, 0, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
+                    String alert_type = record.getOrgan();
+                    alert = new Alert(num_alert, bindID, 0, phoneNumber, alert_type, rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
                 }
                 AlertDiagnoseFragment.this.alert = alert;
                 // 是否为修改
                 if (flag) {
-                    userLocalDao.updateAlert(userID, AlertDiagnoseFragment.this.alert);
+                    userLocalDao.updateAlert(phoneNumber, AlertDiagnoseFragment.this.alert);
                 } else {
-                    userLocalDao.insertAlert(userID, AlertDiagnoseFragment.this.alert);
+                    userLocalDao.insertAlert(phoneNumber, AlertDiagnoseFragment.this.alert);
                 }
                 adapter.add(alert);
                 if (!flag) {
