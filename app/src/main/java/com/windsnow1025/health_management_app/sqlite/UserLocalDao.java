@@ -69,23 +69,14 @@ public class UserLocalDao {
     }
     public Boolean checkReport(String phoneNumber) {
         Cursor cursor = db.query("report", null, "phone_number = ?", new String[]{phoneNumber}, null, null, null);
-        if (cursor.moveToNext()) {
-            return true;
-        }
-        return false;
+        return cursor.moveToNext();
     }
     public Boolean checkRecord(String phoneNumber) {
         Cursor cursor = db.query("record", null, "phone_number = ?", new String[]{phoneNumber}, null, null, null);
-        if (cursor.moveToNext()) {
-            return true;
-        }
-        return false;
+        return cursor.moveToNext();
     }    public Boolean checkAlert(String phoneNumber) {
         Cursor cursor = db.query("alert", null, "phone_number = ?", new String[]{phoneNumber}, null, null, null);
-        if (cursor.moveToNext()) {
-            return true;
-        }
-        return false;
+        return cursor.moveToNext();
     }
 
     @SuppressLint("Range")
@@ -114,7 +105,6 @@ public class UserLocalDao {
         }
     }
 
-    //仿照上面的addOrUpdateUser写个addOrUpdateReport
     public void addOrUpdateReport(Report report){
         ContentValues values = new ContentValues();
         values.put("phone_number",report.getPhone_number());
@@ -129,7 +119,7 @@ public class UserLocalDao {
             db.insert("report", null, values);
         }
     }
-    //仿照上面的addOrUpdateUser写个addOrUpdateRecord
+
     public void addOrUpdateRecord(Record record){
         ContentValues values = new ContentValues();
         values.put("phone_number",record.getPhone_number());
@@ -545,7 +535,7 @@ public class UserLocalDao {
         return record;
     }
 
-    public static Report gerReport(ArrayList<Report> reportList, int ID) {
+    public static Report getReport(ArrayList<Report> reportList, int ID) {
         Stream<Report> reportStream = reportList.stream();
         Report report = reportStream.filter(e -> e.getID() == ID).collect(Collectors.toList()).get(0);
         return report;

@@ -97,7 +97,7 @@ public class DetailsRecordFragment extends Fragment implements DatePickerDialog.
         ret_time = view.findViewById(R.id.ret_time);
         bt_rcancel = view.findViewById(R.id.bt_cancel);
         rtv_hospital = view.findViewById(R.id.rtv_hospital);
-        if (isreport) report = UserLocalDao.gerReport(reportArrayList, num);
+        if (isreport) report = UserLocalDao.getReport(reportArrayList, num);
         else record = UserLocalDao.getHistory(historyArrayList, num);
         num_alerk = userLocalDao.getAlertList(userID).size();
     }

@@ -109,7 +109,7 @@ public class DetailsFragment extends Fragment {
         et_time = view.findViewById(R.id.et_time);
         bt_cancel = view.findViewById(R.id.bt_cancel);
 
-        if (isReport) report = UserLocalDao.gerReport(reportArrayList, num);
+        if (isReport) report = UserLocalDao.getReport(reportArrayList, num);
         else {
             history = UserLocalDao.getHistory(historyArrayList, num);
         }
