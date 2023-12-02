@@ -196,13 +196,13 @@ public class AlertMedicineFragment extends Fragment {
         StartAlarm.setOnClickListener(v -> {
             setAlarmTime();
             if (!et_title.getText().toString().equals("") && !Time.isEmpty() && !et_time.getText().toString().equals("")) {
-                Alert alert = new Alert(ID, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
-                AlertMedicineFragment.this.alert = new Alert(ID, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
+                Alert alert = new Alert(ID, 0, 0, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
+                AlertMedicineFragment.this.alert = new Alert(ID, 0, 0, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
                 System.out.println("编号" + ID);
 
 //                   是否为修改
                 if (flag) {
-                    AlertMedicineFragment.this.alert = new Alert(i, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
+                    AlertMedicineFragment.this.alert = new Alert(i, 0, 0, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
                     System.out.println("编号" + i);
                     userLocalDao.updateAlert(phoneNumber, AlertMedicineFragment.this.alert);
 

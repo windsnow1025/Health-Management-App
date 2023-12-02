@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -39,7 +38,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.concurrent.TimeoutException;
 
 // 体检报告修改
 public class EditReportFragment extends Fragment {
@@ -167,7 +165,7 @@ public class EditReportFragment extends Fragment {
             report.setHospital(hospital);
             report.setPicture(bitmapString);
             report.setDetail(OCRTxt);
-            report.setID(reportId);
+            report.setId(reportId);
             if (date.equals("")) {
                 //判定日期是否填写 未填写则设置为null
                 report.setReport_date(null);

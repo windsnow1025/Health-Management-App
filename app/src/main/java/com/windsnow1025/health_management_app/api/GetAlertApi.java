@@ -4,9 +4,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.windsnow1025.health_management_app.pojo.Alert;
-import com.windsnow1025.health_management_app.pojo.Record;
-import com.windsnow1025.health_management_app.pojo.Report;
-import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -96,7 +93,9 @@ public class GetAlertApi extends AsyncTask<String, Void, String> {
 
                     Alert alert = new Alert();
                     alert.setPhone_number(jsonResponse.getString("phone_number"));
-                    alert.setID(jsonResponse.getInt("id"));
+                    alert.setId(jsonResponse.getInt("id"));
+                    alert.setRecord_id(jsonResponse.getInt("record_id"));
+                    alert.setReport_id(jsonResponse.getInt("report_id"));
                     alert.setAlert_type(jsonResponse.getString("alert_type"));
                     alert.setAdvice(jsonResponse.getString("advice"));
                     alert.setTitle(jsonResponse.getString("title"));

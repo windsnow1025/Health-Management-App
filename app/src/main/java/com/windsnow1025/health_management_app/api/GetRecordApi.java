@@ -4,8 +4,6 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.windsnow1025.health_management_app.pojo.Record;
-import com.windsnow1025.health_management_app.pojo.Report;
-import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,7 +93,7 @@ public class GetRecordApi extends AsyncTask<String, Void, String> {
 
                     Record record = new Record();
                     record.setPhone_number(jsonResponse.getString("phone_number"));
-                    record.setID(jsonResponse.getInt("id"));
+                    record.setId(jsonResponse.getInt("id"));
                     record.setRecord_date(jsonResponse.getString("record_date"));
                     record.setHospital(jsonResponse.getString("hospital"));
                     record.setDoctor(jsonResponse.getString("doctor"));

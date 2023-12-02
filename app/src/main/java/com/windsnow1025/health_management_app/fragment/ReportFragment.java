@@ -19,7 +19,6 @@ import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 // 体检报告显示
 public class ReportFragment extends Fragment {
@@ -67,7 +66,7 @@ public class ReportFragment extends Fragment {
                 @Override
                 public void onClick(int position) {
                     // Get report id
-                    Integer report_id = finalReports.get(position - 1).getID();
+                    Integer report_id = finalReports.get(position - 1).getId();
 
                     FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                     transaction.replace(R.id.fragment_container, new EditReportFragment(report_id));
@@ -79,7 +78,7 @@ public class ReportFragment extends Fragment {
                 @Override
                 public void onClick(int position) {
                     // Get report id
-                    int report_id = finalReports.get(position - 1).getID();
+                    int report_id = finalReports.get(position - 1).getId();
 
                     // Delete report
                     try {

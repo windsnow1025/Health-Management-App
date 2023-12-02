@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.AlarmClock;
@@ -15,7 +14,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -58,7 +56,7 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
     private Report report;
     private Alert alert;
     private String userID;
-    private int num, num_alerk;
+    private int num, num_alert;
     private boolean isreport;
     private boolean isMedicine;
     private TimePickerDialog timePickerDialog;
@@ -99,7 +97,7 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
         rtv_hospital = view.findViewById(R.id.rtv_hospital);
         if (isreport) report = UserLocalDao.getReport(reportArrayList, num);
         else record = UserLocalDao.getRecord(historyArrayList, num);
-        num_alerk = userLocalDao.getAlertList(userID).size();
+        num_alert = userLocalDao.getAlertList(userID).size();
     }
 
     /*获取数据*/
@@ -159,11 +157,11 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
         });
         rStartAlarm.setOnClickListener(v -> {
             if (!ret_title.getText().toString().equals("") && !rtv_date.getText().toString().equals("") && !ret_time.getText().toString().equals("")) {
-                Alert alert = new Alert(num_alerk, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
-                AlertDiagnoseFragment.this.alert = new Alert(num_alerk, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
+                Alert alert = new Alert(num_alert, 0, 0, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
+                AlertDiagnoseFragment.this.alert = new Alert(num_alert, 0, 0, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
                 // 是否为修改
                 if (flag) {
-                    AlertDiagnoseFragment.this.alert = new Alert(i, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
+                    AlertDiagnoseFragment.this.alert = new Alert(i, 0, 0, userID, "提醒", rtv_advice.getText().toString(), ret_title.getText().toString(), ret_time.getText().toString(), rtv_date.getText().toString(), isMedicine + "");
                     userLocalDao.updateAlert(userID, AlertDiagnoseFragment.this.alert);
                 } else {
                     userLocalDao.insertAlert(userID, AlertDiagnoseFragment.this.alert);

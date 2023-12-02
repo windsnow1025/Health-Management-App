@@ -55,13 +55,13 @@ public class SetAlertFragment extends Fragment {
         List<String[]> data = new ArrayList<>();
         for (Report report:reportArrayList
              ) {//时间、地点、类型、编号
-            data.add(new String[]{report.getReport_date(), report.getHospital(), report.getReport_type(), String.valueOf(report.getID())});
+            data.add(new String[]{report.getReport_date(), report.getHospital(), report.getReport_type(), String.valueOf(report.getId())});
         }
 
         List<String[]> data1 = new ArrayList<>();
         for (Record history :
                 historyArrayList) {
-            data1.add(new String[]{history.getRecord_date(),history.getHospital(),history.getOrgan(), String.valueOf(history.getID())});
+            data1.add(new String[]{history.getRecord_date(),history.getHospital(),history.getOrgan(), String.valueOf(history.getId())});
         }
 
 

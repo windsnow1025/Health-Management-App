@@ -5,8 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class SqliteHelper extends SQLiteOpenHelper {
-    private static final String DATABASE = "Android.db";
-    private static final int VERSION = 10;
+    private static final String DATABASE = "health-management-app.db";
+    private static final int VERSION = 11;
 
     public SqliteHelper(Context context) {
         super(context, DATABASE, null, VERSION);
@@ -23,7 +23,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_RECORD = """
                 CREATE TABLE record (
-                    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
                     phone_number TEXT,
                     record_date TEXT,
                     hospital TEXT,
@@ -38,7 +38,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_REPORT = """
                 CREATE TABLE report (
-                    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
                     phone_number TEXT,
                     report_date TEXT,
                     hospital TEXT,
@@ -51,7 +51,9 @@ public class SqliteHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_ALERT = """
                 CREATE TABLE alert (
-                    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    record_id INTEGER,
+                    report_id INTEGER,
                     phone_number TEXT,
                     alert_type TEXT,
                     advice TEXT,
@@ -59,7 +61,9 @@ public class SqliteHelper extends SQLiteOpenHelper {
                     alert_date TEXT,
                     alert_cycle TEXT,
                     is_medicine TEXT,
-                    FOREIGN KEY (phone_number) REFERENCES user(phone_number)
+                    FOREIGN KEY (phone_number) REFERENCES user(phone_number),
+                    FOREIGN KEY (record_id) REFERENCES record(id),
+                    FOREIGN KEY (report_id) REFERENCES report(id)
                 )
             """;
 

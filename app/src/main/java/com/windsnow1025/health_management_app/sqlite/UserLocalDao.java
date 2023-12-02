@@ -67,14 +67,18 @@ public class UserLocalDao {
         }
         return false;
     }
+
     public Boolean checkReport(String phoneNumber) {
         Cursor cursor = db.query("report", null, "phone_number = ?", new String[]{phoneNumber}, null, null, null);
         return cursor.moveToNext();
     }
+
     public Boolean checkRecord(String phoneNumber) {
         Cursor cursor = db.query("record", null, "phone_number = ?", new String[]{phoneNumber}, null, null, null);
         return cursor.moveToNext();
-    }    public Boolean checkAlert(String phoneNumber) {
+    }
+
+    public Boolean checkAlert(String phoneNumber) {
         Cursor cursor = db.query("alert", null, "phone_number = ?", new String[]{phoneNumber}, null, null, null);
         return cursor.moveToNext();
     }
@@ -105,9 +109,9 @@ public class UserLocalDao {
         }
     }
 
-    public void addOrUpdateReport(Report report){
+    public void addOrUpdateReport(Report report) {
         ContentValues values = new ContentValues();
-        values.put("phone_number",report.getPhone_number());
+        values.put("phone_number", report.getPhone_number());
         values.put("report_date", report.getReport_date());
         values.put("hospital", report.getHospital());
         values.put("report_type", report.getReport_type());
@@ -120,9 +124,9 @@ public class UserLocalDao {
         }
     }
 
-    public void addOrUpdateRecord(Record record){
+    public void addOrUpdateRecord(Record record) {
         ContentValues values = new ContentValues();
-        values.put("phone_number",record.getPhone_number());
+        values.put("phone_number", record.getPhone_number());
         values.put("report_date", record.getRecord_date());
         values.put("hospital", record.getHospital());
         values.put("doctor", record.getDoctor());
@@ -139,25 +143,25 @@ public class UserLocalDao {
 
     public Boolean insertOrUpdateReport(String phoneNumber, Report report) {
         // 检查数据库中是否存在指定的记录
-        Cursor cursor = db.query("report", null, "ID = ? AND phone_number=?", new String[]{String.valueOf(report.getID()), phoneNumber}, null, null, null);
+        Cursor cursor = db.query("report", null, "id = ? AND phone_number=?", new String[]{String.valueOf(report.getId()), phoneNumber}, null, null, null);
         if (cursor != null && cursor.getCount() > 0) {
             // 数据库中存在记录，执行更新操作
             ContentValues values = new ContentValues();
             values.put("phone_number", phoneNumber);
-            values.put("ID", report.getID());
+            values.put("id", report.getId());
             values.put("detail", report.getDetail());
             values.put("report_picture", report.getPicture().toString());
             values.put("report_type", report.getReport_type());
             values.put("hospital", report.getHospital());
             values.put("report_date", report.getReport_date());
-            int rowsAffected = db.update("report", values, "ID = ? AND phone_number=?", new String[]{String.valueOf(report.getID()), phoneNumber});
+            int rowsAffected = db.update("report", values, "id = ? AND phone_number=?", new String[]{String.valueOf(report.getId()), phoneNumber});
             cursor.close();
             return rowsAffected > 0;
         } else {
             // 数据库中不存在记录，执行插入操作
             ContentValues values = new ContentValues();
             values.put("phone_number", phoneNumber);
-            values.put("ID", report.getID());
+            values.put("id", report.getId());
             values.put("detail", report.getDetail());
             if (report.getPicture() == null) {
                 values.put("report_picture", "");
@@ -174,12 +178,12 @@ public class UserLocalDao {
 
     public Boolean insertOrUpdateRecord(String phoneNumber, Record record) {
         // 检查数据库中是否存在指定的记录
-        Cursor cursor = db.query("record", null, "ID = ? AND phone_number=?", new String[]{String.valueOf(record.getID()), phoneNumber}, null, null, null);
+        Cursor cursor = db.query("record", null, "id = ? AND phone_number=?", new String[]{String.valueOf(record.getId()), phoneNumber}, null, null, null);
         if (cursor != null && cursor.getCount() > 0) {
             // 数据库中存在记录，执行更新操作
             ContentValues values = new ContentValues();
             values.put("phone_number", phoneNumber);
-            values.put("ID", record.getID());
+            values.put("id", record.getId());
             values.put("record_date", record.getRecord_date());
             values.put("hospital", record.getHospital());
             values.put("doctor", record.getDoctor());
@@ -187,14 +191,14 @@ public class UserLocalDao {
             values.put("conclusion", record.getConclusion());
             values.put("symptom", record.getSymptom());
             values.put("suggestion", record.getSuggestion());
-            int rowsAffected = db.update("record", values, "ID = ? AND phone_number=?", new String[]{String.valueOf(record.getID()), phoneNumber});
+            int rowsAffected = db.update("record", values, "id = ? AND phone_number=?", new String[]{String.valueOf(record.getId()), phoneNumber});
             cursor.close();
             return rowsAffected > 0;
         } else {
             // 数据库中不存在记录，执行插入操作
             ContentValues values = new ContentValues();
             values.put("phone_number", phoneNumber);
-            values.put("ID", record.getID());
+            values.put("id", record.getId());
             values.put("record_date", record.getRecord_date());
             values.put("hospital", record.getHospital());
             values.put("doctor", record.getDoctor());
@@ -209,26 +213,26 @@ public class UserLocalDao {
 
     public Boolean insertOrUpdateAlert(String phoneNumber, Alert alert) {
         // 检查数据库中是否存在指定的记录
-        Cursor cursor = db.query("alert", null, "ID=? AND phone_number=?", new String[]{String.valueOf(alert.getID()), phoneNumber}, null, null, null);
+        Cursor cursor = db.query("alert", null, "id=? AND phone_number=?", new String[]{String.valueOf(alert.getId()), phoneNumber}, null, null, null);
         if (cursor != null && cursor.getCount() > 0) {
             // 数据库中存在记录，执行更新操作
             ContentValues values = new ContentValues();
             values.put("phone_number", phoneNumber);
-            values.put("ID", alert.getID());
+            values.put("id", alert.getId());
             values.put("alert_date", alert.getAlert_date());
             values.put("alert_cycle", alert.getAlert_cycle());
             values.put("advice", alert.getAdvice());
             values.put("alert_type", alert.getAlert_type());
             values.put("title", alert.getTitle());
             values.put("is_medicine", alert.getIs_medicine());
-            int rowsAffected = db.update("alert", values, "ID=? AND phone_number=?", new String[]{String.valueOf(alert.getID()), phoneNumber});
+            int rowsAffected = db.update("alert", values, "id=? AND phone_number=?", new String[]{String.valueOf(alert.getId()), phoneNumber});
             cursor.close();
             return rowsAffected > 0;
         } else {
             // 数据库中不存在记录，执行插入操作
             ContentValues values = new ContentValues();
             values.put("phone_number", phoneNumber);
-            values.put("ID", alert.getID());
+            values.put("id", alert.getId());
             values.put("alert_date", alert.getAlert_date());
             values.put("alert_cycle", alert.getAlert_cycle());
             values.put("advice", alert.getAdvice());
@@ -247,7 +251,7 @@ public class UserLocalDao {
 
     @SuppressLint("Range")
     public ArrayList<Record> getRecordList(String phoneNumber) {
-        ArrayList<Record> historyArrayList = new ArrayList<>();
+        ArrayList<Record> recordArrayList = new ArrayList<>();
         Cursor cursor = db.query("record", null, "phone_number = ?", new String[]{phoneNumber}, null, null, null);
         if (cursor.moveToFirst()) {
             do {
@@ -260,10 +264,10 @@ public class UserLocalDao {
                 record.setConclusion(cursor.getString(cursor.getColumnIndex("conclusion")));
                 record.setSymptom(cursor.getString(cursor.getColumnIndex("symptom")));
                 record.setSuggestion(cursor.getString(cursor.getColumnIndex("suggestion")));
-                historyArrayList.add(record);
+                recordArrayList.add(record);
             } while (cursor.moveToNext());
         }
-        return historyArrayList;
+        return recordArrayList;
     }
 
     public Boolean insertRecord(String phoneNumber, Record record) {
@@ -311,7 +315,7 @@ public class UserLocalDao {
     public Boolean updateRecord(String phoneNumber, Record record) {
         ContentValues values = new ContentValues();
         values.put("phone_number", phoneNumber);
-        values.put("ID", record.getID());
+        values.put("id", record.getId());
         values.put("record_date", record.getRecord_date());
         values.put("hospital", record.getHospital());
         values.put("doctor", record.getDoctor());
@@ -319,12 +323,12 @@ public class UserLocalDao {
         values.put("conclusion", record.getConclusion());
         values.put("symptom", record.getSymptom());
         values.put("suggestion", record.getSuggestion());
-        int rowsAffected = db.update("record", values, "ID = ? AND phone_number=?", new String[]{String.valueOf(record.getID()), phoneNumber});
+        int rowsAffected = db.update("record", values, "id = ? AND phone_number=?", new String[]{String.valueOf(record.getId()), phoneNumber});
         return rowsAffected > 0;
     }
 
-    public Boolean deleteRecord(String phoneNumber, int ID) {
-        int rowsAffected = db.delete("record", "ID = ? AND phone_number = ?", new String[]{String.valueOf(ID), phoneNumber});
+    public Boolean deleteRecord(String phoneNumber, int id) {
+        int rowsAffected = db.delete("record", "id = ? AND phone_number = ?", new String[]{String.valueOf(id), phoneNumber});
         return rowsAffected > 0;
     }
 
@@ -342,7 +346,7 @@ public class UserLocalDao {
             do {
                 Report report = new Report();
                 report.setPhone_number(cursor.getString(cursor.getColumnIndex("phone_number")));
-                report.setID(cursor.getInt(cursor.getColumnIndex("ID")));
+                report.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 report.setDetail(cursor.getString(cursor.getColumnIndex("detail")));
                 report.setPicture(cursor.getString(cursor.getColumnIndex("picture")));
                 report.setReport_type(cursor.getString(cursor.getColumnIndex("report_type")));
@@ -406,18 +410,18 @@ public class UserLocalDao {
     public Boolean updateReport(String phoneNumber, Report report) {
         ContentValues values = new ContentValues();
         values.put("phone_number", phoneNumber);
-        values.put("ID", report.getID());
+        values.put("id", report.getId());
         values.put("detail", report.getDetail());
         values.put("report_picture", report.getPicture().toString());
         values.put("report_type", report.getReport_type());
         values.put("hospital", report.getHospital());
         values.put("report_date", report.getReport_date());
-        int rowsAffected = db.update("report", values, "ID = ? AND phone_number=?", new String[]{String.valueOf(report.getID()), phoneNumber});
+        int rowsAffected = db.update("report", values, "id = ? AND phone_number=?", new String[]{String.valueOf(report.getId()), phoneNumber});
         return rowsAffected > 0;
     }
 
-    public Boolean deleteReport(String phoneNumber, int ID) {
-        int flag = db.delete("report", "ID = ? AND phone_number=?", new String[]{String.valueOf(ID), phoneNumber});
+    public Boolean deleteReport(String phoneNumber, int id) {
+        int flag = db.delete("report", "id = ? AND phone_number=?", new String[]{String.valueOf(id), phoneNumber});
         return flag > 0;
     }
 
@@ -434,7 +438,7 @@ public class UserLocalDao {
             do {
                 Alert alert = new Alert();
                 alert.setPhone_number(cursor.getString(cursor.getColumnIndex("phone_number")));
-                alert.setID(cursor.getInt(cursor.getColumnIndex("ID")));
+                alert.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 alert.setAlert_date(cursor.getString(cursor.getColumnIndex("alert_date")));
                 alert.setAdvice(cursor.getString(cursor.getColumnIndex("advice")));
                 alert.setAlert_cycle(cursor.getString(cursor.getColumnIndex("alert_cycle")));
@@ -451,8 +455,8 @@ public class UserLocalDao {
         ContentValues values = new ContentValues();
         values.put("phone_number", phoneNumber);
         //依靠bug运行
-        //这个ID不好删，它用在提醒页的显示上了，它靠的是ID唯一性，点击提醒就会添加失败，删了会点一次添加一次
-        values.put("ID",alert.getID());
+        //这个id不好删，它用在提醒页的显示上了，它靠的是id唯一性，点击提醒就会添加失败，删了会点一次添加一次
+        values.put("id", alert.getId());
         values.put("alert_date", alert.getAlert_date());
         values.put("alert_cycle", alert.getAlert_cycle());
         values.put("advice", alert.getAdvice());
@@ -492,19 +496,19 @@ public class UserLocalDao {
     public Boolean updateAlert(String phoneNumber, Alert alert) {
         ContentValues values = new ContentValues();
         values.put("phone_number", phoneNumber);
-        values.put("ID", alert.getID());
+        values.put("id", alert.getId());
         values.put("alert_date", alert.getAlert_date());
         values.put("alert_cycle", alert.getAlert_cycle());
         values.put("advice", alert.getAdvice());
         values.put("alert_type", alert.getAlert_type());
         values.put("title", alert.getTitle());
         values.put("is_medicine", alert.getIs_medicine());
-        int rowsAffected = db.update("alert", values, "ID=? AND phone_number=?", new String[]{String.valueOf(alert.getID()), phoneNumber});
+        int rowsAffected = db.update("alert", values, "id=? AND phone_number=?", new String[]{String.valueOf(alert.getId()), phoneNumber});
         return rowsAffected > 0;
     }
 
-    public Boolean deleteAlert(String phoneNumber, int ID) {
-        int flag = db.delete("alert","ID=? AND phone_number=?", new String[]{String.valueOf(ID), phoneNumber});
+    public Boolean deleteAlert(String phoneNumber, int id) {
+        int flag = db.delete("alert", "id=? AND phone_number=?", new String[]{String.valueOf(id), phoneNumber});
         return flag > 0;
     }
 
@@ -523,21 +527,21 @@ public class UserLocalDao {
 //        return valueReturn;
 //    }
 
-    public static Alert getAlert(ArrayList<Alert> alertArrayList, int ID) {
+    public static Alert getAlert(ArrayList<Alert> alertArrayList, int id) {
         Stream<Alert> alertStream = alertArrayList.stream();
-        Alert alert = alertStream.filter(e -> e.getID() == ID).collect(Collectors.toList()).get(0);
+        Alert alert = alertStream.filter(e -> e.getId() == id).collect(Collectors.toList()).get(0);
         return alert;
     }
 
-    public static Record getRecord(ArrayList<Record> recordList, int ID) {
+    public static Record getRecord(ArrayList<Record> recordList, int id) {
         Stream<Record> recordStream = recordList.stream();
-        Record record = recordStream.filter(e -> e.getID() == ID).collect(Collectors.toList()).get(0);
+        Record record = recordStream.filter(e -> e.getId() == id).collect(Collectors.toList()).get(0);
         return record;
     }
 
-    public static Report getReport(ArrayList<Report> reportList, int ID) {
+    public static Report getReport(ArrayList<Report> reportList, int id) {
         Stream<Report> reportStream = reportList.stream();
-        Report report = reportStream.filter(e -> e.getID() == ID).collect(Collectors.toList()).get(0);
+        Report report = reportStream.filter(e -> e.getId() == id).collect(Collectors.toList()).get(0);
         return report;
     }
 }

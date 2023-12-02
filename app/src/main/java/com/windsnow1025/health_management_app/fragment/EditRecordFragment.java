@@ -150,7 +150,7 @@ public class EditRecordFragment extends Fragment {
                 history.setSymptom(symptom);
                 history.setConclusion(conclusion);
                 history.setSuggestion(suggestion);
-                history.setID(recordId);
+                history.setId(recordId);
                 try {
                     insertStatus = userLocalDao.updateRecord(username, history);
                 } catch (Exception e) {

@@ -44,30 +44,30 @@ public class RecordFragment extends Fragment {
             // Get username
             UserLocalDao userLocalDao = new UserLocalDao(getContext());
             userLocalDao.open();
-            String username = userLocalDao.getPhoneNumber();
+            String phoneNumber = userLocalDao.getPhoneNumber();
 
-            // Get history list
-            ArrayList<Record> histories;
-            histories=userLocalDao.getRecordList(username);
-            Log.i("test","从服务器获取就诊记录");
+            // Get record list
+            ArrayList<Record> records;
+            records = userLocalDao.getRecordList(phoneNumber);
+            Log.i("test", "从服务器获取就诊记录");
 
             // Set history list to recycler view
             List<String[]> data = new ArrayList<>();
             data.add(new String[]{"时间", "医院", "部位"});
-            for (Record history : histories) {
-                data.add(new String[]{history.getRecord_date(), history.getHospital(), history.getOrgan()});
+            for (Record record : records) {
+                data.add(new String[]{record.getRecord_date(), record.getHospital(), record.getOrgan()});
             }
 
             RecyclerView recyclerView = view.findViewById(R.id.record_recycler_view);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            ArrayList<Record> finalHistories = histories;
+            ArrayList<Record> finalHistories = records;
             // Delete Button
             recyclerView.setAdapter(new TableEnterAdapter(data, new TableEnterAdapter.OnItemClickListener() {
                 // Edit Button
                 @Override
                 public void onClick(int position) {
                     // Get record id
-                    Integer record_id = finalHistories.get(position - 1).getID();
+                    Integer record_id = finalHistories.get(position - 1).getId();
 
                     FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                     transaction.replace(R.id.fragment_container, new EditRecordFragment(record_id));
@@ -76,11 +76,11 @@ public class RecordFragment extends Fragment {
                 }
             }, position -> {
                 // Get record id
-                Integer record_id = finalHistories.get(position - 1).getID();
+                Integer record_id = finalHistories.get(position - 1).getId();
 
                 // Delete record
-                userLocalDao.deleteRecord(username, record_id);
-                Log.i("test","从服务器删除就诊记录");
+                userLocalDao.deleteRecord(phoneNumber, record_id);
+                Log.i("test", "从服务器删除就诊记录");
 
                 // Reload fragment
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();

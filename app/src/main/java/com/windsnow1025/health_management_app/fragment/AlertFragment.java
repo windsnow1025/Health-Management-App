@@ -44,12 +44,8 @@ public class AlertFragment extends Fragment {
         alertList.clear();
         alertIDList.clear();
         alertArrayList = userLocalDao.getAlertList(phoneNumber);
-        for (Alert alert : alertArrayList) {
-            alertIDList.add(alert.getID());
-            alertList.add(new Alert(alert.getID(), alert.getPhone_number(), alert.getAlert_type(), alert.getAdvice(), alert.getTitle(), alert.getAlert_date(), alert.getAlert_cycle(), alert.getIs_medicine()));
-        }
 
-        return alertList;
+        return alertArrayList;
     }
 
     void load() {
@@ -83,7 +79,7 @@ public class AlertFragment extends Fragment {
         listView.setOnItemClickListener((parent, view12, position, id) -> {
             is_report = alertList.get(position).getAlert_type().equals("true");//是否为报告
             boolean isMedicine = alertList.get(position).getIs_medicine().equals("true");//是否为吃药
-            int ID = alertList.get(position).getID();
+            int ID = alertList.get(position).getId();
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
 
             if (isMedicine) {

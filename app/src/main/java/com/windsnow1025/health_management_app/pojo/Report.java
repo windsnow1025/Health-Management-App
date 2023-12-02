@@ -3,7 +3,7 @@ package com.windsnow1025.health_management_app.pojo;
 import java.io.Serializable;
 
 public class Report implements Serializable {
-    private int ID;
+    private int id;
     private String phone_number;
     private String report_date;
     private String hospital;
@@ -11,12 +11,12 @@ public class Report implements Serializable {
     private String picture;
     private String detail;
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getPhone_number() {

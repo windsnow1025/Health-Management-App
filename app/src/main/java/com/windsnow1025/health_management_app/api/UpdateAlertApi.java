@@ -81,7 +81,9 @@ public class UpdateAlertApi extends AsyncTask<ArrayList<Alert>, Void, String> {
         for (Alert alert : alerts) {
             JSONObject jsonAlert = new JSONObject();
             jsonAlert.put("phone_number", alert.getPhone_number());
-            jsonAlert.put("ID", alert.getID());
+            jsonAlert.put("id", alert.getId());
+            jsonAlert.put("record_id", alert.getRecord_id());
+            jsonAlert.put("report_id", alert.getReport_id());
             jsonAlert.put("alert_type", alert.getAlert_type());
             jsonAlert.put("advice", alert.getAdvice());
             jsonAlert.put("title", alert.getTitle());

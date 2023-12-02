@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 
 public class Record implements Serializable {
-    private int ID;
+    private int id;
     private String phone_number;
     private String record_date;
     private String hospital;
@@ -14,12 +14,12 @@ public class Record implements Serializable {
     private String conclusion;
     private String suggestion;
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getPhone_number() {

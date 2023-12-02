@@ -81,7 +81,7 @@ public class UpdateReportApi extends AsyncTask<ArrayList<Report>, Void, String> 
         for (Report report : reports) {
             JSONObject jsonReport = new JSONObject();
             jsonReport.put("phone_number", report.getPhone_number());
-            jsonReport.put("ID", report.getID());
+            jsonReport.put("id", report.getId());
             jsonReport.put("detail", report.getDetail());
             jsonReport.put("picture", report.getPicture());
             jsonReport.put("report_type", report.getReport_type());

@@ -81,7 +81,7 @@ public class UpdateRecordApi extends AsyncTask<ArrayList<Record>, Void, String> 
         for (Record record : records) {
             JSONObject jsonRecord = new JSONObject();
             jsonRecord.put("phone_number", record.getPhone_number());
-            jsonRecord.put("ID", record.getID());
+            jsonRecord.put("id", record.getId());
             jsonRecord.put("record_date", record.getRecord_date());
             jsonRecord.put("hospital", record.getHospital());
             jsonRecord.put("doctor", record.getDoctor());
