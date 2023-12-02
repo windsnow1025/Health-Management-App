@@ -34,7 +34,7 @@ import java.util.Date;
 import java.util.List;
 
 public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.OnDateSetListener {
-    private int i;
+    private int alert_id;
     private List<Alert> alertList;
     private Button rStartAlarm;
     private Button bt_rcancel;
@@ -73,14 +73,14 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
     }
 
     /*用于修改*/
-    public AlertDiagnoseFragment(boolean isMedicine, int bindID, AlertAdapter infoAdapter, List<Alert> AlertList, int I, boolean isReport, boolean flag) {
+    public AlertDiagnoseFragment(boolean isMedicine, int bindID, AlertAdapter infoAdapter, List<Alert> AlertList, int alert_id, boolean isReport, boolean flag) {
         this.bindID = bindID;
         this.adapter = infoAdapter;
         this.isMedicine = isMedicine;
         this.is_report = isReport;//是否为报告
         this.flag = flag;//是否为修改
         this.alertList = AlertList;
-        this.i = I;//i为闹钟编号
+        this.alert_id = alert_id;//i为闹钟编号
     }
 
     private void init(View view) {
@@ -121,7 +121,7 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
         }
         /*表修改状态，非新增时*/
         if (flag) {
-            Alert alert1 = alertList.get(i);
+            Alert alert1 = alertList.get(alert_id);
             ret_title.setText(alert1.getTitle());
             ret_time.setText(alert1.getAlert_date());
             String[] times = alert1.getAlert_date().split(":");
@@ -173,7 +173,8 @@ public class AlertDiagnoseFragment extends Fragment implements DatePickerDialog.
                 AlertDiagnoseFragment.this.alert = alert;
                 // 是否为修改
                 if (flag) {
-                    userLocalDao.updateAlert(phoneNumber, AlertDiagnoseFragment.this.alert);
+                    userLocalDao.deleteAlert(phoneNumber,alert_id);
+                    userLocalDao.insertAlert(phoneNumber, AlertDiagnoseFragment.this.alert);
                 } else {
                     userLocalDao.insertAlert(phoneNumber, AlertDiagnoseFragment.this.alert);
                 }
