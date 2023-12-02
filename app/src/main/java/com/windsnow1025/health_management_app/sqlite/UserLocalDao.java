@@ -529,9 +529,9 @@ public class UserLocalDao {
         return alert;
     }
 
-    public static Record getHistory(ArrayList<Record> recordList, int ID) {
-        Stream<Record> historyStream = recordList.stream();
-        Record record = historyStream.filter(e -> e.getID() == ID).collect(Collectors.toList()).get(0);
+    public static Record getRecord(ArrayList<Record> recordList, int ID) {
+        Stream<Record> recordStream = recordList.stream();
+        Record record = recordStream.filter(e -> e.getID() == ID).collect(Collectors.toList()).get(0);
         return record;
     }
 

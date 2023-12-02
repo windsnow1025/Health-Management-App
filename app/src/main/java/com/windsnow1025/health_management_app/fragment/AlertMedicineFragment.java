@@ -31,7 +31,7 @@ import java.util.Calendar;
 import java.util.List;
 
 
-public class DetailsFragment extends Fragment {
+public class AlertMedicineFragment extends Fragment {
 
     private final ArrayList<Integer> Time = new ArrayList<Integer>();
     private List<Alert> alertList;
@@ -59,7 +59,7 @@ public class DetailsFragment extends Fragment {
     private ArrayList<Record> historyArrayList;
     private ArrayList<Alert> alertArrayList;
     private UserLocalDao userLocalDao;
-    private Record history;
+    private Record record;
     private Report report;
     private Alert alert;
     private String phoneNumber;
@@ -71,7 +71,7 @@ public class DetailsFragment extends Fragment {
 
 
     /*用于新建*/
-    public DetailsFragment(boolean isMedicine, int n, boolean isReport, AlertAdapter infoAdapter) {
+    public AlertMedicineFragment(boolean isMedicine, int n, boolean isReport, AlertAdapter infoAdapter) {
         this.num = n;//num为捆绑的编号
         this.adapter = infoAdapter;
         this.isMedicine = isMedicine;
@@ -79,7 +79,7 @@ public class DetailsFragment extends Fragment {
     }
 
     /*用于修改*/
-    public DetailsFragment(boolean isMedicine, int n, AlertAdapter infoAdapter, List<Alert> AlertList, int I, boolean isReport, boolean Flag) {
+    public AlertMedicineFragment(boolean isMedicine, int n, AlertAdapter infoAdapter, List<Alert> AlertList, int I, boolean isReport, boolean Flag) {
         this.adapter = infoAdapter;
         this.isMedicine = isMedicine;
         this.num = n;//num为捆绑的编号
@@ -111,7 +111,7 @@ public class DetailsFragment extends Fragment {
 
         if (isReport) report = UserLocalDao.getReport(reportArrayList, num);
         else {
-            history = UserLocalDao.getHistory(historyArrayList, num);
+            record = UserLocalDao.getRecord(historyArrayList, num);
         }
         num_alerk = userLocalDao.getAlertList(phoneNumber).size();
     }
@@ -125,10 +125,10 @@ public class DetailsFragment extends Fragment {
             tv_advice.setText(report.getDetail() + "");
             tv_hospital.setText(report.getHospital() + "");
         } else {
-            tv_time.setText(history.getRecord_date() + "");
-            tv_part.setText(history.getOrgan() + "");
-            tv_advice.setText(history.getSuggestion() + "");
-            tv_hospital.setText(history.getHospital() + "");
+            tv_time.setText(record.getRecord_date() + "");
+            tv_part.setText(record.getOrgan() + "");
+            tv_advice.setText(record.getSuggestion() + "");
+            tv_hospital.setText(record.getHospital() + "");
         }
 
         /*表修改状态，非新增时*/
@@ -197,17 +197,17 @@ public class DetailsFragment extends Fragment {
             setAlarmTime();
             if (!et_title.getText().toString().equals("") && !Time.isEmpty() && !et_time.getText().toString().equals("")) {
                 Alert alert = new Alert(num_alerk, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
-                DetailsFragment.this.alert = new Alert(num_alerk, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
+                AlertMedicineFragment.this.alert = new Alert(num_alerk, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
                 System.out.println("编号" + num_alerk);
 
 //                   是否为修改
                 if (flag) {
-                    DetailsFragment.this.alert = new Alert(i, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
+                    AlertMedicineFragment.this.alert = new Alert(i, phoneNumber, "用药提醒", tv_advice.getText().toString(), et_title.getText().toString(), et_time.getText().toString(), getDate(Time), isMedicine + "");
                     System.out.println("编号" + i);
-                    userLocalDao.updateAlert(phoneNumber, DetailsFragment.this.alert);
+                    userLocalDao.updateAlert(phoneNumber, AlertMedicineFragment.this.alert);
 
                 } else {
-                    userLocalDao.insertAlert(phoneNumber, DetailsFragment.this.alert);
+                    userLocalDao.insertAlert(phoneNumber, AlertMedicineFragment.this.alert);
                 }
                 adapter.add(alert);
                 if (!flag) {

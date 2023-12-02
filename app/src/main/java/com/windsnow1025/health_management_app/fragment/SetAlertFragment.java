@@ -23,7 +23,6 @@ import com.windsnow1025.health_management_app.utils.AlertAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 
 public class SetAlertFragment extends Fragment {
@@ -80,7 +79,7 @@ public class SetAlertFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                         int i= Integer.parseInt(data.get(pos)[3]);
-                        transaction.replace(R.id.fragment_container, new DetailsFragment(true,i,true,adapter));
+                        transaction.replace(R.id.fragment_container, new AlertMedicineFragment(true,i,true,adapter));
                         transaction.addToBackStack(null);
                         transaction.commit();
                     }
@@ -89,7 +88,7 @@ public class SetAlertFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                         int i= Integer.parseInt(data.get(pos)[3]);
-                        transaction.replace(R.id.fragment_container, new DetailsRecordFragment(false,i,true,adapter));
+                        transaction.replace(R.id.fragment_container, new AlertDiagnoseFragment(false,i,true,adapter));
                         transaction.addToBackStack(null);
                         transaction.commit();
                     }
@@ -115,7 +114,7 @@ public class SetAlertFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                         int i= Integer.parseInt(data1.get(pos)[3]);
-                        transaction.replace(R.id.fragment_container, new DetailsFragment(true,i,false,adapter));
+                        transaction.replace(R.id.fragment_container, new AlertMedicineFragment(true,i,false,adapter));
                         transaction.addToBackStack(null);
                         transaction.commit();
                     }
@@ -124,7 +123,7 @@ public class SetAlertFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                         int i= Integer.parseInt(data1.get(pos)[3]);
-                        transaction.replace(R.id.fragment_container, new DetailsRecordFragment(false,i,false,adapter));
+                        transaction.replace(R.id.fragment_container, new AlertDiagnoseFragment(false,i,false,adapter));
                         transaction.addToBackStack(null);
                         transaction.commit();
                     }
