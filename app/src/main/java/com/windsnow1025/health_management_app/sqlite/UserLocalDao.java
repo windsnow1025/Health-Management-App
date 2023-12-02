@@ -315,7 +315,6 @@ public class UserLocalDao {
     public Boolean updateRecord(String phoneNumber, Record record) {
         ContentValues values = new ContentValues();
         values.put("phone_number", phoneNumber);
-        values.put("id", record.getId());
         values.put("record_date", record.getRecord_date());
         values.put("hospital", record.getHospital());
         values.put("doctor", record.getDoctor());
@@ -411,9 +410,8 @@ public class UserLocalDao {
     public Boolean updateReport(String phoneNumber, Report report) {
         ContentValues values = new ContentValues();
         values.put("phone_number", phoneNumber);
-        values.put("id", report.getId());
         values.put("detail", report.getDetail());
-        values.put("report_picture", report.getPicture().toString());
+        values.put("report_picture", report.getPicture());
         values.put("report_type", report.getReport_type());
         values.put("hospital", report.getHospital());
         values.put("report_date", report.getReport_date());
@@ -537,24 +535,20 @@ public class UserLocalDao {
 //    }
 
     public static Alert getAlert(ArrayList<Alert> alertArrayList, int id) {
-        return alertArrayList.stream()
-                .filter(e -> e.getId() == id)
-                .findFirst()
-                .orElse(null);
+        Stream<Alert> alertStream = alertArrayList.stream();
+        Alert alert = alertStream.filter(e -> e.getId() == id).collect(Collectors.toList()).get(0);
+        return alert;
     }
 
     public static Record getRecord(ArrayList<Record> recordList, int id) {
-        return recordList.stream()
-                .filter(e -> e.getId() == id)
-                .findFirst()
-                .orElse(null);
+        Stream<Record> recordStream = recordList.stream();
+        Record record = recordStream.filter(e -> e.getId() == id).collect(Collectors.toList()).get(0);
+        return record;
     }
-
     public static Report getReport(ArrayList<Report> reportList, int id) {
-        return reportList.stream()
-                .filter(e -> e.getId() == id)
-                .findFirst()
-                .orElse(null);
+        Stream<Report> reportStream = reportList.stream();
+        Report report = reportStream.filter(e -> e.getId() == id).collect(Collectors.toList()).get(0);
+        return report;
     }
 
 
