@@ -100,71 +100,65 @@ public class EditRecordFragment extends Fragment {
         }
 
         // Set to open date picker when click on date EditText
-        editTextDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get current date
-                Calendar calendar = Calendar.getInstance();
-                int year = calendar.get(Calendar.YEAR);
-                int month = calendar.get(Calendar.MONTH);
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
+        editTextDate.setOnClickListener(v -> {
+            // Get current date
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-                // Create DatePickerDialog
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        // Set date
-                        String date = year + "-" + (month + 1) + "-" + dayOfMonth;
-                        // Set date to EditText
-                        editTextDate.setText(date);
-                    }
-                }, year, month, day);
+            // Create DatePickerDialog
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view1, int year, int month, int dayOfMonth) {
+                    // Set date
+                    String date = year + "-" + (month + 1) + "-" + dayOfMonth;
+                    // Set date to EditText
+                    editTextDate.setText(date);
+                }
+            }, year, month, day);
 
-                // Show DatePickerDialog
-                datePickerDialog.show();
-            }
+            // Show DatePickerDialog
+            datePickerDialog.show();
         });
 
         // Confirm button
         Button buttonConfirm = view.findViewById(R.id.buttonConfirm);
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get data
-                date = editTextDate.getText().toString();
-                hospital = editTextHospital.getText().toString();
-                doctor = editTextDoctor.getText().toString();
-                organ = editTextOrgan.getText().toString();
-                symptom = editTextSymptom.getText().toString();
-                conclusion = editTextConclusion.getText().toString();
-                suggestion = editTextSuggestion.getText().toString();
+        buttonConfirm.setOnClickListener(v -> {
+            // Get data
+            date = editTextDate.getText().toString();
+            hospital = editTextHospital.getText().toString();
+            doctor = editTextDoctor.getText().toString();
+            organ = editTextOrgan.getText().toString();
+            symptom = editTextSymptom.getText().toString();
+            conclusion = editTextConclusion.getText().toString();
+            suggestion = editTextSuggestion.getText().toString();
 
-                // Insert data into database
-                Boolean insertStatus = false;
-                Log.i("主线程", "数据库测试开始");
-                Record record = new Record();
-                record.setRecord_date(date);
-                record.setHospital(hospital);
-                record.setDoctor(doctor);
-                record.setOrgan(organ);
-                record.setSymptom(symptom);
-                record.setConclusion(conclusion);
-                record.setSuggestion(suggestion);
-                record.setId(recordId);
-                try {
-                    insertStatus = userLocalDao.updateRecord(phoneNumber, record);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                Log.i("主线程", "记录插入情况" + insertStatus);
-                Log.i("主线程", "数据库测试结束");
-
-                // Jump to organ page
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new OrganFragment(organ));
-                transaction.addToBackStack(null);
-                transaction.commit();
+            // Insert data into database
+            Boolean insertStatus = false;
+            Log.i("主线程", "数据库测试开始");
+            Record record = new Record();
+            record.setRecord_date(date);
+            record.setHospital(hospital);
+            record.setDoctor(doctor);
+            record.setOrgan(organ);
+            record.setSymptom(symptom);
+            record.setConclusion(conclusion);
+            record.setSuggestion(suggestion);
+            record.setId(recordId);
+            try {
+                insertStatus = userLocalDao.updateRecord(phoneNumber, record);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            Log.i("主线程", "记录插入情况" + insertStatus);
+            Log.i("主线程", "数据库测试结束");
+
+            // Jump to organ page
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, new OrganFragment(organ));
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
         return view;

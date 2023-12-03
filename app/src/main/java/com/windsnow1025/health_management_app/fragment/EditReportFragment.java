@@ -61,7 +61,8 @@ public class EditReportFragment extends Fragment {
     Bitmap bitmap;
     UserLocalDao userLocalDao;
 
-    public EditReportFragment(Integer reportId) {
+    public EditReportFragment(int reportId, String organ) {
+        this.organ = organ;
         this.reportId = reportId;
     }
 
@@ -116,26 +117,23 @@ public class EditReportFragment extends Fragment {
         buttonUpload.setOnClickListener(v -> galleryLauncher.launch("image/*"));
 
         // Set to open date picker when click on date EditText
-        editTextDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Get current date
-                Calendar calendar = Calendar.getInstance();
-                int year = calendar.get(Calendar.YEAR);
-                int month = calendar.get(Calendar.MONTH);
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
+        editTextDate.setOnClickListener(v -> {
+            // Get current date
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-                // Create DatePickerDialog
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), (view1, year1, month1, dayOfMonth) -> {
-                    // Set date
-                    String date = year1 + "-" + (month1 + 1) + "-" + dayOfMonth;
-                    // Set date to EditText
-                    editTextDate.setText(date);
-                }, year, month, day);
+            // Create DatePickerDialog
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), (view1, year1, month1, dayOfMonth) -> {
+                // Set date
+                String date = year1 + "-" + (month1 + 1) + "-" + dayOfMonth;
+                // Set date to EditText
+                editTextDate.setText(date);
+            }, year, month, day);
 
-                // Show DatePickerDialog
-                datePickerDialog.show();
-            }
+            // Show DatePickerDialog
+            datePickerDialog.show();
         });
 
         // Confirm button
@@ -262,7 +260,7 @@ public class EditReportFragment extends Fragment {
 
     });
 
-    private String extractText(Bitmap bitmap) throws Exception{
+    private String extractText(Bitmap bitmap) {
         TessBaseAPI tessBaseApi = new TessBaseAPI();
         Log.i("test", "测试");
         tessBaseApi.init(this.getActivity().getExternalFilesDir(null) + "/tesseract/", "chi_sim");

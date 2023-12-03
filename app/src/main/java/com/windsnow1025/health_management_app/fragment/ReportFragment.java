@@ -69,7 +69,7 @@ public class ReportFragment extends Fragment {
                     Integer report_id = finalReports.get(position - 1).getId();
 
                     FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container, new EditReportFragment(report_id));
+                    transaction.replace(R.id.fragment_container, new EditReportFragment(report_id, organ));
                     transaction.addToBackStack(null);
                     transaction.commit();
                 }
