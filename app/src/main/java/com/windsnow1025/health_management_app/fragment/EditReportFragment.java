@@ -51,7 +51,7 @@ public class EditReportFragment extends Fragment {
     String date;
     String hospital;
     String type;
-    String OCRTxt;
+    String detail;
 
     EditText editTextDate;
     EditText editTextHospital;
@@ -99,13 +99,13 @@ public class EditReportFragment extends Fragment {
             date = report.getReport_date();
             hospital = report.getHospital();
             type = report.getReport_type();
-            OCRTxt = report.getDetail();
+            detail = report.getDetail();
 
             // Set data to views
             editTextDate.setText(date);
             editTextHospital.setText(hospital);
             editTextType.setText(type);
-            editTextOCRTxt.setText(OCRTxt);
+            editTextOCRTxt.setText(detail);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -145,7 +145,7 @@ public class EditReportFragment extends Fragment {
             date = editTextDate.getText().toString();
             hospital = editTextHospital.getText().toString();
             type = editTextType.getText().toString();
-            OCRTxt = editTextOCRTxt.getText().toString();
+            detail = editTextOCRTxt.getText().toString();
 
             // Turn bitmap into string
             String bitmapString = null;
@@ -164,7 +164,7 @@ public class EditReportFragment extends Fragment {
             report.setReport_type(type);
             report.setHospital(hospital);
             report.setPicture(bitmapString);
-            report.setDetail(OCRTxt);
+            report.setDetail(detail);
             report.setId(reportId);
             if (date.equals("")) {
                 //判定日期是否填写 未填写则设置为null

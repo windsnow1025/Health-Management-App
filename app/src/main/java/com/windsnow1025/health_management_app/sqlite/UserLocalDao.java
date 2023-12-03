@@ -417,7 +417,7 @@ public class UserLocalDao {
         ContentValues values = new ContentValues();
         values.put("phone_number", phoneNumber);
         values.put("detail", report.getDetail());
-        values.put("report_picture", report.getPicture());
+        values.put("picture", report.getPicture());
         values.put("report_type", report.getReport_type());
         values.put("hospital", report.getHospital());
         values.put("report_date", report.getReport_date());
