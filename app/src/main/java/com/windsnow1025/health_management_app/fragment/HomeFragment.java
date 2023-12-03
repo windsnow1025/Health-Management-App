@@ -40,13 +40,6 @@ public class HomeFragment extends Fragment {
     private ImageButton bt_disease;
     private ImageButton bt_kefu;
     private TextView tv_user;
-    private TextView tv_pensonal;
-    private TextView tv_disease;
-    private TextView tv_syn;
-    private TextView tv_down;
-    private TextView tv_exchange;
-    private TextView tv_kefu;
-    private TextView tv_setting;
     private String phoneNumber;
 
     private UserLocalDao userLocalDao;
@@ -58,13 +51,6 @@ public class HomeFragment extends Fragment {
 
     void init(View view) throws TimeoutException {
         tv_user = view.findViewById(R.id.textViewLoginSignup);
-        tv_pensonal = view.findViewById(R.id.tv_persnal);
-        tv_disease = view.findViewById(R.id.tv_disease);
-        tv_syn = view.findViewById(R.id.tv_syn);
-        tv_down = view.findViewById(R.id.tv_down);
-        tv_exchange = view.findViewById(R.id.tv_exchange);
-        tv_kefu = view.findViewById(R.id.tv_kefu);
-        tv_setting = view.findViewById(R.id.tv_setting);
         imageButton = view.findViewById(R.id.imageButton);
         imageButton1 = view.findViewById(R.id.imageButton1);
         imageButton2 = view.findViewById(R.id.imageButton2);
@@ -102,111 +88,85 @@ public class HomeFragment extends Fragment {
             tv_user.setEnabled(false);
             tv_user.setText(phoneNumber);
         } else tv_user.setText("请先登录!");
-        tv_user.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-            }
+        tv_user.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            startActivity(intent);
         });
 
 
         /*个人中心*/
-        imageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new PersonalCenterFragment());
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
+        imageButton.setOnClickListener(v -> {
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, new PersonalCenterFragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
 
         /*数据同步*/
-        imageButton1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                load();
-                Toast.makeText(getContext(), "数据已实时同步成功", Toast.LENGTH_SHORT).show();
+        imageButton1.setOnClickListener(v -> {
+            load();
+            Toast.makeText(getContext(), "数据已实时同步成功", Toast.LENGTH_SHORT).show();
 
-            }
         });
 
         /*数据下载*/
-        imageButton_get.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                userLocalDao.deleteAlerts(phoneNumber);
-                userLocalDao.deleteRecords(phoneNumber);
-                userLocalDao.deleteReports(phoneNumber);
-                GetReportApi getReportApi = new GetReportApi();
-                userLocalDao.insertReports(phoneNumber,getReportApi.getReportInformation(phoneNumber));
-                GetRecordApi getRecordApi = new GetRecordApi();
-                userLocalDao.insertRecords(phoneNumber,getRecordApi.getRecordInformation(phoneNumber));
-                GetAlertApi getAlertApi = new GetAlertApi();
-                userLocalDao.insertAlerts(phoneNumber,getAlertApi.getAlertInformation(phoneNumber));
-                Toast.makeText(getContext(), "数据已实时下载成功", Toast.LENGTH_SHORT).show();
+        imageButton_get.setOnClickListener(v -> {
+            userLocalDao.deleteAlerts(phoneNumber);
+            userLocalDao.deleteRecords(phoneNumber);
+            userLocalDao.deleteReports(phoneNumber);
+            GetReportApi getReportApi = new GetReportApi();
+            userLocalDao.insertReports(phoneNumber,getReportApi.getReportInformation(phoneNumber));
+            GetRecordApi getRecordApi = new GetRecordApi();
+            userLocalDao.insertRecords(phoneNumber,getRecordApi.getRecordInformation(phoneNumber));
+            GetAlertApi getAlertApi = new GetAlertApi();
+            userLocalDao.insertAlerts(phoneNumber,getAlertApi.getAlertInformation(phoneNumber));
+            Toast.makeText(getContext(), "数据已实时下载成功", Toast.LENGTH_SHORT).show();
 
-            }
         });
 
 
         /*切换账号*/
 
-        imageButton2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("切换用户？");
-                builder.setMessage("请问您确定要退出当前登录吗？");
-                builder.setNegativeButton("取消", null);
-                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(getActivity(), LoginActivity.class);
-                        userLocalDao.userLoginOut(phoneNumber);
-                        startActivity(intent);
-                    }
-                });
-                builder.show();
+        imageButton2.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("切换用户？");
+            builder.setMessage("请问您确定要退出当前登录吗？");
+            builder.setNegativeButton("取消", null);
+            builder.setPositiveButton("确定", (dialog, which) -> {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                userLocalDao.userLoginOut(phoneNumber);
+                startActivity(intent);
+            });
+            builder.show();
 
-            }
         });
 
         /*设置*/
 
-        imageButton3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction3 = getParentFragmentManager().beginTransaction();
-                transaction3.replace(R.id.fragment_container, new SettingFragment());
-                transaction3.addToBackStack(null);
-                transaction3.commit();
-            }
+        imageButton3.setOnClickListener(v -> {
+            FragmentTransaction transaction3 = getParentFragmentManager().beginTransaction();
+            transaction3.replace(R.id.fragment_container, new SettingFragment());
+            transaction3.addToBackStack(null);
+            transaction3.commit();
         });
 
         /*常见疾病*/
 
-        bt_disease.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction3 = getParentFragmentManager().beginTransaction();
-                transaction3.replace(R.id.fragment_container, new DiseaseFragment());
-                transaction3.addToBackStack(null);
-                transaction3.commit();
-            }
+        bt_disease.setOnClickListener(v -> {
+            FragmentTransaction transaction3 = getParentFragmentManager().beginTransaction();
+            transaction3.replace(R.id.fragment_container, new DiseaseFragment());
+            transaction3.addToBackStack(null);
+            transaction3.commit();
         });
 
         /*联系我们*/
 
-        bt_kefu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction3 = getParentFragmentManager().beginTransaction();
-                transaction3.replace(R.id.fragment_container, new CommonFragment(4));
-                transaction3.addToBackStack(null);
-                transaction3.commit();
-            }
+        bt_kefu.setOnClickListener(v -> {
+            FragmentTransaction transaction3 = getParentFragmentManager().beginTransaction();
+            transaction3.replace(R.id.fragment_container, new CommonFragment(4));
+            transaction3.addToBackStack(null);
+            transaction3.commit();
         });
         return view;
     }

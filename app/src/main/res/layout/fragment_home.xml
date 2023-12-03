@@ -102,7 +102,7 @@
                     android:layout_marginLeft="15dp"
                     android:layout_weight="1"
                     android:padding="10dp"
-                    android:text="云端数据同步"
+                    android:text="上传至云端"
                     android:textSize="24sp" />
 
                 <ImageButton
@@ -119,15 +119,15 @@
             android:orientation="horizontal">
 
 
-            <TextView
-                android:id="@+id/tv_down"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_weight="1"
-                android:padding="10dp"
-                android:text="云端数据下载"
-                android:textSize="24sp" />
+                <TextView
+                    android:id="@+id/tv_down"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:text="下载至本地"
+                    android:textSize="24sp" />
 
             <ImageButton
                 android:id="@+id/imageButton_get"
