@@ -46,7 +46,7 @@ public class EditReportFragment extends Fragment {
 
     String organ;
 
-    String username;
+    String phoneNumber;
 
     String date;
     String hospital;
@@ -89,10 +89,10 @@ public class EditReportFragment extends Fragment {
             // Get username
             userLocalDao = new UserLocalDao(getContext());
             userLocalDao.open();
-            username = userLocalDao.getPhoneNumber();
+            phoneNumber = userLocalDao.getPhoneNumber();
 
             // Get record
-            ArrayList<Report> reportList = userLocalDao.getReportList(username);
+            ArrayList<Report> reportList = userLocalDao.getReportList(phoneNumber);
             Report report = reportList.get(reportId - 1);
 
             // Get data
@@ -160,7 +160,7 @@ public class EditReportFragment extends Fragment {
             Boolean insertStatus = false;
             Log.i("主线程", "数据库测试开始");
             Report report = new Report();
-            report.setPhone_number(username);
+            report.setPhone_number(phoneNumber);
             report.setReport_type(type);
             report.setHospital(hospital);
             report.setPicture(bitmapString);
@@ -172,7 +172,7 @@ public class EditReportFragment extends Fragment {
             } else {
                 report.setReport_date(date);
             }
-            insertStatus = userLocalDao.updateReport(username, report);
+            insertStatus = userLocalDao.updateReport(phoneNumber, report);
             Log.i("主线程", "报告插入情况" + insertStatus);
             Log.i("主线程", "数据库测试结束");
 
