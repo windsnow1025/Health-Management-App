@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -99,7 +100,11 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
              * 判断账号是否已存在
              **/
             ExistApi existApi = new ExistApi();
-            if (!existApi.checkUserUnique(username).equals("User exist")) {
+            String isExist = existApi.checkUserUnique(username);
+            if (isExist == null) {
+                Toast.makeText(this, "错误", Toast.LENGTH_SHORT).show();
+                Log.i("test", "错误");
+            } else if (!isExist.equals("User exist")) {
                 mVerifyCode = String.format("%06d", (int) (Math.random() * 1000000 % 1000000));
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginForgetActivity.this);
                 builder.setTitle("请记住验证码");
@@ -149,7 +154,8 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
                         intent = new Intent(this, LoginActivity.class);
                         intent.putExtra("username", username);
                         startActivity(intent);
-                    } else Toast.makeText(this, "网络请求超时，请稍后重试", Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(this, "网络请求超时，请稍后重试", Toast.LENGTH_SHORT).show();
                 } else {
                     /**
                      * 修改密码
@@ -160,7 +166,8 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
                         intent = new Intent(this, LoginActivity.class);
                         intent.putExtra("username", username);
                         startActivity(intent);
-                    } else Toast.makeText(this, "网络请求超时，请稍后重试", Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(this, "网络请求超时，请稍后重试", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -198,7 +205,6 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
         } else {
             Toast.makeText(this, "出生日期不能小于当前日期", Toast.LENGTH_SHORT).show();
         }
-
 
 
     }
