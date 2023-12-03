@@ -4,7 +4,9 @@ A Health Management Android Application build by JAVA with Gradle.
 
 ## Requirements
 
-Android 9.0 (API level 28) or higher
+- Android 9.0 (API level 28) or higher
+
+- JDK 15
 
 ## Configuration
 
