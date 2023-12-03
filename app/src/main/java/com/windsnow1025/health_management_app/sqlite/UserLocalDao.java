@@ -272,6 +272,9 @@ public class UserLocalDao {
     public Boolean insertRecord(String phoneNumber, Record record) {
         ContentValues values = new ContentValues();
         values.put("phone_number", phoneNumber);
+        //这段代码的作用是设置一个病历的ID。首先，它通过调用`userLocalDao.getRecordList(phoneNumber)`方法获取与给定电话号码相关的病历列表。然后，它使用`get()`方法获取列表中最后一个病历，并通过调用`getId()`方法获取该病历的ID。接下来，它将获取到的ID加1，并使用`setId()`方法将新的ID设置给病历对象。这样就完成了设置病历ID的操作。
+        record.setId(getRecordList(phoneNumber).get(getRecordList(phoneNumber).size()-1).getId()+1);
+        values.put("id", record.getId());
         values.put("record_date", record.getRecord_date());
         values.put("hospital", record.getHospital());
         values.put("doctor", record.getDoctor());
@@ -360,6 +363,9 @@ public class UserLocalDao {
     public Boolean insertReport(String phoneNumber, Report report) {
         ContentValues values = new ContentValues();
         values.put("phone_number", phoneNumber);
+        //这段代码的作用是设置一个报告的ID。首先，它通过调用`userLocalDao.getReportList(phoneNumber)`方法获取与给定电话号码相关的报告列表。然后，它使用`get()`方法获取列表中最后一个报告，并通过调用`getId()`方法获取该报告的ID。接下来，它将获取到的ID加1，并使用`setId()`方法将新的ID设置给报告对象。这样就完成了设置报告ID的操作。
+        report.setId(getReportList(phoneNumber).get(getReportList(phoneNumber).size()-1).getId()+1);
+        values.put("id", report.getId());
         values.put("detail", report.getDetail());
         if (report.getPicture() == null) {
             values.put("picture", "");

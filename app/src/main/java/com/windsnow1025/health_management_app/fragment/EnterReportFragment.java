@@ -45,12 +45,12 @@ public class EnterReportFragment extends Fragment {
 
     String organ;
 
-    String username;
+    String phoneNumber;
 
     String date;
     String hospital;
     String type;
-    String OCRTxt;
+    String detail;
 
     EditText editTextDate;
     EditText editTextHospital;
@@ -82,7 +82,7 @@ public class EnterReportFragment extends Fragment {
         try {
             userLocalDao = new UserLocalDao(this.getActivity().getApplicationContext());
             userLocalDao.open();
-            username = userLocalDao.getPhoneNumber();
+            phoneNumber = userLocalDao.getPhoneNumber();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -127,7 +127,7 @@ public class EnterReportFragment extends Fragment {
             date = editTextDate.getText().toString();
             hospital = editTextHospital.getText().toString();
             type = editTextType.getText().toString();
-            OCRTxt = editTextOCRTxt.getText().toString();
+            detail = editTextOCRTxt.getText().toString();
 
             // Turn bitmap into string
             String bitmapString = null;
@@ -142,18 +142,18 @@ public class EnterReportFragment extends Fragment {
             Boolean insertStatus = false;
             Log.i("主线程", "数据库测试开始");
             Report report = new Report();
-            report.setPhone_number(username);
+            report.setPhone_number(phoneNumber);
             report.setReport_type(type);
             report.setHospital(hospital);
             report.setPicture(bitmapString);
-            report.setDetail(OCRTxt);
+            report.setDetail(detail);
             if (date.equals("")) {
                 //判定日期是否填写 未填写则设置为null
                 report.setReport_date(null);
             } else {
                 report.setReport_date(date);
             }
-            insertStatus = userLocalDao.insertReport(username, report);
+            insertStatus = userLocalDao.insertReport(phoneNumber, report);
             Log.i("主线程", "报告插入情况" + insertStatus);
             Log.i("主线程", "数据库测试结束");
 

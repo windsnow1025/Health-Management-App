@@ -23,7 +23,7 @@ public class EnterRecordFragment extends Fragment {
 
     String organ;
 
-    String username;
+    String phoneNumber;
 
     String date;
     String hospital;
@@ -58,7 +58,7 @@ public class EnterRecordFragment extends Fragment {
         try {
             userLocalDao = new UserLocalDao(getContext());
             userLocalDao.open();
-            username = userLocalDao.getPhoneNumber();
+            phoneNumber = userLocalDao.getPhoneNumber();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -125,7 +125,7 @@ public class EnterRecordFragment extends Fragment {
             record.setConclusion(conclusion);
             record.setSuggestion(suggestion);
             try {
-                insertStatus = userLocalDao.insertRecord(username, record);
+                insertStatus = userLocalDao.insertRecord(phoneNumber, record);
             } catch (Exception e) {
                 e.printStackTrace();
             }
