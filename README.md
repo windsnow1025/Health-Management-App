@@ -10,7 +10,7 @@ A Health Management Android Application build by JAVA with Gradle.
 
 ## Configuration
 
-Create a file named `gradle.properties` in the root directory of your project.
+Create a file named `local.properties` in the root directory of your project.
 
 ```properties
 ## This file must *NOT* be checked into Version Control Systems,
