@@ -17,7 +17,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.windsnow1025.health_management_app.LoginActivity;
 import com.windsnow1025.health_management_app.R;
+import com.windsnow1025.health_management_app.api.GetAlertApi;
 import com.windsnow1025.health_management_app.api.GetInfoApi;
+import com.windsnow1025.health_management_app.api.GetRecordApi;
+import com.windsnow1025.health_management_app.api.GetReportApi;
 import com.windsnow1025.health_management_app.api.UpdateAlertApi;
 import com.windsnow1025.health_management_app.api.UpdateRecordApi;
 import com.windsnow1025.health_management_app.api.UpdateReportApi;
@@ -33,12 +36,14 @@ public class HomeFragment extends Fragment {
     private ImageButton imageButton1;
     private ImageButton imageButton2;
     private ImageButton imageButton3;
+    private ImageButton imageButton_get;
     private ImageButton bt_disease;
     private ImageButton bt_kefu;
     private TextView tv_user;
     private TextView tv_pensonal;
     private TextView tv_disease;
     private TextView tv_syn;
+    private TextView tv_down;
     private TextView tv_exchange;
     private TextView tv_kefu;
     private TextView tv_setting;
@@ -56,6 +61,7 @@ public class HomeFragment extends Fragment {
         tv_pensonal = view.findViewById(R.id.tv_persnal);
         tv_disease = view.findViewById(R.id.tv_disease);
         tv_syn = view.findViewById(R.id.tv_syn);
+        tv_down = view.findViewById(R.id.tv_down);
         tv_exchange = view.findViewById(R.id.tv_exchange);
         tv_kefu = view.findViewById(R.id.tv_kefu);
         tv_setting = view.findViewById(R.id.tv_setting);
@@ -63,6 +69,7 @@ public class HomeFragment extends Fragment {
         imageButton1 = view.findViewById(R.id.imageButton1);
         imageButton2 = view.findViewById(R.id.imageButton2);
         imageButton3 = view.findViewById(R.id.imageButton3);
+        imageButton_get = view.findViewById(R.id.imageButton_get);
         bt_disease = view.findViewById(R.id.bt_disease);
         bt_kefu = view.findViewById(R.id.bt_kefu);
         phoneNumber = userLocalDao.getPhoneNumber();
@@ -122,6 +129,24 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 load();
                 Toast.makeText(getContext(), "数据已实时同步成功", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        /*数据下载*/
+        imageButton_get.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                userLocalDao.deleteAlerts(phoneNumber);
+                userLocalDao.deleteRecords(phoneNumber);
+                userLocalDao.deleteReports(phoneNumber);
+                GetReportApi getReportApi = new GetReportApi();
+                userLocalDao.insertReports(phoneNumber,getReportApi.getReportInformation(phoneNumber));
+                GetRecordApi getRecordApi = new GetRecordApi();
+                userLocalDao.insertRecords(phoneNumber,getRecordApi.getRecordInformation(phoneNumber));
+                GetAlertApi getAlertApi = new GetAlertApi();
+                userLocalDao.insertAlerts(phoneNumber,getAlertApi.getAlertInformation(phoneNumber));
+                Toast.makeText(getContext(), "数据已实时下载成功", Toast.LENGTH_SHORT).show();
 
             }
         });
