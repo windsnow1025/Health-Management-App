@@ -10,9 +10,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.windsnow1025.health_management_app.fragment.AlertFragment;
+import com.windsnow1025.health_management_app.fragment.CartActivityFragment;
 import com.windsnow1025.health_management_app.fragment.HealthFragment;
 import com.windsnow1025.health_management_app.fragment.HomeFragment;
 import com.windsnow1025.health_management_app.fragment.MainFragment;
+import com.windsnow1025.health_management_app.fragment.ShoppingCartFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         Button buttonMain = findViewById(R.id.buttonMain);
         Button buttonAlert = findViewById(R.id.buttonAlert);
         Button buttonHome = findViewById(R.id.buttonHome);
-        Button buttonHealth = findViewById(R.id.buttonHealth);
+        Button buttonShoppingCart = findViewById(R.id.buttonShoppingCart);
 
         buttonMain.setOnClickListener(view -> {
             Fragment fragment = new MainFragment();
@@ -42,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
             transaction.commit();
         });
 
-        buttonHealth.setOnClickListener(view -> {
-            Fragment fragment = new HealthFragment();
+        buttonShoppingCart.setOnClickListener(view -> {
+            Fragment fragment = new ShoppingCartFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);

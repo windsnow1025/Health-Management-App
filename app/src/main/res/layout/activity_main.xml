@@ -60,7 +60,7 @@
             app:strokeWidth="2dp" />
 
         <Button
-            android:id="@+id/buttonHealth"
+            android:id="@+id/buttonShoppingCart"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -71,7 +71,7 @@
             android:layout_marginRight="1dp"
             android:layout_marginBottom="2dp"
             android:background="@drawable/tbn5"
-            android:text="疾病"
+            android:text="购物"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.Material3.Corner.Bottom"
             app:strokeColor="#FF5722"
             app:strokeWidth="2dp" />

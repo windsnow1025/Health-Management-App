@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
 import com.windsnow1025.health_management_app.pojo.Alert;
+import com.windsnow1025.health_management_app.pojo.Product;
 import com.windsnow1025.health_management_app.pojo.Record;
 import com.windsnow1025.health_management_app.pojo.Report;
 import com.windsnow1025.health_management_app.pojo.User;
@@ -528,6 +529,50 @@ public class UserLocalDao {
     public Boolean deleteAlerts(String phoneNumber) {
         int flag = db.delete("alert", "phone_number=?", new String[]{phoneNumber});
         return flag > 0;
+    }
+
+    // 插入商品
+    public boolean insertGoods(Product goods) {
+        ContentValues values = new ContentValues();
+        values.put("name", goods.getName());
+        values.put("price", goods.getPrice());
+        values.put("imageResourceId", goods.getImageResourceId());
+        long result = db.insert("goods", null, values);
+        return result != -1;
+    }
+
+    // 更新商品
+    public boolean updateGoods(Product goods) {
+        ContentValues values = new ContentValues();
+        values.put("name", goods.getName());
+        values.put("price", goods.getPrice());
+        values.put("imageResourceId", goods.getImageResourceId());
+        int result = db.update("goods", values, "name = ?", new String[]{goods.getName()});
+        return result > 0;
+    }
+
+    // 删除商品
+    public boolean deleteGoods(String name) {
+        int result = db.delete("goods", "name = ?", new String[]{name});
+        return result > 0;
+    }
+
+    // 查询所有商品
+    @SuppressLint("Range")
+    public List<Product> getAllGoods() {
+        List<Product> goodsList = new ArrayList<>();
+        Cursor cursor = db.query("goods", null, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                Product goods = new Product();
+                goods.setName(cursor.getString(cursor.getColumnIndex("name")));
+                goods.setPrice(cursor.getDouble(cursor.getColumnIndex("price")));
+                goods.setImageResourceId(cursor.getInt(cursor.getColumnIndex("imageResourceId")));
+                goodsList.add(goods);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return goodsList;
     }
 
 //    public Boolean deleteAlert(String account,Integer alert_No){

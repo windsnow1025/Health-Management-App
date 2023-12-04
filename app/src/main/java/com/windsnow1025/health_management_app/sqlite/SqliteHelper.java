@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class SqliteHelper extends SQLiteOpenHelper {
     private static final String DATABASE = "health-management-app.db";
-    private static final int VERSION = 12;
+    private static final int VERSION = 13;
 
     public SqliteHelper(Context context) {
         super(context, DATABASE, null, VERSION);
@@ -67,12 +67,21 @@ public class SqliteHelper extends SQLiteOpenHelper {
                 )
             """;
 
+    private static final String CREATE_GOODS = """
+                CREATE TABLE goods (
+                    name TEXT,
+                    price REAL,
+                    imageResourceId INTEGER
+                )
+            """;
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_USER);
         db.execSQL(CREATE_REPORT);
         db.execSQL(CREATE_RECORD);
         db.execSQL(CREATE_ALERT);
+        db.execSQL(CREATE_GOODS);
     }
 
     @Override
@@ -81,6 +90,7 @@ public class SqliteHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS report");
         db.execSQL("DROP TABLE IF EXISTS record");
         db.execSQL("DROP TABLE IF EXISTS alert");
+        db.execSQL("DROP TABLE IF EXISTS goods");
         onCreate(db);
     }
 }
