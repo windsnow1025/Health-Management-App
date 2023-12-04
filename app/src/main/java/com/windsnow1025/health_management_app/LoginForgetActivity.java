@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.windsnow1025.health_management_app.api.ExistApi;
 import com.windsnow1025.health_management_app.api.SignupApi;
 import com.windsnow1025.health_management_app.api.UpdatePasswordApi;
-import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
+import com.windsnow1025.health_management_app.database.UserLocalDao;
 import com.windsnow1025.health_management_app.utils.ViewUtil;
 
 import java.text.ParseException;

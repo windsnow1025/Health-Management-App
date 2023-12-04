@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
-import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
+import com.windsnow1025.health_management_app.database.UserLocalDao;
 import com.windsnow1025.health_management_app.utils.ChangeColor;
 
 import java.util.Timer;

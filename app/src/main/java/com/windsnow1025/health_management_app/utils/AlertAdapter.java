@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.windsnow1025.health_management_app.R;
-import com.windsnow1025.health_management_app.pojo.Alert;
+import com.windsnow1025.health_management_app.model.Alert;
 
 import java.util.List;
 

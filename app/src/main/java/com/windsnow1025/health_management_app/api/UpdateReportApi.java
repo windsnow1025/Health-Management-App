@@ -3,7 +3,7 @@ package com.windsnow1025.health_management_app.api;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.windsnow1025.health_management_app.pojo.Report;
+import com.windsnow1025.health_management_app.model.Report;
 
 import org.json.JSONArray;
 import org.json.JSONException;

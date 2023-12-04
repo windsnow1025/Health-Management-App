@@ -25,8 +25,7 @@ import com.windsnow1025.health_management_app.api.GetRecordApi;
 import com.windsnow1025.health_management_app.api.GetReportApi;
 import com.windsnow1025.health_management_app.api.GetInfoApi;
 import com.windsnow1025.health_management_app.api.SigninApi;
-import com.windsnow1025.health_management_app.sqlite.UserLocalDao;
-import com.windsnow1025.health_management_app.utils.MainApplication;
+import com.windsnow1025.health_management_app.database.UserLocalDao;
 import com.windsnow1025.health_management_app.utils.ViewUtil;
 
 
@@ -45,7 +44,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private String password;
     private Intent intent;
     private SharedPreferences mShared;
-    private MainApplication mainApplication;
     private Boolean flag_eye = false;
     private UserLocalDao userLocalDao;
     @SuppressLint("MissingInflatedId")
@@ -103,10 +101,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (!password.equals("")) {
             et_password.setText(password);
         }
-
-        /*全局传参*/
-        mainApplication = MainApplication.getInstance();
-
 
     }
 

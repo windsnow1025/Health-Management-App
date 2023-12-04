@@ -1,20 +1,16 @@
 package com.windsnow1025.health_management_app;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.windsnow1025.health_management_app.fragment.AlertFragment;
-import com.windsnow1025.health_management_app.fragment.CartActivityFragment;
-import com.windsnow1025.health_management_app.fragment.HealthFragment;
-import com.windsnow1025.health_management_app.fragment.HomeFragment;
-import com.windsnow1025.health_management_app.fragment.MainFragment;
-import com.windsnow1025.health_management_app.fragment.ShoppingCartFragment;
+import com.windsnow1025.health_management_app.fragment.alert.AlertFragment;
+import com.windsnow1025.health_management_app.fragment.home.HomeFragment;
+import com.windsnow1025.health_management_app.fragment.main.MainFragment;
+import com.windsnow1025.health_management_app.fragment.shopping.ShoppingFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         buttonShoppingCart.setOnClickListener(view -> {
-            Fragment fragment = new ShoppingCartFragment();
+            Fragment fragment = new ShoppingFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.fragment_container, fragment);
             transaction.addToBackStack(null);

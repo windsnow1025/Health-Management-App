@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.windsnow1025.health_management_app.R;
-import com.windsnow1025.health_management_app.pojo.Product;
+import com.windsnow1025.health_management_app.model.Product;
 
 import java.util.List;
 
