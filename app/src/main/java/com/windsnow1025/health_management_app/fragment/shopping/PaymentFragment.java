@@ -72,6 +72,7 @@ public class PaymentFragment extends Fragment {
                 if (!password.isEmpty()) {
                     String paymentMessage = "Payment Method: " + paymentMethod + "\n    Payment success";
                     Toast.makeText(requireContext(), paymentMessage, Toast.LENGTH_SHORT).show();
+                    navigateBackToCartFragment();
                 } else {
                     Toast.makeText(requireContext(), "Please enter the password!", Toast.LENGTH_SHORT).show();
                 }
@@ -80,7 +81,13 @@ public class PaymentFragment extends Fragment {
 
         return view;
     }
+    private void navigateBackToCartFragment() {
+        // Remove the PaymentFragment from the back stack
+        requireActivity().getSupportFragmentManager().popBackStack();
 
+        // If you want to handle additional logic after navigating back, you can do it here
+        // For example, update the CartFragment UI, refresh data, etc.
+    }
     // You can keep the onPayButtonClick method if needed
-    // Remove it if not required
+
 }
