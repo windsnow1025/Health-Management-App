@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -31,6 +32,17 @@ public class PaymentFragment extends Fragment {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(requireContext(), R.array.payment_methods, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPaymentMethod.setAdapter(adapter);
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            double totalAmount = bundle.getDouble("TOTAL_AMOUNT", 0.0);
+
+            // 找到 TextView 的引用
+            TextView textViewAmount = view.findViewById(R.id.textViewAmount);
+
+            // 格式化并设置支付金额的文本
+            String formattedAmount = String.format("支付金额: $%.2f", totalAmount);
+            textViewAmount.setText(formattedAmount);
+        }
 
         spinnerPaymentMethod.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

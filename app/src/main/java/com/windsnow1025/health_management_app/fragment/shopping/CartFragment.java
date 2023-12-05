@@ -49,12 +49,13 @@ public class CartFragment extends Fragment {
                 // Get the total amount
                 double total = calculateTotal();
 
+
                 // Navigate to the PaymentFragment and pass the total amount
                 navigateToPaymentFragment(total);
             }
         });
 
-        // Add any additional logic for the CartActivity
+
         return view;
     }
 
