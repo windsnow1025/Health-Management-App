@@ -10,10 +10,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.fragment.app.Fragment;
-
+import androidx.fragment.app.FragmentTransaction;
 import com.windsnow1025.health_management_app.R;
+
 
 public class PaymentFragment extends Fragment {
 
@@ -72,7 +72,8 @@ public class PaymentFragment extends Fragment {
                 if (!password.isEmpty()) {
                     String paymentMessage = "Payment Method: " + paymentMethod + "\n    Payment success";
                     Toast.makeText(requireContext(), paymentMessage, Toast.LENGTH_SHORT).show();
-                    navigateBackToCartFragment();
+
+                    navigateBackToShoppingFragment();
                 } else {
                     Toast.makeText(requireContext(), "Please enter the password!", Toast.LENGTH_SHORT).show();
                 }
@@ -81,13 +82,15 @@ public class PaymentFragment extends Fragment {
 
         return view;
     }
-    private void navigateBackToCartFragment() {
-        // Remove the PaymentFragment from the back stack
-        requireActivity().getSupportFragmentManager().popBackStack();
 
-        // If you want to handle additional logic after navigating back, you can do it here
-        // For example, update the CartFragment UI, refresh data, etc.
+    private void navigateBackToShoppingFragment() {
+        Fragment fragment = new ShoppingFragment();
+        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
+
     // You can keep the onPayButtonClick method if needed
 
 }
