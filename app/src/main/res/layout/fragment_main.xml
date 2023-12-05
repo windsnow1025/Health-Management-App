@@ -13,7 +13,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ExtraText">
 
         <ImageView
             android:id="@+id/imageAnatomy"
@@ -37,8 +38,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="100dp"
-            android:text="进入内层"
             android:background="@drawable/tbn5_1"
+            android:text="进入内层"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -57,22 +58,21 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-        </LinearLayout>
+            app:layout_constraintTop_toTopOf="parent"></LinearLayout>
 
-        <Button
-            android:id="@+id/buttonNavigation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="导航"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
+<!--        <Button-->
+<!--            android:id="@+id/buttonNavigation"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@drawable/tbn5"-->
 
-            android:background="@drawable/tbn5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--            android:text="导航"-->
+<!--            tools:layout_editor_absoluteX="5dp"-->
+<!--            tools:layout_editor_absoluteY="5dp"-->
+<!--            tools:ignore="MissingConstraints" -->
+        />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
