@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -67,9 +66,6 @@ public class CartFragment extends Fragment {
 
         TextView totalTextView = view.findViewById(R.id.totalTextView);
         totalTextView.setText("Total: $" + String.format("%.2f", total));
-        TextView textViewAmount=view.findViewById(R.id.textViewAmount);
-        textViewAmount.setText("Total: $" + String.format("%.2f", total));
-
     }
 
     private double calculateTotal() {
