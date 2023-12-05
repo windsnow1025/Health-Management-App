@@ -18,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/cartTitle"
+        android:layout_above="@+id/bottomSpace"
         android:layout_marginTop="16dp"/>
 
     <TextView
@@ -35,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="前往支付"
-        android:layout_marginTop="520dp"
+        android:layout_marginTop="670dp"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:padding="15dp"
@@ -44,6 +45,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <View
+        android:id="@+id/bottomSpace"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"/>
 
 
     <!-- Add any other UI components as needed -->
