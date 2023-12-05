@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp">
 
     <TextView
@@ -28,6 +29,22 @@
         android:text="Total: $0.00"
         android:textSize="18sp"
         android:textStyle="bold"/>
+
+    <Button
+        android:id="@+id/buttonProceedToPayment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="前往支付"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:padding="15dp"
+        android:onClick="onProceedToPaymentClick"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
 
     <!-- Add any other UI components as needed -->
 

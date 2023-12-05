@@ -1,9 +1,11 @@
 package com.windsnow1025.health_management_app.fragment.shopping;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -40,6 +42,18 @@ public class CartFragment extends Fragment {
         // Display the total price
         displayTotal(view);
 
+        Button proceedToPaymentButton = view.findViewById(R.id.buttonProceedToPayment);
+        proceedToPaymentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get the total amount
+                double total = calculateTotal();
+
+                // Navigate to the PaymentFragment and pass the total amount
+                navigateToPaymentFragment(total);
+            }
+        });
+
         // Add any additional logic for the CartActivity
         return view;
     }
@@ -53,6 +67,27 @@ public class CartFragment extends Fragment {
         TextView totalTextView = view.findViewById(R.id.totalTextView);
         totalTextView.setText("Total: $" + String.format("%.2f", total));
     }
+
+    private double calculateTotal() {
+        double total = 0;
+        for (Product goods : goodsList) {
+            total += goods.getPrice();
+        }
+        return total;
+    }
+
+    private void navigateToPaymentFragment(double totalAmount) {
+        PaymentFragment paymentFragment = new PaymentFragment();
+        Bundle bundle = new Bundle();
+        bundle.putDouble("TOTAL_AMOUNT", totalAmount);
+        paymentFragment.setArguments(bundle);
+
+        requireActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, paymentFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
 
     @Override
     public void onDestroy() {
