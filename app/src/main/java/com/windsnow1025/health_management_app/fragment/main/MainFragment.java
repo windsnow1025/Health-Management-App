@@ -1,5 +1,6 @@
 package com.windsnow1025.health_management_app.fragment.main;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,24 +16,25 @@ import com.windsnow1025.health_management_app.R;
 import com.windsnow1025.health_management_app.model.User;
 import com.windsnow1025.health_management_app.database.UserLocalDao;
 
+import java.util.Objects;
+
 // Logcat Filter:
 // package:com.windsnow1025.health_management_app -tag:chromium -tag:OpenGLRenderer -tag:EGL_emulation
 
 public class MainFragment extends Fragment {
     View view;
-    private LeftNavigationFragment leftNavigation;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Init user
-        User userInfo = new User();
-        UserLocalDao userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
+        User userInfo;
+        @SuppressLint("UseRequireInsteadOfGet") UserLocalDao userLocalDao = new UserLocalDao(Objects.requireNonNull(getActivity()).getApplicationContext());
         userLocalDao.open();
 
         // Get Sex
-        String gender = "male";
+        String gender;
         String phoneNumber;
         phoneNumber = userLocalDao.getPhoneNumber();
         Log.i("test", "这里把从服务器获取数据删了，从本地获取用户数据");
@@ -52,18 +54,15 @@ public class MainFragment extends Fragment {
 
         Button buttonInside = view.findViewById(R.id.buttonInside);
 
-        buttonInside.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new Main1Fragment());
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
+        buttonInside.setOnClickListener(v -> {
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, new Main1Fragment());
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
         // Left Navigation
-        leftNavigation = new LeftNavigationFragment();
+        LeftNavigationFragment leftNavigation = new LeftNavigationFragment();
         FragmentTransaction transactionLeft = getParentFragmentManager().beginTransaction();
         transactionLeft.add(R.id.layoutLeftNavigation, leftNavigation);
         transactionLeft.commit();
