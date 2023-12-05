@@ -69,17 +69,17 @@ public class MainFragment extends Fragment {
         transactionLeft.commit();
 
         // Button Navigation
-        Button buttonNavigation = view.findViewById(R.id.buttonNavigation);
-        buttonNavigation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (leftNavigation.isVisible()) {
-                    leftNavigation.getView().setVisibility(View.GONE);
-                } else {
-                    leftNavigation.getView().setVisibility(View.VISIBLE);
-                }
-            }
-        });
+//        Button buttonNavigation = view.findViewById(R.id.buttonNavigation);
+//        buttonNavigation.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (leftNavigation.isVisible()) {
+//                    leftNavigation.getView().setVisibility(View.GONE);
+//                } else {
+//                    leftNavigation.getView().setVisibility(View.VISIBLE);
+//                }
+//            }
+//        });
 
         // Button Page
         FragmentTransaction transactionButton = getParentFragmentManager().beginTransaction();
