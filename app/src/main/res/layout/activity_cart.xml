@@ -15,10 +15,10 @@
 
     <ListView
         android:id="@+id/cartListView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="521dp"
         android:layout_below="@id/cartTitle"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp" />
 
     <TextView
         android:id="@+id/totalTextView"
@@ -30,19 +30,18 @@
         android:textSize="18sp"
         android:textStyle="bold"/>
 
+
     <Button
         android:id="@+id/buttonProceedToPayment"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="前往支付"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:padding="15dp"
         android:onClick="onProceedToPaymentClick"
+        android:layout_below="@+id/totalTextView"
+        android:layout_marginTop="15dp"
+        android:text="前往支付"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
 
 
