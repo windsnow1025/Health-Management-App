@@ -29,9 +29,9 @@ public class ShoppingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.shopping_cart, container, false);
         productList = new ArrayList<>();
-        productList.add(new Product("Product 1", 10.99, R.drawable.product1));
-        productList.add(new Product("Product 2", 15.99, R.drawable.product2));
-        productList.add(new Product("Product 3", 8.99, R.drawable.product3));
+        productList.add(new Product("大力丸", 99.98, R.drawable.product1));
+        productList.add(new Product("伸腿瞪眼丸", 999.98, R.drawable.product2));
+        productList.add(new Product("肾宝", 9999.98, R.drawable.product3));
 
         userLocalDao = new UserLocalDao(getActivity());
         userLocalDao.open();
