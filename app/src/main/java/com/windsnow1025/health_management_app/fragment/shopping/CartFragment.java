@@ -1,6 +1,5 @@
 package com.windsnow1025.health_management_app.fragment.shopping;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,12 +48,28 @@ public class CartFragment extends Fragment {
                 // Get the total amount
                 double total = calculateTotal();
 
-
                 // Navigate to the PaymentFragment and pass the total amount
                 navigateToPaymentFragment(total);
             }
         });
 
+        Button clearCartButton = view.findViewById(R.id.buttonClearCart);
+        clearCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 清除SQLite数据库中的所有商品
+                userLocalDao.deleteGoods();
+
+                // 清除goodsList中的所有内容
+                goodsList.clear();
+
+                // 通知适配器数据已更改
+                productAdapter.notifyDataSetChanged();
+
+                // 更新总价显示
+                displayTotal(view);
+            }
+        });
 
         return view;
     }
@@ -89,10 +104,8 @@ public class CartFragment extends Fragment {
                 .commit();
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         userLocalDao.close();
-    }
-}
+    }}

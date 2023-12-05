@@ -1,4 +1,5 @@
 package com.windsnow1025.health_management_app.fragment.shopping;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,20 +11,27 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import com.windsnow1025.health_management_app.R;
 
+import com.windsnow1025.health_management_app.R;
+import com.windsnow1025.health_management_app.database.UserLocalDao;
 
 public class PaymentFragment extends Fragment {
 
     private Spinner spinnerPaymentMethod;
     private EditText editTextCardNumber;
     private EditText editTextPassword;
+    private UserLocalDao userLocalDao; // 创建 UserLocalDao 对象
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_payment, container, false);
+
+        // 初始化 UserLocalDao 对象
+        userLocalDao = new UserLocalDao(requireContext());
+        userLocalDao.open();
 
         spinnerPaymentMethod = view.findViewById(R.id.spinnerPaymentMethod);
         editTextCardNumber = view.findViewById(R.id.editTextCardNumber);
@@ -73,6 +81,9 @@ public class PaymentFragment extends Fragment {
                     String paymentMessage = "Payment Method: " + paymentMethod + "\n    Payment success";
                     Toast.makeText(requireContext(), paymentMessage, Toast.LENGTH_SHORT).show();
 
+                    // 支付成功后，清空购物车
+                    userLocalDao.deleteGoods();
+
                     navigateBackToShoppingFragment();
                 } else {
                     Toast.makeText(requireContext(), "Please enter the password!", Toast.LENGTH_SHORT).show();
@@ -91,6 +102,9 @@ public class PaymentFragment extends Fragment {
         transaction.commit();
     }
 
-    // You can keep the onPayButtonClick method if needed
-
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        userLocalDao.close();
+    }
 }

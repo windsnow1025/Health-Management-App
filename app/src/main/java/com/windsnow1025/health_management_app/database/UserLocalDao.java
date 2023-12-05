@@ -552,9 +552,8 @@ public class UserLocalDao {
     }
 
     // 删除商品
-    public boolean deleteGoods(String name) {
-        int result = db.delete("goods", "name = ?", new String[]{name});
-        return result > 0;
+    public void deleteGoods() {
+        db.delete("goods", null, null);
     }
 
     // 查询所有商品
