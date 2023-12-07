@@ -22,8 +22,8 @@ public class SignupApi extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
         String phoneNumber = params[0];
         String password = params[1];
-        String sex = params[3];
-        String birthday = params[4];
+        String sex = params[2];
+        String birthday = params[3];
 
         // 先调用登录API获取用户信息
         String apiResult = callApi(phoneNumber, password,sex,birthday);

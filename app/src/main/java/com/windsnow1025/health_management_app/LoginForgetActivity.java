@@ -33,7 +33,7 @@ import java.util.Date;
 
 public class LoginForgetActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, View.OnClickListener, View.OnFocusChangeListener {
 
-    private EditText et_usename;
+    private EditText et_username;
     private EditText et_password;
     private EditText et_birth;
     private EditText et_verifycode;
@@ -75,17 +75,17 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
         } else /*忘记密码*/ {
             setContentView(R.layout.activity_login_forget);
         }
-        et_usename = (EditText) findViewById(R.id.et_username);
+        et_username = (EditText) findViewById(R.id.et_username);
         et_password = (EditText) findViewById(R.id.et_password);
         et_verifycode = (EditText) findViewById(R.id.et_verifycode);
         findViewById(R.id.btn_getcode).setOnClickListener(this);
         findViewById(R.id.btn_confirm).setOnClickListener(this);
-        et_usename.addTextChangedListener(new HideText(et_usename, et_password));
+        et_username.addTextChangedListener(new HideText(et_username, et_password));
         et_password.setOnFocusChangeListener(this);
         et_verifycode.addTextChangedListener(new HideText(et_verifycode, findViewById(R.id.btn_confirm)));
 
         if (username != null) {
-            et_usename.setText(username);
+            et_username.setText(username);
         }
 
 
@@ -94,7 +94,7 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
     @SuppressLint("DefaultLocale")
     @Override
     public void onClick(View v) {
-        username = et_usename.getText().toString();
+        username = et_username.getText().toString();
         if (v.getId() == R.id.btn_getcode && !username.equals("") && flag) {
             /**
              * 判断账号是否已存在
@@ -108,7 +108,7 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
                 mVerifyCode = String.format("%06d", (int) (Math.random() * 1000000 % 1000000));
                 AlertDialog.Builder builder = new AlertDialog.Builder(LoginForgetActivity.this);
                 builder.setTitle("请记住验证码");
-                builder.setMessage("手机号" + et_usename.getText().toString() + "，本次验证码是" + mVerifyCode + "，请输入验证码");
+                builder.setMessage("手机号" + et_username.getText().toString() + "，本次验证码是" + mVerifyCode + "，请输入验证码");
                 builder.setPositiveButton("好的", null);
                 AlertDialog alert = builder.create();
                 alert.show();
@@ -119,13 +119,13 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
             mVerifyCode = String.format("%06d", (int) (Math.random() * 1000000 % 1000000));
             AlertDialog.Builder builder = new AlertDialog.Builder(LoginForgetActivity.this);
             builder.setTitle("请记住验证码");
-            builder.setMessage("手机号" + et_usename.getText().toString() + "，本次验证码是" + mVerifyCode + "，请输入验证码");
+            builder.setMessage("手机号" + et_username.getText().toString() + "，本次验证码是" + mVerifyCode + "，请输入验证码");
             builder.setPositiveButton("好的", null);
             AlertDialog alert = builder.create();
             alert.show();
         } else if (v.getId() == R.id.btn_confirm) {
 
-            username = et_usename.getText().toString();
+            username = et_username.getText().toString();
             password = et_password.getText().toString();
             if (flag) {
                 birth = et_birth.getText().toString();
@@ -148,8 +148,7 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
                     /**
                      * 插入账号
                      **/
-                    SignupApi signupApi = new SignupApi();
-                    if (signupApi.insertUser(username, password, sex, birth).equals("Signup successful")) {
+                    if (userSignupApi(username,password,sex,birth)) {
                         Toast.makeText(this, "恭喜您注册成功，清前往登录！", Toast.LENGTH_SHORT).show();
                         intent = new Intent(this, LoginActivity.class);
                         intent.putExtra("username", username);
@@ -178,9 +177,9 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
-            String phone = et_usename.getText().toString();
+            String phone = et_username.getText().toString();
             if (TextUtils.isEmpty(phone) || phone.length() < 11) {
-                et_usename.requestFocus();
+                et_username.requestFocus();
                 Toast.makeText(this, "请输入11位手机号码", Toast.LENGTH_SHORT).show();
             }
         }
@@ -252,5 +251,13 @@ public class LoginForgetActivity extends AppCompatActivity implements DatePicker
         }
 
 
+
+
+    }
+    public Boolean userSignupApi(String username, String password, String sex, String birth){
+        SignupApi signupApi = new SignupApi();
+        String flag;
+        flag = signupApi.insertUser(username, password, sex, birth);
+        return flag.equals("Signup successful");
     }
 }
