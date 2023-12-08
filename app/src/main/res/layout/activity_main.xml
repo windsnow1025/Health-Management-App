@@ -39,7 +39,7 @@
             android:background="@drawable/tbn5"
             android:text="首页"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.Material3.Corner.Bottom"
-            app:strokeColor="#FF5722"
+            app:strokeColor="#808080"
             app:strokeWidth="2dp" />
 
         <Button
@@ -56,7 +56,7 @@
             android:insetBottom="0dp"
             android:text="提醒"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.Material3.Corner.Bottom"
-            app:strokeColor="#FF5722"
+            app:strokeColor="#808080"
             app:strokeWidth="2dp" />
 
         <Button
@@ -73,7 +73,7 @@
             android:background="@drawable/tbn5"
             android:text="购物"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.Material3.Corner.Bottom"
-            app:strokeColor="#FF5722"
+            app:strokeColor="#808080"
             app:strokeWidth="2dp" />
 
         <Button
@@ -90,7 +90,7 @@
             android:background="@drawable/tbn5"
             android:text="我的"
             app:shapeAppearance="@style/ShapeAppearanceOverlay.Material3.Corner.Bottom"
-            app:strokeColor="#FF5722"
+            app:strokeColor="#808080"
             app:strokeWidth="2dp" />
     </LinearLayout>
 

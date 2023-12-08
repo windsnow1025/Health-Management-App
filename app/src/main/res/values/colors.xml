@@ -11,5 +11,6 @@
     <color name="dark">#B5B0AF</color>
     <color name="first">#FF0000</color>
     <color name="ori">#676565</color>
+    <color name="button_stroke_color">#808080</color>
 
 </resources>
