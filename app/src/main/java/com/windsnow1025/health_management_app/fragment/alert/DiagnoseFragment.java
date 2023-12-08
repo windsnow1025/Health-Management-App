@@ -134,7 +134,7 @@ public class DiagnoseFragment extends Fragment implements DatePickerDialog.OnDat
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_details__record, container, false);
+        View view = inflater.inflate(R.layout.fragment_details_record, container, false);
         userLocalDao = new UserLocalDao(getActivity().getApplicationContext());
         userLocalDao.open();
         phoneNumber = userLocalDao.getPhoneNumber();

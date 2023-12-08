@@ -6,6 +6,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import android.app.DatePickerDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -57,6 +59,7 @@ public class EditReportFragment extends Fragment {
     EditText editTextHospital;
     EditText editTextType;
     EditText editTextOCRTxt;
+    ImageView reportImageView;
 
     Bitmap bitmap;
     UserLocalDao userLocalDao;
@@ -85,6 +88,7 @@ public class EditReportFragment extends Fragment {
         editTextHospital = view.findViewById(R.id.editTextHospital);
         editTextType = view.findViewById(R.id.editTextType);
         editTextOCRTxt = view.findViewById(R.id.editTextOCRTxt);
+        reportImageView = view.findViewById(R.id.report_imageView);
 
         try {
             // Get username
@@ -102,11 +106,18 @@ public class EditReportFragment extends Fragment {
             type = report.getReport_type();
             detail = report.getDetail();
 
+            String base64Image = report.getPicture();
+            if (base64Image != null) {
+                byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
+                bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            }
+
             // Set data to views
             editTextDate.setText(date);
             editTextHospital.setText(hospital);
             editTextType.setText(type);
             editTextOCRTxt.setText(detail);
+            reportImageView.setImageBitmap(bitmap);
 
         } catch (Exception e) {
             e.printStackTrace();

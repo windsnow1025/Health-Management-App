@@ -352,11 +352,7 @@ public class UserLocalDao {
                 report.setPhone_number(cursor.getString(cursor.getColumnIndex("phone_number")));
                 report.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 report.setDetail(cursor.getString(cursor.getColumnIndex("detail")));
-
-                byte[] blob = cursor.getBlob(cursor.getColumnIndex("picture"));
-                String pictureBase64 = (blob != null) ? Base64.encodeToString(blob, Base64.DEFAULT) : null;
-                report.setPicture(pictureBase64);
-
+                report.setPicture(cursor.getString(cursor.getColumnIndex("picture")));
                 report.setReport_type(cursor.getString(cursor.getColumnIndex("report_type")));
                 report.setHospital(cursor.getString(cursor.getColumnIndex("hospital")));
                 report.setReport_date(cursor.getString(cursor.getColumnIndex("report_date")));
