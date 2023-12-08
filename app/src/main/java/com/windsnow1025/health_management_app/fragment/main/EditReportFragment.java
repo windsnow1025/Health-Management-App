@@ -145,23 +145,21 @@ public class EditReportFragment extends Fragment {
             type = editTextType.getText().toString();
             detail = editTextOCRTxt.getText().toString();
 
-            // Turn bitmap into string
-            String bitmapString = null;
+            // bitmap to base64
+            String base64Image = null;
             if (bitmap != null) {
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] byteArray = stream.toByteArray();
-                bitmapString = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] bitmapBytes = byteArrayOutputStream.toByteArray();
+                base64Image = Base64.encodeToString(bitmapBytes, Base64.DEFAULT);
             }
 
             // Upload to database
-            Boolean insertStatus = false;
-            Log.i("主线程", "数据库测试开始");
             Report report = new Report();
             report.setPhone_number(phoneNumber);
             report.setReport_type(type);
             report.setHospital(hospital);
-            report.setPicture(bitmapString);
+            report.setPicture(base64Image);
             report.setDetail(detail);
             report.setId(reportId);
             if (date.equals("")) {
@@ -170,9 +168,7 @@ public class EditReportFragment extends Fragment {
             } else {
                 report.setReport_date(date);
             }
-            insertStatus = userLocalDao.updateReport(phoneNumber, report);
-            Log.i("主线程", "报告插入情况" + insertStatus);
-            Log.i("主线程", "数据库测试结束");
+            userLocalDao.updateReport(phoneNumber, report);
 
             // Jump to organ page
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
@@ -192,82 +188,82 @@ public class EditReportFragment extends Fragment {
             e.printStackTrace();
         }
 
-        // Set datapath
-        String datapath = this.getActivity().getExternalFilesDir(null) + "/tesseract/";
-        String datapath2 = this.getActivity().getExternalFilesDir(null) + "/tesseract/tessdata/";
-
-        // Create directory
-        File dir = new File(datapath);
-        if (!dir.exists()) {
-            if (!dir.mkdirs()) {
-                Log.e("test", "创建路径1失败");
-                return;
-            }
-        }
-
-        // Create directory
-        File dir2 = new File(datapath2);
-        if (!dir2.exists()) {
-            if (!dir2.mkdirs()) {
-                Log.e("test", "创建路径2失败");
-                return;
-            }
-        }
-
-        // Path exists
-        Log.i("test", "路径2存在");
-
-        // New thread
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                // Download trained data
-                String filename = "chi_sim.traineddata";
-                File file = new File(dir2, filename);
-                if (!file.exists()) {
-                    try {
-                        URL url = new URL("https://github.com/tesseract-ocr/tessdata/raw/main/chi_sim.traineddata");
-                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                        connection.connect();
-                        InputStream input = connection.getInputStream();
-                        OutputStream output = new FileOutputStream(file);
-                        byte[] buffer = new byte[1024];
-                        int length;
-                        while ((length = input.read(buffer)) > 0) {
-                            output.write(buffer, 0, length);
-                        }
-                        output.flush();
-                        output.close();
-                        input.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                try {
-                    // Extract text
-                    String ocrtxt = extractText(bitmap);
-
-                    // Set OCR result to EditText
-                    editTextOCRTxt.setText(ocrtxt);
-                } catch (Exception e) {
-                    Log.e("test", "OCR出错");
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+//        // Set datapath
+//        String datapath = this.getActivity().getExternalFilesDir(null) + "/tesseract/";
+//        String datapath2 = this.getActivity().getExternalFilesDir(null) + "/tesseract/tessdata/";
+//
+//        // Create directory
+//        File dir = new File(datapath);
+//        if (!dir.exists()) {
+//            if (!dir.mkdirs()) {
+//                Log.e("test", "创建路径1失败");
+//                return;
+//            }
+//        }
+//
+//        // Create directory
+//        File dir2 = new File(datapath2);
+//        if (!dir2.exists()) {
+//            if (!dir2.mkdirs()) {
+//                Log.e("test", "创建路径2失败");
+//                return;
+//            }
+//        }
+//
+//        // Path exists
+//        Log.i("test", "路径2存在");
+//
+//        // New thread
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                // Download trained data
+//                String filename = "chi_sim.traineddata";
+//                File file = new File(dir2, filename);
+//                if (!file.exists()) {
+//                    try {
+//                        URL url = new URL("https://github.com/tesseract-ocr/tessdata/raw/main/chi_sim.traineddata");
+//                        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//                        connection.connect();
+//                        InputStream input = connection.getInputStream();
+//                        OutputStream output = new FileOutputStream(file);
+//                        byte[] buffer = new byte[1024];
+//                        int length;
+//                        while ((length = input.read(buffer)) > 0) {
+//                            output.write(buffer, 0, length);
+//                        }
+//                        output.flush();
+//                        output.close();
+//                        input.close();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//                try {
+//                    // Extract text
+//                    String ocrtxt = extractText(bitmap);
+//
+//                    // Set OCR result to EditText
+//                    editTextOCRTxt.setText(ocrtxt);
+//                } catch (Exception e) {
+//                    Log.e("test", "OCR出错");
+//                    e.printStackTrace();
+//                }
+//            }
+//        }).start();
 
 
     });
 
-    private String extractText(Bitmap bitmap) {
-        TessBaseAPI tessBaseApi = new TessBaseAPI();
-        Log.i("test", "测试");
-        tessBaseApi.init(this.getActivity().getExternalFilesDir(null) + "/tesseract/", "chi_sim");
-        Log.i("test", "测试");
-        tessBaseApi.setImage(bitmap);
-        String extractedText = tessBaseApi.getUTF8Text();
-        tessBaseApi.end();
-        return extractedText;
-    }
+//    private String extractText(Bitmap bitmap) {
+//        TessBaseAPI tessBaseApi = new TessBaseAPI();
+//        Log.i("test", "测试");
+//        tessBaseApi.init(this.getActivity().getExternalFilesDir(null) + "/tesseract/", "chi_sim");
+//        Log.i("test", "测试");
+//        tessBaseApi.setImage(bitmap);
+//        String extractedText = tessBaseApi.getUTF8Text();
+//        tessBaseApi.end();
+//        return extractedText;
+//    }
 }

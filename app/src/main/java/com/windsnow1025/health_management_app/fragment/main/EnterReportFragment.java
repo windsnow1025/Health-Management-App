@@ -129,13 +129,13 @@ public class EnterReportFragment extends Fragment {
             type = editTextType.getText().toString();
             detail = editTextOCRTxt.getText().toString();
 
-            // Turn bitmap into string
-            String bitmapString = null;
+            // bitmap to base64
+            String base64Image = null;
             if (bitmap != null) {
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] byteArray = stream.toByteArray();
-                bitmapString = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] bitmapBytes = byteArrayOutputStream.toByteArray();
+                base64Image = Base64.encodeToString(bitmapBytes, Base64.DEFAULT);
             }
 
             // Insert report into database
@@ -143,7 +143,7 @@ public class EnterReportFragment extends Fragment {
             report.setPhone_number(phoneNumber);
             report.setReport_type(type);
             report.setHospital(hospital);
-            report.setPicture(bitmapString);
+            report.setPicture(base64Image);
             report.setDetail(detail);
             if (date.equals("")) {
                 //判定日期是否填写 未填写则设置为null

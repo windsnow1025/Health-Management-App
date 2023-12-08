@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.util.Base64;
 
 import com.windsnow1025.health_management_app.model.Alert;
 import com.windsnow1025.health_management_app.model.Product;
@@ -351,7 +352,11 @@ public class UserLocalDao {
                 report.setPhone_number(cursor.getString(cursor.getColumnIndex("phone_number")));
                 report.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 report.setDetail(cursor.getString(cursor.getColumnIndex("detail")));
-                report.setPicture(cursor.getString(cursor.getColumnIndex("picture")));
+
+                byte[] blob = cursor.getBlob(cursor.getColumnIndex("picture"));
+                String pictureBase64 = (blob != null) ? Base64.encodeToString(blob, Base64.DEFAULT) : null;
+                report.setPicture(pictureBase64);
+
                 report.setReport_type(cursor.getString(cursor.getColumnIndex("report_type")));
                 report.setHospital(cursor.getString(cursor.getColumnIndex("hospital")));
                 report.setReport_date(cursor.getString(cursor.getColumnIndex("report_date")));
@@ -368,11 +373,7 @@ public class UserLocalDao {
         report.setId(getReportList(phoneNumber).get(getReportList(phoneNumber).size()-1).getId()+1);
         values.put("id", report.getId());
         values.put("detail", report.getDetail());
-        if (report.getPicture() == null) {
-            values.put("picture", "");
-        } else {
-            values.put("picture", report.getPicture().toString());
-        }
+        values.put("picture", report.getPicture());
         values.put("report_type", report.getReport_type());
         values.put("hospital", report.getHospital());
         values.put("report_date", report.getReport_date());
@@ -388,14 +389,7 @@ public class UserLocalDao {
             values.put("phone_number", phoneNumber);
             values.put("id", report.getId());
             values.put("detail", report.getDetail());
-
-            // 请注意这里的判断和处理图片的方式，可以根据实际情况修改
-            if (report.getPicture() == null) {
-                values.put("picture", "");
-            } else {
-                values.put("picture", report.getPicture().toString());
-            }
-
+            values.put("picture", report.getPicture());
             values.put("report_type", report.getReport_type());
             values.put("hospital", report.getHospital());
             values.put("report_date", report.getReport_date());

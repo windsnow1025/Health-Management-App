@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class SqliteHelper extends SQLiteOpenHelper {
     private static final String DATABASE = "health-management-app.db";
-    private static final int VERSION = 13;
+    private static final int VERSION = 14;
 
     public SqliteHelper(Context context) {
         super(context, DATABASE, null, VERSION);
