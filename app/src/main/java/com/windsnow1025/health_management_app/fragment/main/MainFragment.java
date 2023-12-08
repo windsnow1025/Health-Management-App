@@ -31,7 +31,6 @@ public class MainFragment extends Fragment {
         String gender;
         String phoneNumber;
         phoneNumber = userLocalDao.getPhoneNumber();
-        Log.i("test", "这里把从服务器获取数据删了，从本地获取用户数据");
         User user = userLocalDao.getUserInfo(phoneNumber);
         gender = user.getSex();
 

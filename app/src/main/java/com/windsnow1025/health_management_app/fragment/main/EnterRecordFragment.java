@@ -113,9 +113,7 @@ public class EnterRecordFragment extends Fragment {
             conclusion = editTextConclusion.getText().toString();
             suggestion = editTextSuggestion.getText().toString();
 
-            // Insert data into database
-            Boolean insertStatus = false;
-            Log.i("主线程", "数据库测试开始");
+            // Insert record into database
             Record record = new Record();
             record.setRecord_date(date);
             record.setHospital(hospital);
@@ -124,13 +122,7 @@ public class EnterRecordFragment extends Fragment {
             record.setSymptom(symptom);
             record.setConclusion(conclusion);
             record.setSuggestion(suggestion);
-            try {
-                insertStatus = userLocalDao.insertRecord(phoneNumber, record);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            Log.i("主线程", "记录插入情况" + insertStatus);
-            Log.i("主线程", "数据库测试结束");
+            userLocalDao.insertRecord(phoneNumber, record);
 
             // Jump to organ page
             FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
