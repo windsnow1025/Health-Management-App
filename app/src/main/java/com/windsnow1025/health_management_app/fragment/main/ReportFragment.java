@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.windsnow1025.health_management_app.R;
 import com.windsnow1025.health_management_app.TableEnterAdapter;
-import com.windsnow1025.health_management_app.model.Report;
 import com.windsnow1025.health_management_app.database.UserLocalDao;
+import com.windsnow1025.health_management_app.model.Report;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +44,11 @@ public class ReportFragment extends Fragment {
             // Get username
             UserLocalDao userLocalDao = new UserLocalDao(getContext());
             userLocalDao.open();
-            String username = userLocalDao.getPhoneNumber();
+            String phoneNumber = userLocalDao.getPhoneNumber();
 
             // Get report list
             ArrayList<Report> reports;
-            reports = userLocalDao.getReportList(username);
-            Log.i("test", "从服务器获取体检报告");
+            reports = userLocalDao.getReportList(phoneNumber);
 
             // Set report list to recycler view
             List<String[]> data = new ArrayList<>();
@@ -61,40 +60,25 @@ public class ReportFragment extends Fragment {
             RecyclerView recyclerView = view.findViewById(R.id.report_recycler_view);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             ArrayList<Report> finalReports = reports;
-            recyclerView.setAdapter(new TableEnterAdapter(data, new TableEnterAdapter.OnItemClickListener() {
-                // Edit Button
-                @Override
-                public void onClick(int position) {
-                    // Get report id
-                    Integer report_id = finalReports.get(position - 1).getId();
 
-                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container, new EditReportFragment(report_id, organ));
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                }
-            }, new TableEnterAdapter.OnItemClickListener() {
-                // Delete Button
-                @Override
-                public void onClick(int position) {
-                    // Get report id
-                    int report_id = finalReports.get(position - 1).getId();
+            recyclerView.setAdapter(new TableEnterAdapter(data, position -> {
+                // Edit report
+                int report_id = finalReports.get(position - 1).getId();
 
-                    // Delete report
-                    try {
-                        userLocalDao.deleteReport(username, report_id);
-                        Log.i("test", "从服务器删除体检报告");
-                    } catch (Exception e) {
-                        Log.i("test", "从本地删除体检报告");
-                        userLocalDao.deleteReport(username, report_id);
-                    }
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, new EditReportFragment(report_id, organ));
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }, position -> {
+                // Delete report
+                int report_id = finalReports.get(position - 1).getId();
 
-                    // Reload fragment
-                    FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container, new MainOrganFragment(organ));
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                }
+                userLocalDao.deleteReport(phoneNumber, report_id);
+
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, new MainOrganFragment(organ));
+                transaction.addToBackStack(null);
+                transaction.commit();
             }));
 
         } catch (Exception e) {
@@ -102,14 +86,11 @@ public class ReportFragment extends Fragment {
         }
 
         Button buttonEnterReport = view.findViewById(R.id.buttonEnterReport);
-        buttonEnterReport.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, new EnterReportFragment(organ));
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
+        buttonEnterReport.setOnClickListener(v -> {
+            FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, new EnterReportFragment(organ));
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
         return view;
