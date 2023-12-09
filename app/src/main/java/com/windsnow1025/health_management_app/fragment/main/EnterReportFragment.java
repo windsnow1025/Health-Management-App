@@ -131,6 +131,12 @@ public class EnterReportFragment extends Fragment {
             type = editTextType.getText().toString();
             detail = editTextOCRTxt.getText().toString();
 
+            if (bitmap != null) {
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] bitmapBytes = byteArrayOutputStream.toByteArray();
+                base64Image = Base64.encodeToString(bitmapBytes, Base64.NO_WRAP);
+            }
             // Insert report into database
             Report report = new Report();
             report.setPhone_number(phoneNumber);
@@ -165,13 +171,7 @@ public class EnterReportFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            if (bitmap != null) {
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-                byte[] bitmapBytes = byteArrayOutputStream.toByteArray();
-                base64Image = Base64.encodeToString(bitmapBytes, Base64.NO_WRAP);
-                Log.i("base64", base64Image);
-            }
+
         }
 //
 //        // Set datapath
