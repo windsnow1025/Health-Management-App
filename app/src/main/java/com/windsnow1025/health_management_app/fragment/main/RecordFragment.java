@@ -49,7 +49,7 @@ public class RecordFragment extends Fragment {
             // Get record list
             ArrayList<Record> records;
             records = userLocalDao.getRecordList(phoneNumber);
-            Log.i("test", "从服务器获取就诊记录");
+            Log.i("test", "本地获取就诊记录");
 
             // Set record list to recycler view
             List<String[]> data = new ArrayList<>();
@@ -77,7 +77,7 @@ public class RecordFragment extends Fragment {
 
                 // Delete record
                 userLocalDao.deleteRecord(phoneNumber, record_id);
-                Log.i("test", "从服务器删除就诊记录");
+                Log.i("test", "本地删除就诊记录");
 
                 // Reload fragment
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();

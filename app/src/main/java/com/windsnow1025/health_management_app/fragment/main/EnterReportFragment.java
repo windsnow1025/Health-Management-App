@@ -59,6 +59,8 @@ public class EnterReportFragment extends Fragment {
 
     Bitmap bitmap;
     UserLocalDao userLocalDao;
+    String base64Image = null;
+
 
     public EnterReportFragment(String organ) {
         this.organ = organ;
@@ -129,15 +131,6 @@ public class EnterReportFragment extends Fragment {
             type = editTextType.getText().toString();
             detail = editTextOCRTxt.getText().toString();
 
-            // bitmap to base64
-            String base64Image = null;
-            if (bitmap != null) {
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-                byte[] bitmapBytes = byteArrayOutputStream.toByteArray();
-                base64Image = Base64.encodeToString(bitmapBytes, Base64.DEFAULT);
-            }
-
             // Insert report into database
             Report report = new Report();
             report.setPhone_number(phoneNumber);
@@ -163,12 +156,22 @@ public class EnterReportFragment extends Fragment {
     }
 
     private final ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
-        // Get bitmap from uri
-        bitmap = null;
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (uri != null) {
+            // Get bitmap from uri
+            bitmap = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (bitmap != null) {
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] bitmapBytes = byteArrayOutputStream.toByteArray();
+                base64Image = Base64.encodeToString(bitmapBytes, Base64.NO_WRAP);
+                Log.i("base64", base64Image);
+            }
         }
 //
 //        // Set datapath
