@@ -108,7 +108,7 @@ public class EditReportFragment extends Fragment {
 
             String base64Image = report.getPicture();
             if (base64Image != null) {
-                byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
+                byte[] decodedString = Base64.decode(base64Image, Base64.NO_WRAP);
                 bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             }
 
@@ -162,7 +162,7 @@ public class EditReportFragment extends Fragment {
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
                 byte[] bitmapBytes = byteArrayOutputStream.toByteArray();
-                base64Image = Base64.encodeToString(bitmapBytes, Base64.DEFAULT);
+                base64Image = Base64.encodeToString(bitmapBytes, Base64.NO_WRAP);
             }
 
             // Upload to database
